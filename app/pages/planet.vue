@@ -1,100 +1,213 @@
-<script setup lang="ts">
-// This page will be enhanced with TresJS/Three.js in the future
-// For now, it shows a beautiful coming soon page
-</script>
 <template>
-    <div
-        class="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <div class="max-w-4xl px-6 mx-auto space-y-8 text-center">
-            <!-- Hero Section -->
-            <div class="space-y-4">
-                <div
-                    class="flex items-center justify-center w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse">
-                    <!-- <UIcon name="i-heroicons-globe-alt" class="w-16 h-16 text-white" /> -->
+    <div class="relative w-full" :style="{ height: containerHeight + 'px' }">
+        <!-- Type filter pills -->
+        <div class="absolute top-4 left-4 z-10 flex flex-wrap gap-1.5">
+            <button
+                :class="[
+                    'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border backdrop-blur-xl',
+                    !filterType
+                        ? 'bg-white/15 border-white/20 text-white/90'
+                        : 'bg-black/40 border-white/[0.06] text-white/40 hover:text-white/60 hover:border-white/10'
+                ]"
+                @click="filterType = null"
+            >
+                All
+            </button>
+            <button
+                v-for="t in typeOptions"
+                :key="t.value"
+                :class="[
+                    'px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border backdrop-blur-xl',
+                    filterType === t.value
+                        ? 'bg-white/15 border-white/20 text-white/90'
+                        : 'bg-black/40 border-white/[0.06] text-white/40 hover:text-white/60 hover:border-white/10'
+                ]"
+                @click="filterType = t.value"
+            >
+                {{ t.label }}
+            </button>
+        </div>
+
+        <!-- Reset camera button -->
+        <button
+            class="absolute top-4 right-4 z-10 w-9 h-9 rounded-lg bg-black/40 border border-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-200"
+            title="Reset camera"
+            @click="resetCamera"
+        >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+        </button>
+
+        <!-- 3D Canvas -->
+        <ClientOnly>
+            <TresCanvas
+                :style="{ height: containerHeight + 'px' }"
+                class="w-full"
+                :clear-color="0x0A0A0F"
+                antialias
+                power-preference="high-performance"
+                @wheel.prevent="() => {}"
+            >
+                <TresPerspectiveCamera :position="[0, 5, 30]" :fov="50" :near="0.1" :far="500" />
+                <component
+                    :is="PlanetSceneComponent"
+                    :hovered-code="hoveredCode"
+                    :selected-code="selectedCode"
+                    :focused-index="focusedIndex"
+                    :filter-type="filterType"
+                    @hover="hoveredCode = $event"
+                    @select="onSelect"
+                    @update:focused-index="focusedIndex = $event"
+                />
+            </TresCanvas>
+        </ClientOnly>
+
+        <!-- Bottom navigation -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]">
+            <div class="relative flex items-center justify-between">
+                <button
+                    :disabled="focusedIndex <= 0"
+                    class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                    @click="goPrev"
+                >
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div class="px-5 py-2.5 rounded-full bg-black/60 border border-white/[0.08] backdrop-blur-xl text-center">
+                        <div class="text-white/90 text-xs sm:text-sm font-medium truncate max-w-[160px] sm:max-w-[200px]">{{ focusedLocation?.name ?? '...' }}</div>
+                        <div class="text-white/30 text-[10px] sm:text-[11px] mt-0.5">{{ focusedIndex + 1 }} / {{ filteredLocations.length }}</div>
+                    </div>
                 </div>
-                <h1 class="text-4xl font-bold text-white md:text-6xl">MCU Planet View</h1>
-                <p class="max-w-2xl mx-auto text-xl text-gray-300">
-                    Interactieve 3D weergave van het Marvel Cinematic Universe
-                </p>
+
+                <button
+                    :disabled="focusedIndex >= filteredLocations.length - 1"
+                    class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                    @click="goNext"
+                >
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
             </div>
+        </div>
 
-            <!-- Coming Soon Card -->
-            <UCard class="max-w-2xl mx-auto glass-effect">
-                <template #header>
-                    <div class="text-center">
-                        <UIcon name="i-heroicons-wrench-screwdriver" class="w-12 h-12 mx-auto mb-4 text-blue-500" />
-                        <h2 class="text-2xl font-bold text-gray-900">3D View in Development</h2>
-                    </div>
-                </template>
-                <div class="space-y-6">
-                    <p class="text-center text-gray-600">
-                        We're working on an amazing 3D interactive experience for exploring the MCU timeline.
-                        This will include a planet view with orbiting titles, phase rings, and immersive navigation.
-                    </p>
-
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div class="p-4 rounded-lg bg-blue-50">
-                            <UIcon name="i-heroicons-cube" class="w-8 h-8 mb-2 text-blue-600" />
-                            <h3 class="font-semibold text-gray-900">3D Visualization</h3>
-                            <p class="text-sm text-gray-600">Interactive planet with orbiting MCU titles</p>
-                        </div>
-                        <div class="p-4 rounded-lg bg-purple-50">
-                            <UIcon name="i-heroicons-sparkles" class="w-8 h-8 mb-2 text-purple-600" />
-                            <h3 class="font-semibold text-gray-900">Phase Rings</h3>
-                            <p class="text-sm text-gray-600">Visual representation of MCU phases</p>
-                        </div>
-                        <div class="p-4 rounded-lg bg-green-50">
-                            <UIcon name="i-heroicons-cursor-arrow-rays" class="w-8 h-8 mb-2 text-green-600" />
-                            <h3 class="font-semibold text-gray-900">Interactive</h3>
-                            <p class="text-sm text-gray-600">Click and explore individual titles</p>
-                        </div>
-                        <div class="p-4 rounded-lg bg-orange-50">
-                            <UIcon name="i-heroicons-device-phone-mobile" class="w-8 h-8 mb-2 text-orange-600" />
-                            <h3 class="font-semibold text-gray-900">Mobile Ready</h3>
-                            <p class="text-sm text-gray-600">Touch controls for mobile devices</p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col justify-center gap-4 sm:flex-row">
-                        <UButton to="/timeline" color="primary" size="lg">
-                            <UIcon name="i-heroicons-list-bullet" class="w-5 h-5 mr-2" />
-                            Bekijk 2D Timeline
-                        </UButton>
-                        <UButton to="/" variant="outline" color="neutral" size="lg">
-                            <UIcon name="i-heroicons-home" class="w-5 h-5 mr-2" />
-                            Terug naar Home
-                        </UButton>
-                    </div>
-                </div>
-            </UCard>
-
-            <!-- Features Preview -->
-            <div class="grid grid-cols-1 gap-6 mt-12 md:grid-cols-3">
-                <div class="space-y-3 text-center">
-                    <div
-                        class="flex items-center justify-center w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
-                        <!-- <UIcon name="i-heroicons-film" class="w-8 h-8 text-white" /> -->
-                    </div>
-                    <h3 class="text-lg font-semibold text-white">Films & Series</h3>
-                    <p class="text-gray-300">Explore all MCU content in 3D space</p>
-                </div>
-                <div class="space-y-3 text-center">
-                    <div
-                        class="flex items-center justify-center w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-purple-500 to-pink-500">
-                        <!-- <UIcon name="i-heroicons-chart-bar" class="w-8 h-8 text-white" /> -->
-                    </div>
-                    <h3 class="text-lg font-semibold text-white">Progress Tracking</h3>
-                    <p class="text-gray-300">Visual progress indicators in 3D</p>
-                </div>
-                <div class="space-y-3 text-center">
-                    <div
-                        class="flex items-center justify-center w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-green-500 to-teal-500">
-                        <!-- <UIcon name="i-heroicons-users" class="w-8 h-8 text-white" /> -->
-                    </div>
-                    <h3 class="text-lg font-semibold text-white">Social Features</h3>
-                    <p class="text-gray-300">See friends' progress in 3D space</p>
-                </div>
+        <!-- Drag hint -->
+        <Transition name="fade">
+            <div
+                v-if="showDragHint"
+                class="absolute bottom-20 left-1/2 -translate-x-1/2 z-30 px-5 py-2.5 rounded-full bg-black/50 border border-white/[0.06] backdrop-blur-md text-white/30 text-xs flex items-center gap-3 tracking-wide"
+            >
+                <svg class="w-4 h-4 opacity-50 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+                <span>Drag to explore</span>
+                <span class="w-px h-3 bg-white/10 hidden sm:block" />
+                <span class="hidden sm:inline">Click a location</span>
             </div>
+        </Transition>
+
+        <!-- Location detail panel -->
+        <PlanetLocationPanel
+            :location="selectedLocation"
+            @close="selectedCode = null"
+        />
+
+        <!-- Hover tooltip -->
+        <div
+            v-if="hoveredCode && !selectedCode"
+            class="absolute z-10 pointer-events-none px-3 py-1.5 rounded-lg bg-black/70 border border-white/10 backdrop-blur-md text-white/80 text-xs"
+            :style="{ left: '50%', top: '40%', transform: 'translate(-50%, -50%)' }"
+        >
+            {{ hoveredLocation?.name }}
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import type { LocationJson } from '~/types/multiverse'
+import PlanetSceneComponent from '~/components/planet/PlanetScene.vue'
+import locationsJson from '../../data/locations.json'
+
+definePageMeta({ ssr: false })
+
+const hoveredCode = ref<string | null>(null)
+const selectedCode = ref<string | null>(null)
+const focusedIndex = ref(0)
+const filterType = ref<string | null>(null)
+const showDragHint = ref(true)
+
+const typeOptions = [
+    { value: 'planet', label: 'Planets' },
+    { value: 'realm', label: 'Realms' },
+    { value: 'dimension', label: 'Dimensions' },
+    { value: 'construct', label: 'Constructs' },
+    { value: 'region', label: 'Regions' },
+]
+
+const filteredLocations = computed(() => {
+    let locs = locationsJson as LocationJson[]
+    if (filterType.value) {
+        locs = locs.filter(l => l.type === filterType.value)
+    }
+    return locs
+})
+
+const focusedLocation = computed(() => filteredLocations.value[focusedIndex.value] ?? null)
+const selectedLocation = computed(() => {
+    if (!selectedCode.value) return null
+    return (locationsJson as LocationJson[]).find(l => l.id === selectedCode.value) ?? null
+})
+const hoveredLocation = computed(() => {
+    if (!hoveredCode.value) return null
+    return (locationsJson as LocationJson[]).find(l => l.id === hoveredCode.value) ?? null
+})
+
+const containerHeight = computed(() => {
+    if (typeof window === 'undefined') return 600
+    return window.innerHeight - 64
+})
+
+function onSelect(code: string | null) {
+    selectedCode.value = code
+    if (code) {
+        showDragHint.value = false
+    }
+}
+
+function goPrev() {
+    if (focusedIndex.value > 0) {
+        focusedIndex.value--
+        selectedCode.value = null
+    }
+}
+
+function goNext() {
+    if (focusedIndex.value < filteredLocations.value.length - 1) {
+        focusedIndex.value++
+        selectedCode.value = null
+    }
+}
+
+function resetCamera() {
+    focusedIndex.value = 0
+    selectedCode.value = null
+}
+
+onMounted(() => {
+    setTimeout(() => { showDragHint.value = false }, 6000)
+})
+
+watch(filterType, () => {
+    focusedIndex.value = 0
+    selectedCode.value = null
+})
+</script>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>
