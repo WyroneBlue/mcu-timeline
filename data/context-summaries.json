@@ -1,0 +1,142 @@
+[
+  {
+    "title_slug": "the-incredible-hulk",
+    "prerequisite_slugs": ["iron-man"],
+    "summary": "Bruce Banner is op de vlucht voor het leger na een experiment met gammastraling dat hem in de Hulk verandert. Generaal Ross jaagt op hem om het Hulk-serum als wapen te gebruiken.",
+    "key_characters": ["Bruce Banner / Hulk", "Generaal Thaddeus Ross", "Betty Ross", "Emil Blonsky / Abomination"],
+    "key_events": ["Banner leert de Hulk deels te beheersen", "Blonsky wordt Abomination", "Tony Stark benadert Ross over een team"]
+  },
+  {
+    "title_slug": "iron-man-2",
+    "prerequisite_slugs": ["iron-man"],
+    "summary": "Tony Stark worstelt met de gevolgen van zijn identiteitsonthulling als Iron Man. Het palladium in zijn arc reactor vergiftigt hem langzaam. S.H.I.E.L.D. houdt hem in de gaten terwijl Ivan Vanko wraak zoekt.",
+    "key_characters": ["Tony Stark / Iron Man", "Pepper Potts", "James Rhodes / War Machine", "Natasha Romanoff / Black Widow", "Nick Fury", "Ivan Vanko"],
+    "key_events": ["Rhodes krijgt de War Machine armor", "Natasha Romanoff geïntroduceerd als undercover S.H.I.E.L.D.-agent", "Tony ontdekt nieuw element voor zijn arc reactor", "Howard Stark's nalatenschap speelt een grote rol"]
+  },
+  {
+    "title_slug": "thor",
+    "prerequisite_slugs": [],
+    "summary": "Thor wordt uit Asgard verbannen naar de Aarde nadat hij arrogant een oorlog dreigt te starten met de Frost Giants. Zonder zijn krachten moet hij bewijzen dat hij zijn hamer Mjolnir waardig is.",
+    "key_characters": ["Thor", "Loki", "Jane Foster", "Odin", "Heimdall", "Sif en de Warriors Three"],
+    "key_events": ["Thor verliest zijn krachten en Mjolnir", "Loki ontdekt dat hij een Frost Giant is", "Loki valt van de Bifrost het universum in", "S.H.I.E.L.D. ontdekt Asgardische technologie"]
+  },
+  {
+    "title_slug": "captain-america-the-first-avenger",
+    "prerequisite_slugs": [],
+    "summary": "Tijdens de Tweede Wereldoorlog wordt de tengere Steve Rogers getransformeerd tot een supersoldaat. Hij vecht tegen HYDRA en hun leider Red Skull, die de Tesseract (een Infinity Stone) bezit.",
+    "key_characters": ["Steve Rogers / Captain America", "Bucky Barnes", "Peggy Carter", "Red Skull / Johann Schmidt", "Howard Stark", "Dr. Abraham Erskine"],
+    "key_events": ["Steve ondergaat het Super Soldier Serum", "Bucky valt schijnbaar in de dood", "Steve crasht een vliegtuig in het ijs om de wereld te redden", "Steve wordt 70 jaar later gevonden en ontdooid door S.H.I.E.L.D.", "De Tesseract wordt geborgen uit de oceaan"]
+  },
+  {
+    "title_slug": "the-avengers",
+    "prerequisite_slugs": ["iron-man", "captain-america-the-first-avenger", "thor"],
+    "summary": "Loki arriveert op Aarde met een leger van Chitauri-aliens en de Mind Stone (in een scepter) om de Tesseract te stelen. Nick Fury brengt de Avengers samen: Iron Man, Captain America, Thor, Hulk, Black Widow en Hawkeye.",
+    "key_characters": ["Tony Stark / Iron Man", "Steve Rogers / Captain America", "Thor", "Bruce Banner / Hulk", "Natasha Romanoff / Black Widow", "Clint Barton / Hawkeye", "Loki", "Nick Fury"],
+    "key_events": ["De Avengers worden gevormd", "Slag om New York — Chitauri-invasie", "Tony draagt een kernraket door een portaal", "Loki wordt verslagen en teruggebracht naar Asgard", "Twee Infinity Stones in het spel: Tesseract (Space) en Scepter (Mind)", "Post-credits: Thanos wordt onthuld"]
+  },
+  {
+    "title_slug": "iron-man-3",
+    "prerequisite_slugs": ["the-avengers"],
+    "summary": "Na de Slag om New York kampt Tony Stark met PTSS en paniekaanvallen. De mysterieuze terrorist 'de Mandarin' valt hem persoonlijk aan en vernietigt zijn huis.",
+    "key_characters": ["Tony Stark / Iron Man", "Pepper Potts", "James Rhodes / War Machine / Iron Patriot", "Aldrich Killian", "Maya Hansen"],
+    "key_events": ["Tony kampt met trauma van de Chitauri-invasie", "De 'Mandarin' blijkt een acteur", "Extremis-soldaten zijn de werkelijke dreiging", "Tony laat al zijn armors vernietigen", "Pepper krijgt Extremis-krachten"]
+  },
+  {
+    "title_slug": "thor-the-dark-world",
+    "prerequisite_slugs": ["thor", "the-avengers"],
+    "summary": "De Dark Elves onder leiding van Malekith willen het universum terugbrengen naar duisternis met behulp van de Aether (Reality Stone). Thor moet samenwerken met Loki om Jane Foster te redden.",
+    "key_characters": ["Thor", "Loki", "Jane Foster", "Malekith", "Odin", "Frigga"],
+    "key_events": ["De Aether (Reality Stone) wordt geïntroduceerd", "Frigga (Thor's moeder) sterft", "Loki faked zijn eigen dood", "Loki neemt in het geheim de troon van Odin over", "De Aether wordt naar de Collector gebracht"]
+  },
+  {
+    "title_slug": "captain-america-the-winter-soldier",
+    "prerequisite_slugs": ["captain-america-the-first-avenger", "the-avengers"],
+    "summary": "Steve Rogers ontdekt dat HYDRA al decennialang S.H.I.E.L.D. heeft geïnfiltreerd. De mysterieuze Winter Soldier blijkt zijn beste vriend Bucky Barnes, die door HYDRA is gehersenspoeld tot een moordenaar.",
+    "key_characters": ["Steve Rogers / Captain America", "Natasha Romanoff / Black Widow", "Sam Wilson / Falcon", "Bucky Barnes / Winter Soldier", "Nick Fury", "Alexander Pierce"],
+    "key_events": ["HYDRA onthulling binnen S.H.I.E.L.D.", "S.H.I.E.L.D. wordt ontmanteld", "Bucky Barnes is de Winter Soldier", "Nick Fury faked zijn dood", "Sam Wilson / Falcon wordt Steve's partner", "Project Insight (voorspellende helicarriers) wordt vernietigd"]
+  },
+  {
+    "title_slug": "guardians-of-the-galaxy",
+    "prerequisite_slugs": [],
+    "summary": "Peter Quill vindt een mysterieus artefact (de Power Stone) en wordt opgejaagd door Ronan de Beschuldiger. Hij vormt een team met misfits: Gamora, Drax, Rocket en Groot.",
+    "key_characters": ["Peter Quill / Star-Lord", "Gamora", "Drax", "Rocket Raccoon", "Groot", "Ronan", "Thanos", "Nebula", "Yondu"],
+    "key_events": ["De Power Stone (Infinity Stone) geïntroduceerd", "Guardians worden een team", "Gamora onthult dat ze de dochter van Thanos is en tegen hem vecht", "Groot offert zichzelf op", "Thanos' zoektocht naar Infinity Stones wordt duidelijker"]
+  },
+  {
+    "title_slug": "avengers-age-of-ultron",
+    "prerequisite_slugs": ["the-avengers", "captain-america-the-winter-soldier"],
+    "summary": "Tony Stark creëert de AI Ultron als verdediging, maar Ultron keert zich tegen de mensheid. De Avengers moeten voorkomen dat Ultron een hele stad als meteoriet op de Aarde laat vallen.",
+    "key_characters": ["Tony Stark / Iron Man", "Steve Rogers / Captain America", "Thor", "Bruce Banner / Hulk", "Natasha Romanoff / Black Widow", "Clint Barton / Hawkeye", "Wanda Maximoff / Scarlet Witch", "Pietro Maximoff / Quicksilver", "Vision", "Ultron"],
+    "key_events": ["Wanda en Pietro Maximoff geïntroduceerd (experimenten van HYDRA)", "Vision wordt geboren uit de Mind Stone", "Pietro sterft", "Hulk verdwijnt in een Quinjet", "Thor heeft visioenen over de Infinity Stones", "De Avengers-basis verhuist naar upstate New York"]
+  },
+  {
+    "title_slug": "captain-america-civil-war",
+    "prerequisite_slugs": ["avengers-age-of-ultron", "captain-america-the-winter-soldier", "ant-man"],
+    "summary": "De Avengers raken verdeeld over de Sokovia Accords die superhelden onder overheidstoezicht plaatsen. Tony steunt de accords, Steve weigert. De ontdekking dat Bucky Barnes Tony's ouders heeft vermoord, leidt tot een definitieve breuk.",
+    "key_characters": ["Steve Rogers / Captain America", "Tony Stark / Iron Man", "Bucky Barnes / Winter Soldier", "Black Panther / T'Challa", "Spider-Man / Peter Parker", "Sam Wilson / Falcon", "Wanda Maximoff", "Vision", "Scott Lang / Ant-Man", "Zemo"],
+    "key_events": ["Spider-Man en Black Panther geïntroduceerd in het MCU", "De Avengers splitsen in twee kampen", "Bucky vermoordde Howard en Maria Stark (onthuld)", "Steve laat zijn schild achter", "Team Cap wordt gevangen in de Raft", "Zemo's plan is de Avengers van binnenuit vernietigen"]
+  },
+  {
+    "title_slug": "doctor-strange",
+    "prerequisite_slugs": [],
+    "summary": "Neurochirurg Stephen Strange verliest het gebruik van zijn handen bij een auto-ongeluk en zoekt genezing bij de Ancient One. Hij ontdekt de mystieke kunsten en wordt de beschermer van het Eye of Agamotto (de Time Stone).",
+    "key_characters": ["Stephen Strange / Doctor Strange", "The Ancient One", "Karl Mordo", "Wong", "Kaecilius", "Dormammu"],
+    "key_events": ["Strange leert magie en de mystieke kunsten", "De Time Stone (Infinity Stone) geïntroduceerd als het Eye of Agamotto", "Strange verslaat Dormammu met een tijdlus", "Strange wordt beschermer van de New York Sanctum"]
+  },
+  {
+    "title_slug": "black-panther",
+    "prerequisite_slugs": ["captain-america-civil-war"],
+    "summary": "Na de dood van zijn vader T'Chaka wordt T'Challa koning van Wakanda. Erik Killmonger, een neef die in Amerika opgroeide, claimt de troon en wil Wakanda's geavanceerde technologie als wapen inzetten.",
+    "key_characters": ["T'Challa / Black Panther", "Erik Killmonger", "Shuri", "Okoye", "Nakia", "M'Baku"],
+    "key_events": ["Wakanda's ware technologische superioriteit onthuld", "Killmonger neemt kort de troon over", "T'Challa besluit Wakanda te openen naar de wereld", "Vibranium geïntroduceerd als unieke resource"]
+  },
+  {
+    "title_slug": "avengers-infinity-war",
+    "prerequisite_slugs": ["avengers-age-of-ultron", "captain-america-civil-war", "doctor-strange", "guardians-of-the-galaxy", "black-panther", "thor-ragnarok"],
+    "summary": "Thanos verzamelt alle zes Infinity Stones om de helft van al het leven in het universum uit te wissen. De Avengers, Guardians en bondgenoten proberen hem te stoppen maar falen.",
+    "key_characters": ["Thanos", "Tony Stark / Iron Man", "Steve Rogers / Captain America", "Thor", "Doctor Strange", "Peter Parker / Spider-Man", "Wanda Maximoff", "Vision", "Gamora", "Guardians of the Galaxy"],
+    "key_events": ["Thanos doodt Loki en Heimdall", "Gamora sterft — Thanos offert haar voor de Soul Stone", "Doctor Strange geeft de Time Stone vrijwillig aan Thanos", "Vision sterft — de Mind Stone wordt uit hem gerukt", "De Snap: Thanos wist de helft van al het leven uit", "Spider-Man, Black Panther, Guardians en anderen vergaan tot stof"]
+  },
+  {
+    "title_slug": "avengers-endgame",
+    "prerequisite_slugs": ["avengers-infinity-war"],
+    "summary": "Vijf jaar na de Snap gebruiken de overgebleven Avengers tijdreizen om de Infinity Stones uit het verleden te verzamelen en iedereen terug te brengen.",
+    "key_characters": ["Tony Stark / Iron Man", "Steve Rogers / Captain America", "Thor", "Bruce Banner / Hulk", "Natasha Romanoff / Black Widow", "Clint Barton / Hawkeye", "Scott Lang / Ant-Man", "Nebula", "Thanos"],
+    "key_events": ["Vijf jaar tijdsprong", "Time Heist — Avengers reizen naar het verleden", "Natasha offert zichzelf voor de Soul Stone", "Hulk brengt iedereen terug met zijn snap", "Finale veldslag tegen Thanos' leger", "Tony Stark sterft door de Infinity Stones te gebruiken", "Steve Rogers gaat terug in de tijd en leeft zijn leven met Peggy Carter", "Oude Steve geeft het schild aan Sam Wilson"]
+  },
+  {
+    "title_slug": "wandavision",
+    "prerequisite_slugs": ["avengers-endgame", "avengers-age-of-ultron"],
+    "summary": "Na het verlies van Vision creëert Wanda onbewust een alternatieve realiteit in de stad Westview waar ze samen met een herboren Vision leeft in sitcom-scenario's. Haar immense krachten als de Scarlet Witch ontwaken.",
+    "key_characters": ["Wanda Maximoff / Scarlet Witch", "Vision", "Monica Rambeau", "Agatha Harkness", "Jimmy Woo", "Darcy Lewis"],
+    "key_events": ["Wanda creëert de Hex — een alternatieve realiteit", "Wanda wordt officieel de Scarlet Witch", "Een nieuwe Vision wordt gecreëerd (White Vision)", "Agatha Harkness als antagonist geïntroduceerd", "Monica Rambeau krijgt krachten", "Wanda's kinderen Billy en Tommy verdwijnen als de Hex ophoudt"]
+  },
+  {
+    "title_slug": "loki",
+    "prerequisite_slugs": ["avengers-endgame", "the-avengers"],
+    "summary": "De Loki die ontsnapte tijdens de tijdroof van Endgame wordt gevangen door de TVA (Time Variance Authority), een organisatie die de 'Heilige Tijdlijn' beschermt. Hij ontdekt dat het hele multiversum wordt gecontroleerd.",
+    "key_characters": ["Loki", "Sylvie", "Mobius M. Mobius", "He Who Remains / Kang", "Ravonna Renslayer", "Miss Minutes"],
+    "key_events": ["De TVA en tijdlijn-bureaucratie geïntroduceerd", "He Who Remains (een Kang-variant) wordt onthuld als schepper van de TVA", "Sylvie doodt He Who Remains", "Het multiversum barst open — oneindig veel tijdlijnen", "Loki reist door de tijd om zijn vrienden te redden", "Loki offert zichzelf en wordt de god die het multiversum bij elkaar houdt"]
+  },
+  {
+    "title_slug": "spider-man-no-way-home",
+    "prerequisite_slugs": ["spider-man-far-from-home", "doctor-strange"],
+    "summary": "Nadat Mysterio Peter Parkers identiteit onthulde, vraagt Peter aan Doctor Strange om een vergeet-spell. Het spell gaat fout en trekt schurken uit andere universa naar het MCU.",
+    "key_characters": ["Peter Parker / Spider-Man", "Doctor Strange", "MJ", "Ned Leeds", "Tobey Maguire Spider-Man", "Andrew Garfield Spider-Man", "Doc Ock", "Green Goblin"],
+    "key_events": ["Spider-Men uit drie universa ontmoeten elkaar", "Tante May sterft — 'With great power comes great responsibility'", "Strange's vergeet-spell wist alle herinneringen aan Peter Parker", "Peter staat er nu volledig alleen voor — niemand kent hem"]
+  },
+  {
+    "title_slug": "doctor-strange-in-the-multiverse-of-madness",
+    "prerequisite_slugs": ["wandavision", "spider-man-no-way-home", "doctor-strange"],
+    "summary": "Wanda jaagt op America Chavez, een meisje dat door het multiversum kan reizen, om haar kinderen terug te vinden. Doctor Strange moet haar stoppen terwijl hij door meerdere universa reist.",
+    "key_characters": ["Doctor Strange", "Wanda Maximoff / Scarlet Witch", "America Chavez", "Christine Palmer", "Wong"],
+    "key_events": ["Wanda wordt een full villain aangedreven door de Darkhold", "America Chavez en multiversum-reizen geïntroduceerd", "De Illuminati worden onthuld (en vermoord door Wanda)", "Wanda vernietigt elke kopie van de Darkhold", "Wanda's lot onzeker na het instorten van Mount Wundagore"]
+  },
+  {
+    "title_slug": "thor-ragnarok",
+    "prerequisite_slugs": ["thor-the-dark-world", "avengers-age-of-ultron"],
+    "summary": "Thor ontdekt dat zijn zus Hela bestaat en Asgard wil vernietigen. Gestrand op de planeet Sakaar moet hij ontsnappen uit gladiatorengevechten (waar hij de Hulk tegenkomt) en Hela stoppen.",
+    "key_characters": ["Thor", "Loki", "Hela", "Valkyrie", "Hulk / Bruce Banner", "Grandmaster", "Korg"],
+    "key_events": ["Odin sterft en onthult Hela's bestaan", "Thor verliest Mjolnir", "Thor ontdekt zijn bliksem-krachten", "Asgard wordt vernietigd (Ragnarok) om Hela te verslaan", "Asgardische vluchtelingen vertrekken in een schip", "Post-credits: Thanos' schip verschijnt"]
+  }
+]

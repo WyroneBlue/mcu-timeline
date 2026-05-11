@@ -1,0 +1,317 @@
+[
+  {
+    "id": 1,
+    "phase": "Phase 1",
+    "title_slug": "iron-man",
+    "question": "Wat is de naam van Tony Starks AI-assistent in de eerste Iron Man film?",
+    "options": ["FRIDAY", "JARVIS", "EDITH", "KAREN"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "phase": "Phase 1",
+    "title_slug": "iron-man",
+    "question": "In welke grot bouwt Tony Stark zijn eerste Iron Man-pak?",
+    "options": ["Een Afghaanse grot", "Een Siberische bunker", "Een ondergrondse basis", "Een verlaten mijn"],
+    "correct_index": 0,
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "phase": "Phase 1",
+    "title_slug": "the-incredible-hulk",
+    "question": "Welke acteur speelt Bruce Banner in The Incredible Hulk?",
+    "options": ["Mark Ruffalo", "Eric Bana", "Edward Norton", "Bill Bixby"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "phase": "Phase 1",
+    "title_slug": "thor",
+    "question": "Hoe heet de regenboogbrug die Asgard verbindt met andere werelden?",
+    "options": ["De Bifrost", "De Convergentie", "Yggdrasil", "De Tesseract-brug"],
+    "correct_index": 0,
+    "difficulty": "easy"
+  },
+  {
+    "id": 5,
+    "phase": "Phase 1",
+    "title_slug": "captain-america-the-first-avenger",
+    "question": "Wie is de wetenschapper die het Super Soldier Serum creëert?",
+    "options": ["Howard Stark", "Arnim Zola", "Dr. Abraham Erskine", "Dr. Reinstein"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 6,
+    "phase": "Phase 1",
+    "title_slug": "the-avengers",
+    "question": "Welk Infinity Stone zit in Loki's scepter?",
+    "options": ["Power Stone", "Space Stone", "Mind Stone", "Reality Stone"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 7,
+    "phase": "Phase 1",
+    "title_slug": "the-avengers",
+    "question": "Welk buitenaards ras valt New York binnen onder leiding van Loki?",
+    "options": ["De Kree", "De Chitauri", "De Skrulls", "De Dark Elves"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 8,
+    "phase": "Phase 2",
+    "title_slug": "iron-man-3",
+    "question": "Wie blijkt de echte schurk achter 'de Mandarin' in Iron Man 3?",
+    "options": ["Justin Hammer", "Aldrich Killian", "Ivan Vanko", "Obadiah Stane"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 9,
+    "phase": "Phase 2",
+    "title_slug": "thor-the-dark-world",
+    "question": "Welke Infinity Stone is de Aether?",
+    "options": ["Power Stone", "Soul Stone", "Reality Stone", "Time Stone"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 10,
+    "phase": "Phase 2",
+    "title_slug": "captain-america-the-winter-soldier",
+    "question": "Welke organisatie blijkt S.H.I.E.L.D. van binnenuit te hebben geïnfiltreerd?",
+    "options": ["A.I.M.", "HYDRA", "The Hand", "Leviathan"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 11,
+    "phase": "Phase 2",
+    "title_slug": "guardians-of-the-galaxy",
+    "question": "Wat is Peter Quills bijnaam?",
+    "options": ["Space Cowboy", "Star-Lord", "Galaxy Man", "Cosmic Prince"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 12,
+    "phase": "Phase 2",
+    "title_slug": "avengers-age-of-ultron",
+    "question": "Uit welke Infinity Stone is Vision geboren?",
+    "options": ["Space Stone", "Time Stone", "Mind Stone", "Soul Stone"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 13,
+    "phase": "Phase 3",
+    "title_slug": "captain-america-civil-war",
+    "question": "Wie manipuleert de Avengers om uit elkaar te vallen in Civil War?",
+    "options": ["Red Skull", "Baron Zemo", "Crossbones", "General Ross"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 14,
+    "phase": "Phase 3",
+    "title_slug": "doctor-strange",
+    "question": "Hoe verslaat Doctor Strange Dormammu?",
+    "options": ["Met de Mirror Dimension", "Met een tijdlus", "Door hem te verbannen", "Met hulp van de Ancient One"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 15,
+    "phase": "Phase 3",
+    "title_slug": "spider-man-homecoming",
+    "question": "Wie is de Vulture in het dagelijks leven?",
+    "options": ["Norman Osborn", "Adrian Toomes", "Mac Gargan", "Quentin Beck"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 16,
+    "phase": "Phase 3",
+    "title_slug": "thor-ragnarok",
+    "question": "Op welke planeet wordt Thor gedwongen om als gladiator te vechten?",
+    "options": ["Knowhere", "Xandar", "Sakaar", "Vormir"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 17,
+    "phase": "Phase 3",
+    "title_slug": "black-panther",
+    "question": "Hoe heet het fictieve metaal waar Wakanda's technologie op gebaseerd is?",
+    "options": ["Adamantium", "Vibranium", "Uru", "Carbonadium"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 18,
+    "phase": "Phase 3",
+    "title_slug": "avengers-infinity-war",
+    "question": "Hoeveel Infinity Stones zijn er in totaal?",
+    "options": ["4", "5", "6", "7"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 19,
+    "phase": "Phase 3",
+    "title_slug": "avengers-infinity-war",
+    "question": "Op welke planeet offert Thanos Gamora voor de Soul Stone?",
+    "options": ["Titan", "Knowhere", "Vormir", "Nidavellir"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 20,
+    "phase": "Phase 3",
+    "title_slug": "avengers-endgame",
+    "question": "Hoeveel jaar springt de tijdlijn vooruit na de Snap in Endgame?",
+    "options": ["1 jaar", "3 jaar", "5 jaar", "10 jaar"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 21,
+    "phase": "Phase 3",
+    "title_slug": "avengers-endgame",
+    "question": "Wat zijn de laatste woorden van Tony Stark?",
+    "options": ["I am inevitable", "I love you 3000", "I am Iron Man", "Avengers, assemble"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 22,
+    "phase": "Phase 4",
+    "title_slug": "wandavision",
+    "question": "In welke stad creëert Wanda haar alternatieve realiteit?",
+    "options": ["Sokovia", "Westview", "Salem", "New York"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 23,
+    "phase": "Phase 4",
+    "title_slug": "loki",
+    "question": "Hoe heet de organisatie die de tijdlijn beschermt?",
+    "options": ["S.W.O.R.D.", "TVA", "S.H.I.E.L.D.", "The Watchers"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 24,
+    "phase": "Phase 4",
+    "title_slug": "spider-man-no-way-home",
+    "question": "Hoeveel Spider-Man-acteurs verschijnen er in No Way Home?",
+    "options": ["1", "2", "3", "4"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 25,
+    "phase": "Phase 4",
+    "title_slug": "doctor-strange-in-the-multiverse-of-madness",
+    "question": "Welk boek met duistere magie gebruikt Wanda in Multiverse of Madness?",
+    "options": ["Het Book of Vishanti", "De Darkhold", "Het Necronomicon", "Het Eye of Agamotto"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 26,
+    "phase": "Phase 5",
+    "title_slug": "guardians-of-the-galaxy-vol-3",
+    "question": "Wie is de schepper van Rocket Raccoon?",
+    "options": ["Thanos", "The Collector", "The High Evolutionary", "Ego"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 27,
+    "phase": "Phase 5",
+    "title_slug": "deadpool-and-wolverine",
+    "question": "Via welke organisatie reist Deadpool naar het MCU?",
+    "options": ["S.H.I.E.L.D.", "De X-Men", "De TVA", "De Fantastic Four"],
+    "correct_index": 2,
+    "difficulty": "easy"
+  },
+  {
+    "id": 28,
+    "phase": "Phase 3",
+    "title_slug": "captain-marvel",
+    "question": "In welk decennium speelt het grootste deel van Captain Marvel?",
+    "options": ["De jaren '80", "De jaren '90", "De jaren 2000", "De jaren '70"],
+    "correct_index": 1,
+    "difficulty": "easy"
+  },
+  {
+    "id": 29,
+    "phase": "Phase 2",
+    "title_slug": "ant-man",
+    "question": "Wie is de originele Ant-Man die het pak doorgeeft aan Scott Lang?",
+    "options": ["Tony Stark", "Howard Stark", "Hank Pym", "Bill Foster"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 30,
+    "phase": "Phase 4",
+    "title_slug": "shang-chi-and-the-legend-of-the-ten-rings",
+    "question": "Hoe heet de vader van Shang-Chi?",
+    "options": ["The Mandarin", "Xu Wenwu", "Iron Fist", "Fu Manchu"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 31,
+    "phase": "Phase 3",
+    "title_slug": "avengers-endgame",
+    "question": "Wie zegt 'Avengers, assemble' voor het eerst in het MCU?",
+    "options": ["Nick Fury", "Tony Stark", "Steve Rogers", "Thor"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 32,
+    "phase": "Phase 1",
+    "title_slug": "the-avengers",
+    "question": "Wie eet shawarma met de Avengers na de Slag om New York?",
+    "options": ["Alleen Tony", "Het hele team", "Tony en Bruce", "Tony, Steve en Thor"],
+    "correct_index": 1,
+    "difficulty": "hard"
+  },
+  {
+    "id": 33,
+    "phase": "Phase 4",
+    "title_slug": "loki",
+    "question": "Wie doodt He Who Remains aan het einde van Loki seizoen 1?",
+    "options": ["Loki", "Mobius", "Sylvie", "Ravonna Renslayer"],
+    "correct_index": 2,
+    "difficulty": "medium"
+  },
+  {
+    "id": 34,
+    "phase": "Phase 3",
+    "title_slug": "avengers-infinity-war",
+    "question": "Wat is Thanos' thuisplaneet?",
+    "options": ["Vormir", "Titan", "Xandar", "Knowhere"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": 35,
+    "phase": "Phase 5",
+    "title_slug": "loki-season-2",
+    "question": "Wat wordt Loki aan het einde van seizoen 2?",
+    "options": ["Koning van Asgard", "De god die het multiversum bij elkaar houdt", "De nieuwe He Who Remains", "Een TVA-agent"],
+    "correct_index": 1,
+    "difficulty": "medium"
+  }
+]

@@ -1,0 +1,68 @@
+[
+  {
+    "source_slug": "spider-man-no-way-home",
+    "affected_slug": "venom-let-there-be-carnage",
+    "description": "No Way Home's multiverse-spell trekt Venom kort naar het MCU-universum, waardoor Sony's Spider-Man Universe een directe connectie krijgt met de MCU",
+    "retcon_type": "canon_change"
+  },
+  {
+    "source_slug": "deadpool-and-wolverine",
+    "affected_slug": "deadpool",
+    "description": "Deadpool & Wolverine brengt het Fox X-Men universum officieel in MCU-canon via de TVA en multiverse. Deadpool is nu een MCU-character.",
+    "retcon_type": "canon_change"
+  },
+  {
+    "source_slug": "deadpool-and-wolverine",
+    "affected_slug": "deadpool-2",
+    "description": "Events uit Deadpool 2 zijn nu MCU-relevant doordat Deadpool via de TVA in het MCU terechtkwam",
+    "retcon_type": "canon_change"
+  },
+  {
+    "source_slug": "deadpool-and-wolverine",
+    "affected_slug": "logan",
+    "description": "Logan's verhaal wordt gecontextualiseerd als een alternatieve timeline binnen het multiverse, direct gerefereerd in Deadpool & Wolverine",
+    "retcon_type": "timeline_shift"
+  },
+  {
+    "source_slug": "deadpool-and-wolverine",
+    "affected_slug": "x-men-days-of-future-past",
+    "description": "De Fox X-Men timeline wordt erkend als een bestaand universum binnen het MCU-multiverse",
+    "retcon_type": "canon_change"
+  },
+  {
+    "source_slug": "daredevil-born-again",
+    "affected_slug": "daredevil-netflix",
+    "description": "Born Again bevestigt dat de Netflix Daredevil-seizoenen canon zijn binnen het MCU. Matt Murdock's geschiedenis blijft intact.",
+    "retcon_type": "canon_change"
+  },
+  {
+    "source_slug": "spider-man-no-way-home",
+    "affected_slug": "spider-man-homecoming",
+    "description": "Doctor Strange's vergeet-spell wist alle kennis over Peter Parker's identiteit als Spider-Man, wat alle eerdere Spider-Man MCU-films retroactief beïnvloedt",
+    "retcon_type": "character_change"
+  },
+  {
+    "source_slug": "spider-man-no-way-home",
+    "affected_slug": "spider-man-far-from-home",
+    "description": "De gevolgen van Mysterio's onthulling worden ongedaan gemaakt door Strange's spell. Het publieke verhaal rond Peter Parker verandert.",
+    "retcon_type": "character_change"
+  },
+  {
+    "source_slug": "loki",
+    "affected_slug": "avengers-endgame",
+    "description": "Loki's ontsnapping met de Tesseract tijdens de tijdroof van Endgame creëert een nieuwe tijdlijn, wat het hele concept van tijdreizen in de MCU herdefiniëert via de TVA",
+    "retcon_type": "timeline_shift"
+  },
+  {
+    "source_slug": "ms-marvel",
+    "affected_slug": "ms-marvel",
+    "description": "Post-credits scene onthult dat Kamala Khan een mutant is — dit wijkt af van haar comic-oorsprong als Inhuman en introduceert mutanten in het MCU",
+    "retcon_type": "character_change"
+  },
+  {
+    "source_slug": "wandavision",
+    "affected_slug": "avengers-age-of-ultron",
+    "description": "WandaVision verklaart Wanda's krachten als Chaos Magic en onthult haar als de Scarlet Witch — een fundamentele herdefiniëring van haar oorsprong uit Age of Ultron",
+    "retcon_type": "character_change"
+  }
+]

@@ -1,0 +1,113 @@
+[
+  {
+    "id": "earth-616",
+    "code": "earth-616",
+    "name": "Earth-616 (Sacred Timeline)",
+    "designation": "616",
+    "description": "The primary MCU timeline, protected by He Who Remains until the multiverse was unleashed. Home to the Avengers, Guardians, and all mainline MCU events.",
+    "color": "#D69E2E",
+    "is_sacred": true,
+    "branch_from": null,
+    "title_slugs": [
+      "iron-man", "the-incredible-hulk", "iron-man-2", "thor",
+      "captain-america-the-first-avenger", "the-avengers", "iron-man-3",
+      "thor-the-dark-world", "captain-america-the-winter-soldier",
+      "guardians-of-the-galaxy", "avengers-age-of-ultron", "ant-man",
+      "captain-america-civil-war", "doctor-strange", "guardians-of-the-galaxy-vol-2",
+      "spider-man-homecoming", "thor-ragnarok", "black-panther",
+      "avengers-infinity-war", "ant-man-and-the-wasp", "captain-marvel",
+      "avengers-endgame", "spider-man-far-from-home", "wandavision",
+      "the-falcon-and-the-winter-soldier", "loki", "black-widow",
+      "shang-chi-and-the-legend-of-the-ten-rings", "eternals", "hawkeye",
+      "spider-man-no-way-home", "moon-knight",
+      "doctor-strange-in-the-multiverse-of-madness", "ms-marvel",
+      "thor-love-and-thunder", "she-hulk-attorney-at-law",
+      "black-panther-wakanda-forever", "ant-man-and-the-wasp-quantumania",
+      "secret-invasion", "guardians-of-the-galaxy-vol-3", "loki-season-2",
+      "the-marvels", "echo", "deadpool-and-wolverine", "agatha-all-along",
+      "captain-america-brave-new-world", "daredevil-born-again", "thunderbolts",
+      "ironheart", "the-fantastic-four-first-steps", "avengers-doomsday",
+      "avengers-secret-wars"
+    ]
+  },
+  {
+    "id": "earth-838",
+    "code": "earth-838",
+    "name": "Earth-838 (Illuminati Universe)",
+    "designation": "838",
+    "description": "A parallel universe where the Illuminati—including Captain Carter, Professor X, Black Bolt, and others—maintained order. Their universe's Strange was executed for causing an incursion.",
+    "color": "#805AD5",
+    "is_sacred": false,
+    "branch_from": "earth-616",
+    "title_slugs": ["doctor-strange-in-the-multiverse-of-madness"]
+  },
+  {
+    "id": "earth-199999",
+    "code": "earth-199999",
+    "name": "Earth-199999 (MCU Numeric)",
+    "designation": "199999",
+    "description": "The numeric Marvel Comics designation for the MCU timeline. Debated whether distinct from Earth-616 per Mysterio's claims.",
+    "color": "#4299E1",
+    "is_sacred": false,
+    "branch_from": "earth-616",
+    "title_slugs": []
+  },
+  {
+    "id": "sony-verse",
+    "code": "sony-verse",
+    "name": "Sony's Spider-Man Universe",
+    "designation": "SSU",
+    "description": "Sony's connected universe featuring Venom, Morbius, and Kraven. Briefly intersected with MCU-616 through multiverse breaches.",
+    "color": "#E53E3E",
+    "is_sacred": false,
+    "branch_from": null,
+    "title_slugs": []
+  },
+  {
+    "id": "fox-verse",
+    "code": "fox-verse",
+    "name": "Fox X-Men Universe",
+    "designation": "FOX",
+    "description": "The original X-Men film universe featuring Wolverine, Professor X, and Magneto. Connected to the MCU through Deadpool & Wolverine.",
+    "color": "#F6E05E",
+    "is_sacred": false,
+    "branch_from": null,
+    "title_slugs": ["deadpool-and-wolverine"]
+  },
+  {
+    "id": "what-if-multiverse",
+    "code": "what-if-multiverse",
+    "name": "What If...? Multiverse",
+    "designation": "WHAT-IF",
+    "description": "Collection of alternate universes explored by The Watcher, each diverging from a single pivotal moment in the Sacred Timeline.",
+    "color": "#38B2AC",
+    "is_sacred": false,
+    "branch_from": "earth-616",
+    "title_slugs": ["what-if"]
+  },
+  {
+    "id": "loki-branch",
+    "code": "loki-branch",
+    "name": "Loki's Branch Timeline",
+    "designation": "LOKI",
+    "description": "The timeline branch created when 2012 Loki escaped with the Tesseract during the Endgame time heist, leading to the TVA and the revelation of He Who Remains.",
+    "color": "#48BB78",
+    "is_sacred": false,
+    "branch_from": "earth-616",
+    "title_slugs": ["loki", "loki-season-2"]
+  },
+  {
+    "id": "netflix-verse",
+    "code": "netflix-verse",
+    "name": "Netflix/Defenders Universe",
+    "designation": "NETFLIX",
+    "description": "Originally a separate continuity featuring the street-level heroes of Hell's Kitchen. Retroactively canonized into Earth-616 through Daredevil: Born Again.",
+    "color": "#E53E3E",
+    "is_sacred": false,
+    "branch_from": "earth-616",
+    "title_slugs": [
+      "daredevil-netflix", "jessica-jones", "luke-cage",
+      "iron-fist", "the-defenders", "the-punisher"
+    ]
+  }
+]

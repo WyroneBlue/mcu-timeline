@@ -1,0 +1,90 @@
+[
+  {
+    "id": "endgame-time-heist",
+    "event_name": "Endgame Time Heist",
+    "description": "The Avengers travel through time to collect the Infinity Stones, creating multiple branch timelines. 2012 Loki escapes with the Tesseract, triggering the TVA's attention.",
+    "source_title_slug": "avengers-endgame",
+    "chronology_point": 22,
+    "branch_universe_code": "loki-branch",
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#48BB78"
+  },
+  {
+    "id": "loki-kills-he-who-remains",
+    "event_name": "He Who Remains is Killed",
+    "description": "Sylvie kills He Who Remains at the Citadel at the End of Time, shattering the Sacred Timeline and unleashing infinite multiverse branches.",
+    "source_title_slug": "loki",
+    "chronology_point": 26,
+    "branch_universe_code": null,
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#805AD5"
+  },
+  {
+    "id": "loki-becomes-god-of-stories",
+    "event_name": "Loki Becomes God of Stories",
+    "description": "Loki sacrifices himself to hold the multiverse together, replacing He Who Remains as the guardian of all timelines at the center of the temporal loom.",
+    "source_title_slug": "loki-season-2",
+    "chronology_point": 43,
+    "branch_universe_code": null,
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#48BB78"
+  },
+  {
+    "id": "strange-multiverse-spell",
+    "event_name": "Strange's Identity Spell",
+    "description": "Doctor Strange casts a spell to make the world forget Peter Parker is Spider-Man, but it fractures the multiverse barrier, pulling in variants from other universes.",
+    "source_title_slug": "spider-man-no-way-home",
+    "chronology_point": 31,
+    "branch_universe_code": "sony-verse",
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#E53E3E"
+  },
+  {
+    "id": "wanda-darkhold-destruction",
+    "event_name": "Wanda Destroys the Darkhold",
+    "description": "Wanda Maximoff destroys Mount Wundagore and every copy of the Darkhold across the multiverse, collapsing the Darkhold's influence on all realities.",
+    "source_title_slug": "doctor-strange-in-the-multiverse-of-madness",
+    "chronology_point": 33,
+    "branch_universe_code": "earth-838",
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#F56565"
+  },
+  {
+    "id": "captain-carter-divergence",
+    "event_name": "Captain Carter Divergence",
+    "description": "In an alternate timeline, Peggy Carter takes the Super Soldier Serum instead of Steve Rogers, becoming Captain Carter and altering the course of World War II.",
+    "source_title_slug": "what-if",
+    "chronology_point": 27,
+    "branch_universe_code": "what-if-multiverse",
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#38B2AC"
+  },
+  {
+    "id": "deadpool-fox-mcu-bridge",
+    "event_name": "Fox Universe Merge",
+    "description": "Deadpool and Wolverine travel through the Void and the TVA, ultimately merging elements of the Fox X-Men universe into the Sacred Timeline.",
+    "source_title_slug": "deadpool-and-wolverine",
+    "chronology_point": 44,
+    "branch_universe_code": "fox-verse",
+    "is_nexus_event": true,
+    "is_pruned": false,
+    "color": "#F6E05E"
+  },
+  {
+    "id": "kang-quantumania-exile",
+    "event_name": "Kang's Exile in the Quantum Realm",
+    "description": "Kang the Conqueror is exiled to the Quantum Realm by his variants, setting up the Council of Kangs and the Multiverse War.",
+    "source_title_slug": "ant-man-and-the-wasp-quantumania",
+    "chronology_point": 38,
+    "branch_universe_code": null,
+    "is_nexus_event": false,
+    "is_pruned": false,
+    "color": "#63B3ED"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "code": "pathe",
+    "name": "Pathé",
+    "base_url": "https://www.pathe.nl",
+    "country_codes": ["NL"]
+  },
+  {
+    "code": "vue-cinemas",
+    "name": "Vue Cinemas",
+    "base_url": "https://www.vuecinemas.nl",
+    "country_codes": ["NL"]
+  },
+  {
+    "code": "kinepolis",
+    "name": "Kinepolis",
+    "base_url": "https://kinepolis.nl",
+    "country_codes": ["NL", "BE"]
+  },
+  {
+    "code": "ugc",
+    "name": "UGC",
+    "base_url": "https://www.ugc.be",
+    "country_codes": ["BE", "FR"]
+  },
+  {
+    "code": "amc",
+    "name": "AMC Theatres",
+    "base_url": "https://www.amctheatres.com",
+    "country_codes": ["US"]
+  },
+  {
+    "code": "fandango",
+    "name": "Fandango",
+    "base_url": "https://www.fandango.com",
+    "country_codes": ["US"]
+  },
+  {
+    "code": "cinemark",
+    "name": "Cinemark",
+    "base_url": "https://www.cinemark.com",
+    "country_codes": ["US"]
+  },
+  {
+    "code": "odeon",
+    "name": "Odeon",
+    "base_url": "https://www.odeon.co.uk",
+    "country_codes": ["GB"]
+  },
+  {
+    "code": "cineworld",
+    "name": "Cineworld",
+    "base_url": "https://www.cineworld.co.uk",
+    "country_codes": ["GB"]
+  },
+  {
+    "code": "cinemaxx",
+    "name": "CinemaxX",
+    "base_url": "https://www.cinemaxx.de",
+    "country_codes": ["DE"]
+  }
+]
