@@ -1,123 +1,346 @@
 <template>
-    <div class="max-w-4xl mx-auto space-y-6">
-        <div class="text-center space-y-4">
-            <div
-                class="w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto">
-                <UIcon name="i-heroicons-user" class="w-10 h-10 text-white" />
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-8 pb-24">
+        <!-- Hero section -->
+        <div class="text-center pt-8">
+            <div class="relative inline-block mb-4">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center">
+                    <span class="font-display text-4xl text-white">{{ userInitial }}</span>
+                </div>
+                <div class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/10 text-[10px] font-mono text-white/60">
+                    Lvl {{ level }}
+                </div>
             </div>
-            <h1 class="text-3xl font-bold text-gray-900">Mijn Profiel</h1>
-            <p class="text-gray-600">Bekijk je voortgang en prestaties</p>
+            <h1 class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-1">{{ displayName }}</h1>
+            <p class="text-white/30 text-sm">{{ levelName }}</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- XP & Levels -->
-            <UCard class="card-hover">
-                <template #header>
-                    <div class="flex items-center space-x-2">
-                        <UIcon name="i-heroicons-chart-bar" class="w-5 h-5 text-blue-600" />
-                        <h2 class="text-xl font-semibold">XP & Levels</h2>
-                    </div>
-                </template>
-                <div class="space-y-4">
-                    <div class="text-center">
-                        <div class="text-4xl font-bold text-blue-600 mb-2">{{ totalXp }}</div>
-                        <p class="text-gray-600">Totaal XP</p>
-                    </div>
-                    <div class="space-y-2">
-                        <div class="flex justify-between text-sm">
-                            <span>Level {{ currentLevel }}</span>
-                            <span>{{ xpToNext }} XP naar volgende level</span>
-                        </div>
-                        <UProgress :value="levelProgress" size="lg" color="primary" />
-                    </div>
-                </div>
-            </UCard>
+        <!-- XP Bar -->
+        <div class="glass-card p-6">
+            <UiXPBar :xp="totalXP" :level="level" :level-name="levelName" />
+        </div>
 
-            <!-- Badges -->
-            <UCard class="card-hover">
-                <template #header>
-                    <div class="flex items-center space-x-2">
-                        <UIcon name="i-heroicons-trophy" class="w-5 h-5 text-yellow-600" />
-                        <h2 class="text-xl font-semibold">Badges</h2>
+        <!-- Stats grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="glass-card p-4 text-center">
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Gezien</span>
+                <span class="font-display text-2xl text-white">{{ watchedCount }}</span>
+            </div>
+            <div class="glass-card p-4 text-center">
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Kijktijd</span>
+                <span class="font-display text-2xl text-white">{{ formattedWatchTime }}</span>
+            </div>
+            <div class="glass-card p-4 text-center">
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Streak</span>
+                <span class="font-display text-2xl text-white">{{ streak }}<span class="text-sm text-white/30">d</span></span>
+            </div>
+            <div class="glass-card p-4 text-center">
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Badges</span>
+                <span class="font-display text-2xl text-white">{{ earnedBadgeCount }}</span>
+            </div>
+        </div>
+
+        <!-- Progress overview -->
+        <div class="glass-card p-6">
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">Voortgang</h2>
+            <div class="space-y-3">
+                <div v-for="phase in phaseProgress" :key="phase.number" class="flex items-center gap-4">
+                    <span class="text-xs text-white/30 font-mono w-16 shrink-0">Phase {{ phase.number }}</span>
+                    <div class="flex-1 relative h-2 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                            class="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
+                            :style="{ width: phase.percent + '%', background: phaseColor(phase.number) }"
+                        />
                     </div>
-                </template>
-                <div class="space-y-4">
-                    <div v-if="badges.length === 0" class="text-center py-4">
-                        <UIcon name="i-heroicons-trophy" class="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                        <p class="text-gray-500">Nog geen badges verdiend</p>
-                        <p class="text-sm text-gray-400">Bekijk films om je eerste badge te verdienen!</p>
-                    </div>
-                    <div v-else class="grid grid-cols-2 gap-3">
-                        <div v-for="badge in badges" :key="badge.id"
-                            class="p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-200">
-                            <div class="text-center">
-                                <div class="text-2xl mb-1">🏆</div>
-                                <p class="text-sm font-medium text-gray-900">{{ badge.name }}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <span class="text-xs text-white/30 font-mono w-16 text-right">{{ phase.watched }}/{{ phase.total }}</span>
                 </div>
-            </UCard>
+            </div>
         </div>
 
         <!-- Recent Activity -->
-        <UCard class="card-hover">
-            <template #header>
-                <div class="flex items-center space-x-2">
-                    <UIcon name="i-heroicons-clock" class="w-5 h-5 text-green-600" />
-                    <h2 class="text-xl font-semibold">Recente Activiteit</h2>
-                </div>
-            </template>
+        <div v-if="recentActivity.length > 0" class="glass-card p-6">
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">Recente Activiteit</h2>
             <div class="space-y-3">
-                <div class="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-                    <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-green-600" />
-                    <div>
-                        <p class="font-medium text-gray-900">Eerste film bekeken!</p>
-                        <p class="text-sm text-gray-600">+120 XP verdiend</p>
+                <div
+                    v-for="(event, i) in recentActivity"
+                    :key="i"
+                    class="flex items-center gap-3 text-sm"
+                >
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" :class="activityBg(event.type)">
+                        <span class="text-xs">{{ activityIcon(event.type) }}</span>
                     </div>
-                </div>
-                <div class="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-                    <UIcon name="i-heroicons-trophy" class="w-5 h-5 text-blue-600" />
-                    <div>
-                        <p class="font-medium text-gray-900">Badge verdiend: First Watch</p>
-                        <p class="text-sm text-gray-600">Je eerste titel gemarkeerd als bekeken</p>
+                    <div class="flex-1 min-w-0">
+                        <span class="text-white/60">{{ activityLabel(event) }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span class="font-mono text-xs text-green-400">+{{ event.xp }}XP</span>
+                        <span class="text-[10px] text-white/20">{{ formatTimeAgo(event.date) }}</span>
                     </div>
                 </div>
             </div>
-        </UCard>
+        </div>
+
+        <!-- Badges -->
+        <div>
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">Badges</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                <UiBadgeCard
+                    v-for="badge in allBadges"
+                    :key="badge.code"
+                    :icon="badge.icon"
+                    :name="badge.name"
+                    :description="badge.description"
+                    :earned="earnedCodes.has(badge.code)"
+                    :awarded-at="getBadgeDate(badge.code)"
+                />
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="glass-card p-6">
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">Instellingen</h2>
+            <div class="space-y-4">
+                <!-- Spoiler toggle -->
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-white/80">Spoiler Bescherming</p>
+                        <p class="text-xs text-white/30">{{ spoilerMode === 'smart' ? 'Verbergt details van onbekeken titels' : 'Alles is zichtbaar' }}</p>
+                    </div>
+                    <button
+                        :class="[
+                            'px-4 py-1.5 rounded-lg text-xs font-medium transition-colors',
+                            spoilerMode === 'smart'
+                                ? 'bg-white/10 text-white border border-white/10'
+                                : 'bg-white/5 text-white/40 border border-white/5',
+                        ]"
+                        @click="toggleSpoilerMode"
+                    >
+                        {{ spoilerMode === 'smart' ? 'Smart' : 'Alles Tonen' }}
+                    </button>
+                </div>
+
+                <!-- Sign out -->
+                <div class="pt-2 border-t border-white/5">
+                    <button
+                        class="text-sm text-white/30 hover:text-red-400 transition-colors"
+                        @click="handleSignOut"
+                    >
+                        Uitloggen
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-const client = useSupabaseClient()
+definePageMeta({ ssr: false })
+
+import mcuTitlesJson from '../../../data/mcu-titles.json'
+
 const user = useSupabaseUser()
+const { getLevelFromXP, getLevelName, getTotalXP } = useXP()
+const { signOut } = useAuth()
+const { spoilerMode: guardSpoilerMode, toggleSpoilerMode: guardToggleSpoiler } = useSpoilerGuard()
 
-type Badge = { id: number; name: string }
-const { data: badgeData } = await useAsyncData('badges', async () => {
-    if (!user.value) return [] as Badge[]
-    const { data } = await client
-        .from('user_badges')
-        .select('badge_id, badges(name, id)')
-        .select('badges!inner(id, name)')
-    // Some drivers require explicit join; fall back to a direct badges read
-    if (!data || !Array.isArray(data)) {
-        const { data: all } = await client.from('badges').select('id, name')
-        return (all || []) as Badge[]
+const allTitles = mcuTitlesJson as any[]
+
+const totalXP = ref(0)
+const watchedCount = ref(0)
+const watchedTotalMinutes = ref(0)
+const streak = ref(0)
+const earnedCodes = ref(new Set<string>())
+const earnedBadges = ref<{ code: string; awarded_at: string }[]>([])
+const progressMap = ref<Record<number, string>>({})
+const titleIdMap = ref<Map<string, number>>(new Map())
+const spoilerMode = guardSpoilerMode
+
+interface ActivityEvent {
+    type: 'watch' | 'quiz' | 'badge' | 'streak'
+    title?: string
+    xp: number
+    date: string
+}
+const recentActivity = ref<ActivityEvent[]>([])
+
+const level = computed(() => getLevelFromXP(totalXP.value))
+const levelName = computed(() => getLevelName(level.value))
+const displayName = computed(() => user.value?.email?.split('@')[0] || 'Gebruiker')
+const userInitial = computed(() => displayName.value.charAt(0).toUpperCase())
+const earnedBadgeCount = computed(() => earnedCodes.value.size)
+
+const formattedWatchTime = computed(() => {
+    const hours = Math.floor(watchedTotalMinutes.value / 60)
+    if (hours === 0) return `${watchedTotalMinutes.value}m`
+    return `${hours}u`
+})
+
+const allBadges = [
+    { code: 'first_watch', name: 'First Watch', description: 'Eerste titel gezien', icon: '🎬' },
+    { code: 'half_way', name: 'Halverwege', description: '50% voltooid', icon: '⚡' },
+    { code: 'streak_7', name: 'Week Streak', description: '7 dagen op rij', icon: '🔥' },
+    { code: 'binge_master', name: 'Binge Master', description: '5 titels in 7 dagen', icon: '🍿' },
+    { code: 'completionist', name: 'Completionist', description: 'Alles gezien', icon: '🏆' },
+]
+
+const phaseProgress = computed(() => {
+    const phases: { number: number; watched: number; total: number; percent: number }[] = []
+    for (let p = 1; p <= 6; p++) {
+        const phaseTitles = allTitles.filter(t => {
+            const match = t.phase?.match(/\d+/)
+            return match && parseInt(match[0]) === p
+        })
+        const watched = phaseTitles.filter(t => {
+            const titleId = titleIdMap.value.get(t.slug)
+            return titleId !== undefined && progressMap.value[titleId] === 'watched'
+        }).length
+        phases.push({
+            number: p,
+            watched,
+            total: phaseTitles.length,
+            percent: phaseTitles.length > 0 ? Math.round((watched / phaseTitles.length) * 100) : 0,
+        })
     }
-    return (data as Array<{ badges: { id: number; name: string } }>).map((r) => ({ id: r.badges.id, name: r.badges.name })) as Badge[]
+    return phases.filter(p => p.total > 0)
 })
-const badges = computed(() => badgeData.value || [])
 
-const { data: xpData } = await useAsyncData('xp', async () => {
-    if (!user.value) return 0
-    // Fallback: sum client-side
-    const { data: events } = await client.from('xp_events').select('xp_delta')
-    return ((events || []) as { xp_delta: number }[]).reduce((s, e) => s + (e.xp_delta || 0), 0)
+function phaseColor(n: number): string {
+    if (n <= 3) return '#E53E3E'
+    if (n <= 5) return '#805AD5'
+    return '#38B2AC'
+}
+
+function getBadgeDate(code: string): string | undefined {
+    return earnedBadges.value.find(b => b.code === code)?.awarded_at
+}
+
+function activityIcon(type: string): string {
+    const icons: Record<string, string> = { watch: '🎬', quiz: '🧠', badge: '🏅', streak: '🔥' }
+    return icons[type] || '⚡'
+}
+
+function activityBg(type: string): string {
+    const bgs: Record<string, string> = {
+        watch: 'bg-green-500/10',
+        quiz: 'bg-purple-500/10',
+        badge: 'bg-amber-500/10',
+        streak: 'bg-orange-500/10',
+    }
+    return bgs[type] || 'bg-white/5'
+}
+
+function activityLabel(event: ActivityEvent): string {
+    if (event.type === 'watch') return event.title ? `${event.title} gekeken` : 'Titel gekeken'
+    if (event.type === 'quiz') return 'Quiz vraag correct'
+    if (event.type === 'badge') return 'Badge verdiend'
+    if (event.type === 'streak') return 'Streak bonus'
+    return 'XP verdiend'
+}
+
+function formatTimeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 60) return `${mins}m`
+    const hours = Math.floor(mins / 60)
+    if (hours < 24) return `${hours}u`
+    const days = Math.floor(hours / 24)
+    if (days < 7) return `${days}d`
+    return `${Math.floor(days / 7)}w`
+}
+
+function toggleSpoilerMode() {
+    guardToggleSpoiler()
+}
+
+async function handleSignOut() {
+    try {
+        await signOut()
+        navigateTo('/login')
+    } catch {
+        navigateTo('/login')
+    }
+}
+
+onMounted(async () => {
+    if (!user.value) return
+
+    const client = useSupabaseClient()
+
+    try {
+        const { data: dbTitles } = await client
+            .from('titles')
+            .select('id, slug, runtime_minutes, title')
+        if (dbTitles && dbTitles.length > 0) {
+            for (const t of dbTitles) {
+                titleIdMap.value.set(t.slug, t.id)
+            }
+        } else {
+            allTitles.forEach((t: any, i: number) => {
+                titleIdMap.value.set(t.slug, i + 1)
+            })
+        }
+    } catch {
+        allTitles.forEach((t: any, i: number) => {
+            titleIdMap.value.set(t.slug, i + 1)
+        })
+    }
+
+    try {
+        totalXP.value = await getTotalXP()
+    } catch { /* no auth */ }
+
+    try {
+        const { getProgressForUser } = useProgress()
+        const progress = await getProgressForUser()
+        const watched = progress.filter(p => p.status === 'watched')
+        watchedCount.value = watched.length
+
+        for (const p of progress) {
+            progressMap.value[p.title_id] = p.status as string
+        }
+
+        const watchedIds = new Set(watched.map(p => p.title_id))
+        const idToRuntime = new Map<number, number>()
+        for (const t of allTitles) {
+            const id = titleIdMap.value.get(t.slug)
+            if (id !== undefined) idToRuntime.set(id, t.runtime_minutes || 0)
+        }
+        watchedTotalMinutes.value = Array.from(watchedIds)
+            .reduce((sum, id) => sum + (idToRuntime.get(id) || 0), 0)
+    } catch { /* no progress */ }
+
+    try {
+        const { data: xpEvents } = await client
+            .from('xp_events')
+            .select('event_type, xp_delta, created_at, title_id, metadata_json')
+            .eq('user_id', user.value.id)
+            .order('created_at', { ascending: false })
+            .limit(10)
+
+        if (xpEvents) {
+            const idToTitle = new Map<number, string>()
+            for (const t of allTitles) {
+                const id = titleIdMap.value.get(t.slug)
+                if (id !== undefined) idToTitle.set(id, t.title)
+            }
+            recentActivity.value = xpEvents.map(e => ({
+                type: e.event_type as ActivityEvent['type'],
+                title: e.title_id ? idToTitle.get(e.title_id) || undefined : undefined,
+                xp: e.xp_delta,
+                date: e.created_at,
+            }))
+        }
+    } catch { /* xp events unavailable */ }
+
+    try {
+        const { getUserBadges } = useBadges()
+        const badges = await getUserBadges()
+        earnedCodes.value = new Set(badges.map(b => b.badge.code))
+        earnedBadges.value = badges.map(b => ({ code: b.badge.code, awarded_at: b.awarded_at }))
+    } catch { /* no badges */ }
+
+    try {
+        const { loadSpoilerPreference } = useSpoilerGuard()
+        await loadSpoilerPreference()
+    } catch { /* spoiler pref unavailable */ }
 })
-const totalXp = computed(() => xpData.value || 0)
-
-// Simple level calculation
-const currentLevel = computed(() => Math.floor(totalXp.value / 1000) + 1)
-const xpToNext = computed(() => 1000 - (totalXp.value % 1000))
-const levelProgress = computed(() => (totalXp.value % 1000) / 10)
 </script>

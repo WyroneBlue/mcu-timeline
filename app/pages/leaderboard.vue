@@ -1,167 +1,154 @@
 <template>
-    <div class="max-w-6xl mx-auto space-y-6">
-        <div class="text-center space-y-4">
-            <h1 class="text-3xl font-bold text-gray-900">Leaderboard</h1>
-            <p class="text-gray-600">Zie hoe je presteert ten opzichte van andere MCU-fans</p>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
+        <div class="pt-4">
+            <h1 class="font-display text-3xl tracking-wider text-white mb-1">LEADERBOARD</h1>
+            <p class="text-white/30 text-sm">Zie hoe je presteert ten opzichte van andere MCU-fans.</p>
         </div>
 
-        <!-- Time Period Tabs -->
-        <div class="flex justify-center">
-            <UTabs :items="timePeriods" v-model="selectedPeriod" class="w-full max-w-md">
-                <template #default="{ item }">
-                    <div class="flex items-center space-x-2">
-                        <UIcon :name="item.icon" class="w-4 h-4" />
-                        <span>{{ item.label }}</span>
-                    </div>
-                </template>
-            </UTabs>
+        <!-- Your rank -->
+        <div v-if="myRank" class="glass-card-accent p-5">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-full bg-white/10 border border-white/10 flex items-center justify-center shrink-0">
+                    <span class="font-display text-lg text-white">{{ myRank.initial }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <span class="text-sm text-white font-medium block truncate">{{ myRank.username }}</span>
+                    <span class="text-xs text-white/30">{{ myRank.levelName }} · Lvl {{ myRank.level }}</span>
+                </div>
+                <div class="text-right shrink-0">
+                    <span class="font-mono text-lg text-white">{{ myRank.xp.toLocaleString() }}</span>
+                    <span class="text-xs text-white/30 block">XP</span>
+                </div>
+                <div class="w-10 text-center shrink-0">
+                    <span class="font-display text-2xl" :class="rankColor(myRank.rank)">{{ myRank.rank }}</span>
+                </div>
+            </div>
         </div>
 
-        <!-- Leaderboard Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Main Leaderboard -->
-            <div class="lg:col-span-2">
-                <UCard class="card-hover">
-                    <template #header>
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-xl font-semibold">Top Spelers</h2>
-                            <UBadge color="primary" variant="soft">{{ leaderboard.length }}</UBadge>
-                        </div>
-                    </template>
-                    <div class="space-y-3">
-                        <div v-if="leaderboard.length === 0" class="text-center py-8">
-                            <UIcon name="i-heroicons-trophy" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Geen data</h3>
-                            <p class="text-gray-600">Er zijn nog geen scores beschikbaar voor deze periode.</p>
-                        </div>
-                        <div v-else class="space-y-2">
-                            <div v-for="(player, index) in leaderboard" :key="player.id" :class="[
-                                'flex items-center justify-between p-4 rounded-lg transition-colors',
-                                index === 0 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200' :
-                                    index === 1 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200' :
-                                        index === 2 ? 'bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200' :
-                                            'bg-gray-50 border border-gray-100'
-                            ]">
-                                <div class="flex items-center space-x-4">
-                                    <div class="flex-shrink-0">
-                                        <div v-if="index < 3"
-                                            class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold"
-                                            :class="index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-500'">
-                                            {{ index + 1 }}
-                                        </div>
-                                        <div v-else
-                                            class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-sm">
-                                            {{ index + 1 }}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold text-gray-900">{{ player.username || 'Anonieme speler'
-                                            }}</p>
-                                        <p class="text-sm text-gray-600">{{ player.total_xp }} XP</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="flex items-center space-x-2">
-                                        <UIcon name="i-heroicons-trophy" class="w-4 h-4 text-yellow-500" />
-                                        <span class="font-semibold">{{ player.badges_count }}</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500">badges</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </UCard>
-            </div>
+        <!-- Top players -->
+        <div class="space-y-2">
+            <div
+                v-for="(player, i) in leaderboard"
+                :key="player.id"
+                :class="[
+                    'glass-card p-4 flex items-center gap-4 transition-colors',
+                    player.isMe && 'border-white/15 bg-white/5',
+                ]"
+            >
+                <!-- Rank -->
+                <div class="w-8 text-center shrink-0">
+                    <span v-if="i < 3" class="font-display text-2xl" :class="rankColor(i + 1)">
+                        {{ i + 1 }}
+                    </span>
+                    <span v-else class="font-mono text-sm text-white/30">{{ i + 1 }}</span>
+                </div>
 
-            <!-- Sidebar Stats -->
-            <div class="space-y-6">
-                <UCard class="card-hover">
-                    <template #header>
-                        <h2 class="text-xl font-semibold">Jouw Positie</h2>
-                    </template>
-                    <div class="text-center space-y-4">
-                        <div v-if="userRank" class="space-y-2">
-                            <div class="text-4xl font-bold text-blue-600">#{{ userRank.rank }}</div>
-                            <p class="text-gray-600">van {{ leaderboard.length }} spelers</p>
-                            <div class="text-2xl font-semibold">{{ userRank.total_xp }} XP</div>
-                        </div>
-                        <div v-else class="text-center py-4">
-                            <UIcon name="i-heroicons-user" class="w-12 h-12 text-gray-300 mx-auto mb-2" />
-                            <p class="text-gray-500">Nog niet ingelogd</p>
-                        </div>
-                    </div>
-                </UCard>
+                <!-- Avatar -->
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" :class="i < 3 ? avatarBg(i) : 'bg-white/5 border border-white/10'">
+                    <span class="font-display text-lg" :class="i < 3 ? 'text-white' : 'text-white/40'">
+                        {{ player.initial }}
+                    </span>
+                </div>
 
-                <UCard class="card-hover">
-                    <template #header>
-                        <h2 class="text-xl font-semibold">Statistieken</h2>
-                    </template>
-                    <div class="space-y-4">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Totaal spelers</span>
-                            <span class="font-semibold">{{ leaderboard.length }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Gemiddelde XP</span>
-                            <span class="font-semibold">{{ averageXp }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Hoogste score</span>
-                            <span class="font-semibold">{{ maxXp }}</span>
-                        </div>
-                    </div>
-                </UCard>
+                <!-- Info -->
+                <div class="flex-1 min-w-0">
+                    <span class="text-sm text-white font-medium block truncate">{{ player.username }}</span>
+                    <span class="text-xs text-white/30">{{ player.levelName }} · Lvl {{ player.level }}</span>
+                </div>
+
+                <!-- XP -->
+                <div class="text-right shrink-0">
+                    <span class="font-mono text-sm text-white">{{ player.xp.toLocaleString() }}</span>
+                    <span class="text-[10px] text-white/20 ml-1">XP</span>
+                </div>
             </div>
+        </div>
+
+        <!-- Empty state (no Supabase) -->
+        <div v-if="leaderboard.length === 0 && !loading" class="glass-card p-8 text-center">
+            <svg class="w-10 h-10 text-white/10 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M18.75 4.236c.982.143 1.954.317 2.916.52A6.003 6.003 0 0016.27 9.728M18.75 4.236V4.5c0 2.108-.966 3.99-2.48 5.228m0 0a6.003 6.003 0 01-5.54 0" />
+            </svg>
+            <p class="text-white/40 text-sm">Nog geen spelers op het leaderboard.</p>
+            <p class="text-white/20 text-xs mt-1">Verdien XP door titels te kijken en quizzes te doen.</p>
+        </div>
+
+        <!-- Loading -->
+        <div v-if="loading" class="flex justify-center py-8">
+            <div class="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-const client = useSupabaseClient()
-const user = useSupabaseUser()
+definePageMeta({ ssr: false })
 
-const timePeriods = [
-    { key: 'all', label: 'Alles', icon: 'i-heroicons-clock' },
-    { key: 'week', label: 'Deze week', icon: 'i-heroicons-calendar-days' },
-    { key: 'month', label: 'Deze maand', icon: 'i-heroicons-calendar' }
-]
+import type { Database } from '~/types/supabase'
 
-const selectedPeriod = ref('all')
-
-type LeaderboardEntry = {
+interface LeaderboardEntry {
     id: string
-    username: string | null
-    total_xp: number
-    badges_count: number
+    username: string
+    initial: string
+    xp: number
+    level: number
+    levelName: string
+    isMe: boolean
 }
 
-const { data: leaderboardData, refresh } = await useAsyncData('leaderboard', async () => {
-    // Mock data for now - in real app, this would query Supabase
-    return [
-        { id: '1', username: 'MCU_Master', total_xp: 15420, badges_count: 12 },
-        { id: '2', username: 'IronManFan', total_xp: 12850, badges_count: 8 },
-        { id: '3', username: 'SpiderManLover', total_xp: 11200, badges_count: 10 },
-        { id: '4', username: 'ThorFan', total_xp: 9800, badges_count: 6 },
-        { id: '5', username: 'CapAmerica', total_xp: 8750, badges_count: 7 }
-    ] as LeaderboardEntry[]
-})
+const client = useSupabaseClient<Database>()
+const user = useSupabaseUser()
+const { getLevelFromXP, getLevelName } = useXP()
 
-const leaderboard = computed(() => leaderboardData.value || [])
+const loading = ref(true)
+const leaderboard = ref<LeaderboardEntry[]>([])
 
-const userRank = computed(() => {
+const myRank = computed(() => {
     if (!user.value) return null
-    // Mock user rank - in real app, calculate from actual data
-    return { rank: 3, total_xp: 11200 }
+    const idx = leaderboard.value.findIndex(p => p.isMe)
+    if (idx === -1) return null
+    return { ...leaderboard.value[idx], rank: idx + 1 }
 })
 
-const averageXp = computed(() => {
-    if (leaderboard.value.length === 0) return 0
-    const total = leaderboard.value.reduce((sum, player) => sum + player.total_xp, 0)
-    return Math.round(total / leaderboard.value.length)
-})
+function rankColor(rank: number): string {
+    if (rank === 1) return 'text-yellow-400'
+    if (rank === 2) return 'text-gray-300'
+    if (rank === 3) return 'text-amber-600'
+    return 'text-white/30'
+}
 
-const maxXp = computed(() => {
-    if (leaderboard.value.length === 0) return 0
-    return Math.max(...leaderboard.value.map(player => player.total_xp))
+function avatarBg(index: number): string {
+    if (index === 0) return 'bg-yellow-500/20 border border-yellow-500/30'
+    if (index === 1) return 'bg-gray-300/10 border border-gray-300/20'
+    return 'bg-amber-600/10 border border-amber-600/20'
+}
+
+onMounted(async () => {
+    try {
+        const { data } = await client
+            .from('profiles')
+            .select('id, username, xp_total, level_int')
+            .order('xp_total', { ascending: false })
+            .limit(50)
+
+        if (data) {
+            leaderboard.value = data.map(p => {
+                const level = p.level_int || getLevelFromXP(p.xp_total || 0)
+                const name = p.username || 'Anoniem'
+                return {
+                    id: p.id,
+                    username: name,
+                    initial: name.charAt(0).toUpperCase(),
+                    xp: p.xp_total || 0,
+                    level,
+                    levelName: getLevelName(level),
+                    isMe: p.id === user.value?.id,
+                }
+            })
+        }
+    } catch {
+        // Supabase unavailable
+    } finally {
+        loading.value = false
+    }
 })
 </script>

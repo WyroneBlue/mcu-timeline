@@ -1,224 +1,126 @@
 <template>
-    <div class="max-w-4xl mx-auto space-y-6">
-        <div class="text-center space-y-4">
-            <h1 class="text-3xl font-bold text-gray-900">Notificaties</h1>
-            <p class="text-gray-600">Beheer je notificatievoorkeuren</p>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
+        <div class="pt-4">
+            <h1 class="font-display text-3xl tracking-wider text-white mb-1">NOTIFICATIES</h1>
+            <p class="text-white/30 text-sm">Updates over nieuwe releases en je voortgang.</p>
         </div>
 
-        <!-- Notification Settings -->
-        <UCard class="card-hover">
-            <template #header>
-                <h2 class="text-xl font-semibold">Instellingen</h2>
-            </template>
-            <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-medium text-gray-900">Push Notificaties</h3>
-                        <p class="text-sm text-gray-600">Ontvang meldingen over nieuwe content en updates</p>
+        <!-- Upcoming releases -->
+        <div v-if="upcomingReleases.length > 0">
+            <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">AANKOMENDE RELEASES</h2>
+            <div class="space-y-2">
+                <NuxtLink
+                    v-for="release in upcomingReleases"
+                    :key="release.slug"
+                    :to="`/title/${release.slug}`"
+                    class="glass-card p-4 flex items-center gap-4 hover:border-white/15 transition-colors block"
+                >
+                    <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h1.5C5.496 19.5 6 18.996 6 18.375m-3.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-1.5A1.125 1.125 0 0118 18.375M20.625 4.5H3.375m17.25 0c.621 0 1.125.504 1.125 1.125M20.625 4.5h-1.5C18.504 4.5 18 5.004 18 5.625m3.75 0v1.5c0 .621-.504 1.125-1.125 1.125M3.375 4.5c-.621 0-1.125.504-1.125 1.125M3.375 4.5h1.5C5.496 4.5 6 5.004 6 5.625m-3.75 0v1.5c0 .621.504 1.125 1.125 1.125m0 0h1.5m-1.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m1.5-3.75C5.496 8.25 6 7.746 6 7.125v-1.5M4.875 8.25C5.496 8.25 6 8.754 6 9.375v1.5m0-5.25v5.25m0-5.25C6 5.004 6.504 4.5 7.125 4.5h9.75c.621 0 1.125.504 1.125 1.125m1.125 2.625h1.5m-1.5 0A1.125 1.125 0 0118 7.125v-1.5m1.125 2.625c-.621 0-1.125.504-1.125 1.125v1.5m2.625-2.625c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125M18 5.625v5.25M7.125 12h9.75m-9.75 0A1.125 1.125 0 016 10.875M7.125 12C6.504 12 6 12.504 6 13.125m0-2.25C6 11.496 5.496 12 4.875 12M18 10.875c0 .621-.504 1.125-1.125 1.125M18 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m-12 5.25v-5.25m0 5.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125m-12 0v-1.5c0-.621-.504-1.125-1.125-1.125M18 18.375v-5.25m0 5.25v-1.5c0-.621.504-1.125 1.125-1.125M18 13.125v1.5c0 .621.504 1.125 1.125 1.125M18 13.125c0-.621.504-1.125 1.125-1.125M6 13.125v1.5c0 .621-.504 1.125-1.125 1.125M6 13.125C6 12.504 5.496 12 4.875 12m-1.5 0h1.5m-1.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m1.5-3.75c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125M19.125 12h1.5m0 0c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h1.5m14.25 0h1.5" />
+                        </svg>
                     </div>
-                    <UToggle v-model="settings.pushNotifications" />
-                </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-white/80 truncate">{{ release.title }}</p>
+                        <p class="text-xs text-white/30">{{ formatReleaseDate(release.release_date) }}</p>
+                    </div>
+                    <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 shrink-0">
+                        {{ release.release_status === 'announced' ? 'Aangekondigd' : 'Binnenkort' }}
+                    </span>
+                </NuxtLink>
+            </div>
+        </div>
 
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-medium text-gray-900">Email Notificaties</h3>
-                        <p class="text-sm text-gray-600">Wekelijkse samenvattingen en belangrijke updates</p>
-                    </div>
-                    <UToggle v-model="settings.emailNotifications" />
-                </div>
+        <!-- Notifications list -->
+        <div>
+            <h2 v-if="upcomingReleases.length > 0" class="font-display text-lg tracking-wider text-white/60 mb-3">MELDINGEN</h2>
 
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-medium text-gray-900">Quiz Herinneringen</h3>
-                        <p class="text-sm text-gray-600">Herinneringen om deel te nemen aan wekelijkse quizzen</p>
-                    </div>
-                    <UToggle v-model="settings.quizReminders" />
-                </div>
+            <div v-if="notifications.length === 0" class="glass-card p-8 text-center">
+                <svg class="w-10 h-10 text-white/10 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <p class="text-white/40 text-sm">Geen meldingen</p>
+                <p class="text-white/20 text-xs mt-1">Je krijgt een melding bij nieuwe MCU releases en prestaties.</p>
+            </div>
 
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-medium text-gray-900">Vrienden Activiteit</h3>
-                        <p class="text-sm text-gray-600">Updates over wat je vrienden bekijken</p>
+            <div v-else class="space-y-2">
+                <button
+                    v-if="hasUnread"
+                    class="text-xs text-white/30 hover:text-white/50 transition-colors mb-2"
+                    @click="handleMarkAllRead"
+                >
+                    Alles als gelezen markeren
+                </button>
+                <div
+                    v-for="n in notifications"
+                    :key="n.id"
+                    :class="[
+                        'glass-card p-4 flex items-start gap-4 transition-colors cursor-pointer',
+                        !n.read && 'border-l-2 border-l-green-500/50',
+                    ]"
+                    @click="handleRead(n)"
+                >
+                    <div :class="['w-2 h-2 rounded-full mt-2 shrink-0', n.read ? 'bg-white/10' : 'bg-green-500']" />
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm text-white/80">{{ n.title }}</p>
+                        <p class="text-xs text-white/30 mt-1">{{ n.message }}</p>
                     </div>
-                    <UToggle v-model="settings.friendActivity" />
+                    <span class="text-[10px] text-white/20 font-mono shrink-0">{{ formatDate(n.created_at) }}</span>
                 </div>
             </div>
-        </UCard>
-
-        <!-- Recent Notifications -->
-        <UCard class="card-hover">
-            <template #header>
-                <div class="flex items-center justify-between">
-                    <h2 class="text-xl font-semibold">Recente Notificaties</h2>
-                    <UButton variant="ghost" color="neutral" size="sm" @click="markAllAsRead">
-                        <UIcon name="i-heroicons-check" class="w-4 h-4 mr-2" />
-                        Alles als gelezen markeren
-                    </UButton>
-                </div>
-            </template>
-            <div class="space-y-3">
-                <div v-if="notifications.length === 0" class="text-center py-8">
-                    <UIcon name="i-heroicons-bell" class="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Geen notificaties</h3>
-                    <p class="text-gray-600">Je hebt nog geen notificaties ontvangen.</p>
-                </div>
-                <div v-else class="space-y-3">
-                    <div v-for="notification in notifications" :key="notification.id" :class="[
-                        'p-4 rounded-lg border transition-colors',
-                        notification.read ? 'bg-gray-50 border-gray-200' : 'bg-blue-50 border-blue-200'
-                    ]">
-                        <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
-                                <UIcon :name="getNotificationIcon(notification.type)" :class="[
-                                    'w-5 h-5',
-                                    notification.read ? 'text-gray-400' : 'text-blue-600'
-                                ]" />
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-medium text-gray-900">{{ notification.title }}</p>
-                                <p class="text-sm text-gray-600 mt-1">{{ notification.message }}</p>
-                                <p class="text-xs text-gray-500 mt-2">{{ formatDate(notification.created_at) }}</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <UButton v-if="!notification.read" @click="markAsRead(notification.id)" variant="ghost"
-                                    color="neutral" size="sm">
-                                    <UIcon name="i-heroicons-check" class="w-4 h-4" />
-                                </UButton>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </UCard>
-
-        <!-- Test Notifications -->
-        <UCard class="card-hover">
-            <template #header>
-                <h2 class="text-xl font-semibold">Test Notificaties</h2>
-            </template>
-            <div class="space-y-4">
-                <p class="text-gray-600">Test je notificatie-instellingen</p>
-                <div class="flex flex-wrap gap-2">
-                    <UButton @click="testPushNotification" color="primary" size="sm">
-                        <UIcon name="i-heroicons-device-phone-mobile" class="w-4 h-4 mr-2" />
-                        Test Push
-                    </UButton>
-                    <UButton @click="testEmailNotification" color="primary" size="sm">
-                        <UIcon name="i-heroicons-envelope" class="w-4 h-4 mr-2" />
-                        Test Email
-                    </UButton>
-                    <UButton @click="testQuizReminder" color="primary" size="sm">
-                        <UIcon name="i-heroicons-academic-cap" class="w-4 h-4 mr-2" />
-                        Test Quiz
-                    </UButton>
-                </div>
-            </div>
-        </UCard>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-type Notification = {
-    id: string
-    type: 'push' | 'email' | 'quiz' | 'friend' | 'achievement'
-    title: string
-    message: string
-    read: boolean
-    created_at: string
-}
+definePageMeta({ ssr: false })
 
-const settings = ref({
-    pushNotifications: true,
-    emailNotifications: true,
-    quizReminders: true,
-    friendActivity: false
+import mcuTitlesJson from '../../data/mcu-titles.json'
+
+const notifications = ref<any[]>([])
+
+const upcomingReleases = computed(() => {
+    return (mcuTitlesJson as any[])
+        .filter(t => t.release_status === 'upcoming' || t.release_status === 'announced')
+        .sort((a, b) => {
+            if (!a.release_date) return 1
+            if (!b.release_date) return -1
+            return new Date(a.release_date).getTime() - new Date(b.release_date).getTime()
+        })
 })
 
-const notifications = ref<Notification[]>([
-    {
-        id: '1',
-        type: 'achievement',
-        title: 'Badge verdiend!',
-        message: 'Je hebt de "First Watch" badge verdiend door je eerste film te bekijken.',
-        read: false,
-        created_at: new Date().toISOString()
-    },
-    {
-        id: '2',
-        type: 'quiz',
-        title: 'Nieuwe quiz beschikbaar',
-        message: 'De wekelijkse MCU quiz is nu beschikbaar. Test je kennis!',
-        read: true,
-        created_at: new Date(Date.now() - 86400000).toISOString()
-    },
-    {
-        id: '3',
-        type: 'friend',
-        title: 'Vriend activiteit',
-        message: 'MCU_Master heeft net "Avengers: Endgame" bekeken.',
-        read: true,
-        created_at: new Date(Date.now() - 172800000).toISOString()
-    }
-])
+const hasUnread = computed(() => notifications.value.some(n => !n.read))
 
-function getNotificationIcon(type: string) {
-    const icons = {
-        push: 'i-heroicons-device-phone-mobile',
-        email: 'i-heroicons-envelope',
-        quiz: 'i-heroicons-academic-cap',
-        friend: 'i-heroicons-users',
-        achievement: 'i-heroicons-trophy'
-    }
-    return icons[type as keyof typeof icons] || 'i-heroicons-bell'
+function formatDate(date: string): string {
+    return new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
 }
 
-function formatDate(dateString: string) {
-    return new Date(dateString).toLocaleDateString('nl-NL', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    })
+function formatReleaseDate(date: string | null): string {
+    if (!date) return 'Datum onbekend'
+    return new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-function markAsRead(id: string) {
-    const notification = notifications.value.find(n => n.id === id)
-    if (notification) {
-        notification.read = true
-    }
+async function handleRead(n: any) {
+    if (n.read) return
+    try {
+        const { markAsRead } = useNotifications()
+        await markAsRead(n.id)
+        n.read = true
+    } catch { /* silent */ }
 }
 
-function markAllAsRead() {
-    notifications.value.forEach(notification => {
-        notification.read = true
-    })
+async function handleMarkAllRead() {
+    try {
+        const { markAllAsRead } = useNotifications()
+        await markAllAsRead()
+        notifications.value.forEach(n => { n.read = true })
+    } catch { /* silent */ }
 }
 
-async function testPushNotification() {
-    if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('Test Push Notificatie', {
-            body: 'Dit is een test notificatie van MarvelPath!',
-            icon: '/favicon.ico'
-        })
-    } else if ('Notification' in window && Notification.permission !== 'denied') {
-        const permission = await Notification.requestPermission()
-        if (permission === 'granted') {
-            new Notification('Test Push Notificatie', {
-                body: 'Dit is een test notificatie van MarvelPath!',
-                icon: '/favicon.ico'
-            })
-        }
-    } else {
-        alert('Push notificaties worden niet ondersteund door deze browser.')
-    }
-}
-
-function testEmailNotification() {
-    alert('Email notificatie test - in een echte app zou dit een email versturen.')
-}
-
-function testQuizReminder() {
-    alert('Quiz herinnering test - in een echte app zou dit een notificatie tonen.')
-}
+onMounted(async () => {
+    try {
+        const { getNotifications } = useNotifications()
+        notifications.value = await getNotifications()
+    } catch { /* no notifications */ }
+})
 </script>
