@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-    appId: 'com.marvelpath.app',
-    appName: 'MarvelPath',
+    appId: 'app.canonkeeper.mcu',
+    appName: 'Canonkeeper',
     webDir: 'dist',
     server: {
         androidScheme: 'https'

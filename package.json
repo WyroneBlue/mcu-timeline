@@ -1,5 +1,5 @@
 {
-  "name": "mcu-timeline",
+  "name": "canonkeeper",
   "private": true,
   "type": "module",
   "scripts": {
@@ -30,6 +30,7 @@
     "@tresjs/nuxt": "4.0.0",
     "@types/node": "24.5.1",
     "@types/three": "^0.180.0",
+    "@vite-pwa/nuxt": "^1.1.1",
     "autoprefixer": "^10.4.21",
     "nuxt": "4.1.2",
     "postcss": "^8.5.6",
@@ -40,6 +41,7 @@
     "@supabase/supabase-js": "^2.45.4",
     "@tailwindcss/postcss": "^4.1.13",
     "@tresjs/core": "^4.3.6",
+    "gsap": "^3.15.0",
     "pinia": "3.0.3",
     "three": "^0.180.0",
     "vite-tsconfig-paths": "^5.1.4"
