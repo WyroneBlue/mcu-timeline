@@ -1,170 +1,345 @@
 <template>
-    <div class="max-w-4xl mx-auto space-y-6">
-        <UButton to="/timeline" variant="ghost" color="gray" class="mb-4">
-            <UIcon name="i-heroicons-arrow-left" class="w-4 h-4 mr-2" />
-            Terug naar Timeline
-        </UButton>
-
-        <div v-if="!title" class="flex items-center justify-center py-12">
-            <div class="text-center space-y-4">
-                <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 text-gray-400 animate-spin mx-auto" />
-                <p class="text-gray-600">Laden...</p>
-            </div>
+    <div>
+        <!-- Loading -->
+        <div v-if="loading" class="flex items-center justify-center min-h-[60vh]">
+            <div class="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
         </div>
 
-        <div v-else class="space-y-6">
-            <!-- Hero Section -->
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
-                <div class="flex items-start justify-between">
-                    <div class="space-y-4">
-                        <h1 class="text-3xl md:text-4xl font-bold">{{ title.title }}</h1>
-                        <div class="flex items-center space-x-4">
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20">
-                                <UIcon name="i-heroicons-calendar" class="w-4 h-4 mr-2" />
-                                {{ title.release_date || 'Onbekend' }}
-                            </span>
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20">
-                                <UIcon name="i-heroicons-hashtag" class="w-4 h-4 mr-2" />
-                                Positie {{ title.chronology_index }}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-6xl font-bold opacity-20">{{ title.chronology_index }}</div>
-                    </div>
-                </div>
-            </div>
+        <template v-else-if="title">
+            <!-- Hero -->
+            <TitleHero
+                :title="title.title"
+                :poster-url="title.poster_url"
+                :backdrop-url="title.backdrop_url"
+                :year="releaseYear"
+                :runtime="formattedRuntime"
+                :type="title.type"
+            >
+                <template #tags>
+                    <UiPhaseTag v-if="title.phase" :phase="title.phase" show-number />
+                    <UiCanonBadge
+                        v-if="title.canon_level"
+                        :canon-level="title.canon_level"
+                        :relevance-score="title.mcu_relevance_score"
+                        show-relevance
+                    />
+                </template>
+            </TitleHero>
 
-            <!-- Content Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Main Info -->
-                <div class="lg:col-span-2 space-y-6">
-                    <UCard>
-                        <template #header>
-                            <h2 class="text-xl font-semibold">Informatie</h2>
-                        </template>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-sm font-medium text-gray-500">Type</label>
-                                <p class="text-lg font-semibold capitalize">{{ title.type }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-gray-500">Phase</label>
-                                <p class="text-lg font-semibold">{{ title.phase || '—' }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-gray-500">Chronologie</label>
-                                <p class="text-lg font-semibold">{{ title.chronology_index }}</p>
-                            </div>
-                            <div>
-                                <label class="text-sm font-medium text-gray-500">Release</label>
-                                <p class="text-lg font-semibold">{{ title.release_date || '—' }}</p>
-                            </div>
-                        </div>
-                    </UCard>
+            <!-- Main content -->
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-20 pb-24 space-y-8">
+                <!-- Back link -->
+                <NuxtLink
+                    to="/timeline"
+                    class="inline-flex items-center gap-2 text-sm text-white/40 hover:text-white transition-colors"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    Terug naar Timeline
+                </NuxtLink>
 
-                    <UCard>
-                        <template #header>
-                            <h2 class="text-xl font-semibold">Beschrijving</h2>
-                        </template>
-                        <p class="text-gray-600">
-                            {{ title.overview || 'Geen beschrijving beschikbaar voor deze titel.' }}
+                <!-- New release banner -->
+                <UiNewReleaseBanner
+                    v-if="title.release_status === 'upcoming' || title.release_status === 'announced'"
+                    :status="title.release_status as 'upcoming' | 'announced'"
+                    :release-date="title.release_date"
+                />
+
+                <!-- Actions -->
+                <TitleActions
+                    :status="currentStatus"
+                    @mark-watched="handleMarkWatched"
+                    @mark-skipped="handleMarkSkipped"
+                    @mark-queued="handleMarkQueued"
+                />
+
+                <!-- XP Toast -->
+                <Transition name="float">
+                    <div v-if="showXpToast" class="fixed top-24 right-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 font-mono text-sm animate-float-up">
+                        +{{ xpAmount }} XP
+                    </div>
+                </Transition>
+
+                <!-- Previously On... -->
+                <TitlePreviouslyOn
+                    v-if="skippedSlugs.size > 0"
+                    :current-slug="slug"
+                    :skipped-slugs="skippedSlugs"
+                />
+
+                <!-- Retcon info -->
+                <div v-if="retcons.causedBy.length > 0 || retcons.causes.length > 0" class="glass-card p-5 border-l-3 border-l-amber-500/50">
+                    <h3 class="font-display text-lg tracking-wider text-amber-400 mb-3 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
+                        </svg>
+                        Retcon Info
+                    </h3>
+                    <div v-if="retcons.causedBy.length > 0" class="space-y-2">
+                        <p v-for="r in retcons.causedBy" :key="r.id" class="text-sm text-white/50">
+                            <span class="text-white/70">{{ r.source_title?.title }}</span> heeft een aspect van deze titel aangepast: {{ r.description }}
                         </p>
-                    </UCard>
+                    </div>
+                    <div v-if="retcons.causes.length > 0" class="space-y-2 mt-3">
+                        <p v-for="r in retcons.causes" :key="r.id" class="text-sm text-white/50">
+                            Deze titel past <span class="text-white/70">{{ r.affected_title?.title }}</span> aan: {{ r.description }}
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Sidebar -->
-                <div class="space-y-6">
-                    <UCard>
-                        <template #header>
-                            <h2 class="text-xl font-semibold">Acties</h2>
-                        </template>
-                        <div class="space-y-4">
-                            <UButton @click="markWatched" color="primary" size="lg" class="w-full" :loading="isMarking">
-                                <UIcon name="i-heroicons-check" class="w-5 h-5 mr-2" />
-                                Markeer als bekeken
-                            </UButton>
+                <!-- Synopsis (spoiler guarded) -->
+                <div ref="synopsisEl" class="glass-card p-6">
+                    <h3 class="font-display text-xl tracking-wider text-white mb-3">Synopsis</h3>
+                    <div :class="[!canRevealSynopsis && 'spoiler-blur']">
+                        <p class="text-white/50 leading-relaxed">
+                            {{ title.overview || 'Geen synopsis beschikbaar voor deze titel.' }}
+                        </p>
+                    </div>
+                    <button
+                        v-if="!canRevealSynopsis && title.overview"
+                        class="mt-3 text-xs text-white/30 hover:text-white/50 transition-colors"
+                        @click="handleMarkWatched"
+                    >
+                        Markeer als watched om synopsis te onthullen
+                    </button>
+                </div>
 
-                            <UButton variant="outline" color="gray" size="lg" class="w-full">
-                                <UIcon name="i-heroicons-heart" class="w-5 h-5 mr-2" />
-                                Toevoegen aan favorieten
-                            </UButton>
-                        </div>
-                    </UCard>
+                <!-- Cast -->
+                <TitleCastCarousel :tmdb-id="title.tmdb_id" :type="title.type" />
 
-                    <UCard>
-                        <template #header>
-                            <h2 class="text-xl font-semibold">Verwante titels</h2>
-                        </template>
-                        <div class="space-y-2">
-                            <p class="text-sm text-gray-500">Geen verwante titels gevonden.</p>
-                        </div>
-                    </UCard>
+                <!-- Videos (trailers, clips, behind the scenes) -->
+                <div id="videos">
+                    <TitleVideos :tmdb-id="title.tmdb_id" :type="title.type" />
+                </div>
+
+                <!-- Metadata grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="glass-card p-4 text-center">
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Positie</span>
+                        <span class="font-display text-2xl text-white">{{ title.chronology_index }}</span>
+                    </div>
+                    <div class="glass-card p-4 text-center">
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Fase</span>
+                        <span class="font-display text-2xl text-white">{{ phaseNumber || '—' }}</span>
+                    </div>
+                    <div class="glass-card p-4 text-center">
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Relevantie</span>
+                        <span class="font-display text-2xl text-white">{{ title.mcu_relevance_score || '—' }}<span class="text-sm text-white/30">/10</span></span>
+                    </div>
+                    <div class="glass-card p-4 text-center">
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Status</span>
+                        <span class="font-display text-2xl" :class="statusColor">{{ statusLabel }}</span>
+                    </div>
+                </div>
+
+                <!-- Streaming -->
+                <TitleStreamingLink
+                    v-if="title.streaming_platform && title.release_status === 'released'"
+                    :platform="title.streaming_platform"
+                    :url="title.streaming_url"
+                />
+
+                <!-- Ticket links (upcoming titles) -->
+                <TitleTicketLinks
+                    v-if="title.release_status === 'upcoming'"
+                />
+
+                <!-- Related titles -->
+                <TitleRelatedTitles :titles="relatedTitles" />
+
+                <!-- Retcon notes -->
+                <div v-if="title.retcon_notes" class="text-xs text-white/30 italic">
+                    {{ title.retcon_notes }}
                 </div>
             </div>
+        </template>
+
+        <!-- Not found -->
+        <div v-else class="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
+            <div class="font-display text-4xl text-white mb-2">404</div>
+            <p class="text-white/40 text-sm mb-6">Titel niet gevonden.</p>
+            <NuxtLink to="/timeline" class="text-sm text-white/50 hover:text-white transition-colors">
+                Terug naar Timeline
+            </NuxtLink>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-type Title = {
-    id: number
-    slug: string
-    title: string
-    release_date: string | null
-    chronology_index: number
-    phase: string | null
-    type: 'movie' | 'series'
-    overview?: string | null
-}
+definePageMeta({ ssr: false })
+
+import type { Database } from '~/types/supabase'
+
+type Title = Database['public']['Tables']['titles']['Row']
 
 const route = useRoute()
-const client = useSupabaseClient()
-const user = useSupabaseUser()
-const isMarking = ref(false)
+const slug = computed(() => route.params.slug as string)
 
-const { data } = await useAsyncData(`title-${route.params.slug}`, async () => {
-    const { data, error } = await client
-        .from('titles')
-        .select('id, slug, title, release_date, chronology_index, phase, type, overview')
-        .eq('slug', route.params.slug as string)
-        .single()
-    if (error) throw error
-    return data as Title
+const { getTitleBySlug, getRetconsForTitle, getRelatedTitles } = useTitles()
+const { setStatus, getProgressForUser } = useProgress()
+const { awardWatchXP } = useXP()
+const { checkAndAwardBadges } = useBadges()
+const { isRevealed } = useSpoilerGuard()
+const user = useSupabaseUser()
+
+const loading = ref(true)
+const title = ref<Title | null>(null)
+const currentStatus = ref<'queued' | 'watching' | 'watched' | 'skipped' | null>(null)
+const retcons = ref<{ causedBy: any[]; causes: any[] }>({ causedBy: [], causes: [] })
+const relatedTitles = ref<any[]>([])
+const showXpToast = ref(false)
+const xpAmount = ref(0)
+const skippedSlugs = ref<Set<string>>(new Set())
+
+const releaseYear = computed(() => {
+    if (!title.value?.release_date) return ''
+    return new Date(title.value.release_date).getFullYear().toString()
 })
 
-const title = computed(() => data.value)
+const formattedRuntime = computed(() => {
+    const mins = title.value?.runtime_minutes
+    if (!mins) return ''
+    const h = Math.floor(mins / 60)
+    const m = mins % 60
+    return h > 0 ? `${h}u ${m}m` : `${m}m`
+})
 
-async function markWatched() {
-    if (!user.value || !title.value) return
-    isMarking.value = true
+const phaseNumber = computed(() => {
+    const match = title.value?.phase?.match(/\d+/)
+    return match ? match[0] : null
+})
+
+const canRevealSynopsis = computed(() => {
+    if (!title.value) return false
+    const watchedSet = new Set(currentStatus.value === 'watched' ? [title.value.id] : [])
+    return isRevealed(title.value.id, watchedSet)
+})
+
+const statusLabel = computed(() => {
+    const labels: Record<string, string> = {
+        queued: 'Queue',
+        watching: 'Kijken',
+        watched: 'Gezien',
+        skipped: 'Skipped',
+    }
+    return currentStatus.value ? labels[currentStatus.value] : '—'
+})
+
+const statusColor = computed(() => {
+    const colors: Record<string, string> = {
+        queued: 'text-gray-400',
+        watching: 'text-blue-400',
+        watched: 'text-green-400',
+        skipped: 'text-orange-400',
+    }
+    return currentStatus.value ? colors[currentStatus.value] : 'text-white/30'
+})
+
+const synopsisEl = ref<HTMLElement | null>(null)
+const { useFadeIn } = useScrollAnimation()
+useFadeIn(synopsisEl, { y: 20 })
+
+async function loadTitle() {
+    loading.value = true
     try {
-        await client.from('progress').upsert({
-            user_id: user.value.id,
-            title_id: title.value.id,
-            status: 'watched'
-        })
-        // Award XP and first badge
-        await client.from('xp_events').insert({
-            user_id: user.value.id,
-            title_id: title.value.id,
-            event_type: 'watch',
-            xp_delta: 120
-        })
-        const { data: hasBadge } = await client
-            .from('user_badges')
-            .select('badge_id')
-            .limit(1)
-        if (!hasBadge || hasBadge.length === 0) {
-            const { data: badge } = await client.from('badges').select('id').eq('code', 'first_watch').single()
-            if (badge) await client.from('user_badges').insert({ user_id: user.value.id, badge_id: badge.id })
+        title.value = await getTitleBySlug(slug.value)
+
+        if (user.value && title.value) {
+            try {
+                const progress = await getProgressForUser()
+                const match = progress.find(p => p.title_id === title.value!.id)
+                currentStatus.value = (match?.status as any) ?? null
+
+                const allTitles = (await import('../../../data/mcu-titles.json')).default as { slug: string }[]
+                const skippedIds = new Set(
+                    progress.filter(p => p.status === 'skipped').map(p => p.title_id)
+                )
+                const slugSet = new Set<string>()
+                allTitles.forEach((t, i) => {
+                    if (skippedIds.has(i + 1)) slugSet.add(t.slug)
+                })
+                skippedSlugs.value = slugSet
+            } catch { /* no auth */ }
         }
-    } catch (error) {
-        console.error(error)
+
+        if (title.value) {
+            try {
+                retcons.value = await getRetconsForTitle(title.value.id)
+            } catch { /* retcons unavailable */ }
+
+            try {
+                relatedTitles.value = await getRelatedTitles(title.value)
+            } catch { /* related unavailable */ }
+        }
+    } catch (e) {
+        console.error('Failed to load title:', e)
+        title.value = null
     } finally {
-        isMarking.value = false
+        loading.value = false
+    }
+}
+
+onMounted(async () => {
+    await loadTitle()
+    if (route.hash) {
+        await nextTick()
+        setTimeout(() => {
+            document.querySelector(route.hash)?.scrollIntoView({ behavior: 'smooth' })
+        }, 600)
+    }
+})
+
+watch(slug, () => loadTitle())
+
+async function handleMarkWatched() {
+    if (!title.value) return
+    const prevStatus = currentStatus.value
+    currentStatus.value = 'watched'
+
+    if (user.value) {
+        try {
+            await setStatus(title.value.id, 'watched')
+            await awardWatchXP(title.value.id, title.value.type as 'movie' | 'series')
+            xpAmount.value = title.value.type === 'series' ? 150 : 100
+            showXpToast.value = true
+            setTimeout(() => { showXpToast.value = false }, 2000)
+            await checkAndAwardBadges({ watchedCount: 1, totalCount: 1 })
+        } catch {
+            currentStatus.value = prevStatus
+        }
+    }
+}
+
+async function handleMarkSkipped() {
+    if (!title.value) return
+    const prevStatus = currentStatus.value
+    currentStatus.value = 'skipped'
+    if (user.value) {
+        try {
+            await setStatus(title.value.id, 'skipped')
+        } catch {
+            currentStatus.value = prevStatus
+        }
+    }
+}
+
+async function handleMarkQueued() {
+    if (!title.value) return
+    const prevStatus = currentStatus.value
+    currentStatus.value = 'queued'
+    if (user.value) {
+        try {
+            await setStatus(title.value.id, 'queued')
+        } catch {
+            currentStatus.value = prevStatus
+        }
     }
 }
 </script>
+
+<style scoped>
+.float-enter-active {
+    animation: float-up 2s ease-out forwards;
+}
+</style>
