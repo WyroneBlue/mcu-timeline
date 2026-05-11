@@ -1,178 +1,336 @@
 <template>
-    <div class="max-w-4xl mx-auto px-6 space-y-8">
-        <div class="text-center space-y-4">
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">
-                Kies je Experience
-            </h1>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                Selecteer het niveau dat het beste bij je past. Je kunt dit later altijd aanpassen.
+    <div class="min-h-screen bg-[#0A0E1A] text-white">
+        <!-- Progress dots -->
+        <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
+            <div
+                v-for="i in totalSteps"
+                :key="i"
+                :class="[
+                    'w-2 h-2 rounded-full transition-all duration-300',
+                    i === step ? 'w-6 bg-white' : i < step ? 'bg-white/60' : 'bg-white/15',
+                ]"
+            />
+        </div>
+
+        <!-- Step 1: Welcome -->
+        <div v-if="step === 1" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+            <img src="~/assets/logo/ck-shield.svg" alt="Canonkeeper" class="w-16 h-16 mx-auto mb-4" />
+            <div class="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white mb-4">
+                CANONKEEPER
+            </div>
+            <p class="text-white/40 text-sm sm:text-base max-w-md leading-relaxed mb-2">
+                Keep the canon. Master every franchise.
             </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div :class="[
-                'bg-white rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1',
-                mode === 'simple' && 'ring-2 ring-blue-500 bg-blue-50'
-            ]" @click="mode = 'simple'">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2M9 9h6m-6 4h6m-6 4h6">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-900">Simple</h2>
-                        <p class="text-sm text-gray-500">Perfect voor beginners</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <p class="text-gray-600">Alleen de core MCU-films die essentieel zijn voor het verhaal.</p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>~30 films</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Alleen films</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Chronologische volgorde</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div :class="[
-                'bg-white rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1',
-                mode === 'in_depth' && 'ring-2 ring-blue-500 bg-blue-50'
-            ]" @click="mode = 'in_depth'">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-900">In Depth</h2>
-                        <p class="text-sm text-gray-500">Voor echte fans</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <p class="text-gray-600">MCU-films en series inclusief Disney+ content.</p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>~80+ titels</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Films + Series</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Alle canon content</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div :class="[
-                'bg-white rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1',
-                mode === 'extreme' && 'ring-2 ring-blue-500 bg-blue-50'
-            ]" @click="mode = 'extreme'">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-semibold text-gray-900">Extreme</h2>
-                        <p class="text-sm text-gray-500">Voor de ultieme fans</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <p class="text-gray-600">Alles inclusief Sony Spider-Man en Fox X-Men films.</p>
-                    <ul class="space-y-2 text-sm text-gray-500">
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>150+ titels</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Alle universa</span>
-                        </li>
-                        <li class="flex items-center space-x-2">
-                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            <span>Complete multiverse</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <NuxtLink to="/"
-                class="bg-gray-200 text-gray-800 px-8 py-3 rounded-lg hover:bg-gray-300 transition-colors inline-flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-                Later
-            </NuxtLink>
-            <button @click="save"
-                class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Opslaan & Doorgaan
+            <p class="text-white/25 text-xs max-w-sm leading-relaxed mb-10">
+                Houd bij wat je hebt gezien, ontdek de perfecte kijkvolgorde, en mis geen enkel detail.
+            </p>
+            <button
+                class="px-8 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+                @click="step = 2"
+            >
+                Start je reis
             </button>
+        </div>
+
+        <!-- Step 2: Mode selection -->
+        <div v-else-if="step === 2" class="min-h-screen flex flex-col items-center justify-center px-6">
+            <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-2 text-center">KIES JE LEVEL</h2>
+            <p class="text-white/40 text-sm mb-8 text-center">Hoe diep wil je gaan?</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl w-full">
+                <button
+                    v-for="option in modeOptions"
+                    :key="option.value"
+                    :class="[
+                        'glass-card p-6 text-left transition-all duration-200 cursor-pointer',
+                        selectedMode === option.value
+                            ? 'border-white/30 bg-white/8'
+                            : 'hover:border-white/15',
+                    ]"
+                    @click="selectedMode = option.value"
+                >
+                    <div class="font-display text-xl tracking-wider text-white mb-1">{{ option.label }}</div>
+                    <p class="text-xs text-white/40 mb-3">{{ option.subtitle }}</p>
+                    <p class="text-sm text-white/50 leading-relaxed">{{ option.description }}</p>
+                    <div class="mt-3 text-xs text-white/30 font-mono">~{{ option.count }} titels</div>
+                </button>
+            </div>
+
+            <div class="flex gap-4 mt-8">
+                <button class="px-6 py-2 text-sm text-white/40 hover:text-white transition-colors" @click="step = 1">Terug</button>
+                <button
+                    class="px-8 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+                    @click="step = 3"
+                >
+                    Volgende
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Bulk import — mark what you've seen -->
+        <div v-else-if="step === 3" class="min-h-screen flex flex-col px-6 py-20">
+            <div class="text-center mb-8">
+                <h2 class="font-display text-3xl tracking-wider text-white mb-2">WAT HEB JE AL GEZIEN?</h2>
+                <p class="text-white/40 text-sm">Tap om titels als gezien te markeren. Je kunt dit later altijd aanpassen.</p>
+                <div class="flex items-center justify-center gap-4 mt-4">
+                    <button
+                        class="text-xs text-white/30 hover:text-white/60 transition-colors"
+                        @click="selectAllInCurrentPhase"
+                    >
+                        Selecteer hele fase
+                    </button>
+                    <span class="text-white/10">|</span>
+                    <button
+                        class="text-xs text-white/30 hover:text-white/60 transition-colors"
+                        @click="clearAll"
+                    >
+                        Wis selectie
+                    </button>
+                    <span class="text-white/10">|</span>
+                    <span class="text-xs text-white/30 font-mono">{{ watchedSet.size }}/{{ onboardingTitles.length }}</span>
+                </div>
+            </div>
+
+            <!-- Phase tabs -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-6 justify-center">
+                <button
+                    v-for="phase in onboardingPhases"
+                    :key="phase"
+                    :class="[
+                        'px-4 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors',
+                        currentPhaseTab === phase
+                            ? 'bg-white/10 text-white'
+                            : 'text-white/30 hover:text-white/60',
+                    ]"
+                    @click="currentPhaseTab = phase"
+                >
+                    Phase {{ phase }}
+                </button>
+            </div>
+
+            <!-- Poster grid -->
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 max-w-4xl mx-auto w-full flex-1">
+                <button
+                    v-for="title in filteredTitles"
+                    :key="title.slug"
+                    class="relative group"
+                    @click="toggleWatched(title.slug)"
+                >
+                    <div :class="[
+                        'aspect-[2/3] rounded-lg overflow-hidden border-2 transition-all duration-200',
+                        watchedSet.has(title.slug)
+                            ? 'border-green-500/60 opacity-100'
+                            : 'border-white/5 opacity-60 hover:opacity-80',
+                    ]">
+                        <div class="w-full h-full bg-white/5 flex items-center justify-center">
+                            <span class="text-[9px] text-white/30 text-center px-1 leading-tight">{{ title.title }}</span>
+                        </div>
+                    </div>
+                    <!-- Checkmark overlay -->
+                    <div
+                        v-if="watchedSet.has(title.slug)"
+                        class="absolute inset-0 flex items-center justify-center bg-green-500/20 rounded-lg"
+                    >
+                        <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="flex gap-4 mt-8 justify-center">
+                <button class="px-6 py-2 text-sm text-white/40 hover:text-white transition-colors" @click="step = 2">Terug</button>
+                <button
+                    class="px-8 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+                    @click="step = 4"
+                >
+                    Volgende
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Spoiler preference -->
+        <div v-else-if="step === 4" class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+            <h2 class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-2">SPOILER BESCHERMING</h2>
+            <p class="text-white/40 text-sm max-w-md mb-8">
+                Canonkeeper verbergt automatisch details van titels die je nog niet hebt gezien. Je kunt dit altijd aanpassen.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg w-full">
+                <button
+                    :class="[
+                        'glass-card p-6 text-left transition-all duration-200 cursor-pointer',
+                        spoilerPref === 'smart' ? 'border-white/30 bg-white/8' : 'hover:border-white/15',
+                    ]"
+                    @click="spoilerPref = 'smart'"
+                >
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                        </svg>
+                        <span class="font-display text-lg tracking-wider text-white">SMART</span>
+                    </div>
+                    <p class="text-xs text-white/40 leading-relaxed">Verberg automatisch details van titels die je nog niet hebt gezien.</p>
+                </button>
+                <button
+                    :class="[
+                        'glass-card p-6 text-left transition-all duration-200 cursor-pointer',
+                        spoilerPref === 'reveal_all' ? 'border-white/30 bg-white/8' : 'hover:border-white/15',
+                    ]"
+                    @click="spoilerPref = 'reveal_all'"
+                >
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="font-display text-lg tracking-wider text-white">ONTHUL ALLES</span>
+                    </div>
+                    <p class="text-xs text-white/40 leading-relaxed">Toon alles — ik geef niet om spoilers of heb alles al gezien.</p>
+                </button>
+            </div>
+
+            <div class="flex gap-4 mt-8">
+                <button class="px-6 py-2 text-sm text-white/40 hover:text-white transition-colors" @click="step = 3">Terug</button>
+                <button
+                    class="px-8 py-3 rounded-xl bg-white/10 border border-white/10 text-white text-sm font-medium hover:bg-white/15 transition-colors"
+                    @click="completeOnboarding"
+                >
+                    Start je reis
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { useOnboardingStore } from '../../stores/onboarding'
+definePageMeta({ layout: false, ssr: false })
 
-const store = useOnboardingStore()
-const mode = ref(store.mode)
+import mcuTitlesJson from '../../data/mcu-titles.json'
 
-function save() {
-    store.setMode(mode.value)
-    navigateTo('/')
+const totalSteps = 4
+const step = ref(1)
+const selectedMode = ref<'simple' | 'in_depth' | 'extreme'>('in_depth')
+const spoilerPref = ref<'smart' | 'reveal_all'>('smart')
+const watchedSet = ref(new Set<string>())
+const currentPhaseTab = ref(1)
+
+const modeOptions = [
+    {
+        value: 'simple' as const,
+        label: 'SIMPLE',
+        subtitle: 'Perfect voor beginners',
+        description: 'Alleen de essentiële MCU-films voor het hoofdverhaal.',
+        count: '25',
+    },
+    {
+        value: 'in_depth' as const,
+        label: 'IN DEPTH',
+        subtitle: 'Voor echte fans',
+        description: 'MCU-films én Disney+ series. Alle core en extended content.',
+        count: '45',
+    },
+    {
+        value: 'extreme' as const,
+        label: 'EXTREME',
+        subtitle: 'Voor de ultieme kenner',
+        description: 'Alles: Netflix, Sony, Fox — het complete multiverse.',
+        count: '65+',
+    },
+]
+
+const allTitles = mcuTitlesJson as any[]
+
+const onboardingTitles = computed(() => {
+    let filtered = allTitles
+    if (selectedMode.value === 'simple') {
+        filtered = filtered.filter(t => t.canon_level === 'core' && t.type === 'movie')
+    } else if (selectedMode.value === 'in_depth') {
+        filtered = filtered.filter(t => ['core', 'extended'].includes(t.canon_level))
+    }
+    return filtered.sort((a, b) => (a.chronology_index || 0) - (b.chronology_index || 0))
+})
+
+const onboardingPhases = computed(() => {
+    const phases = new Set<number>()
+    for (const t of onboardingTitles.value) {
+        const match = t.phase?.match(/\d+/)
+        if (match) phases.add(parseInt(match[0]))
+    }
+    return Array.from(phases).sort((a, b) => a - b)
+})
+
+const filteredTitles = computed(() => {
+    return onboardingTitles.value.filter(t => {
+        const match = t.phase?.match(/\d+/)
+        return match && parseInt(match[0]) === currentPhaseTab.value
+    })
+})
+
+function toggleWatched(slug: string) {
+    const s = new Set(watchedSet.value)
+    if (s.has(slug)) {
+        s.delete(slug)
+    } else {
+        s.add(slug)
+    }
+    watchedSet.value = s
+}
+
+function selectAllInCurrentPhase() {
+    const s = new Set(watchedSet.value)
+    for (const t of filteredTitles.value) {
+        s.add(t.slug)
+    }
+    watchedSet.value = s
+}
+
+function clearAll() {
+    watchedSet.value = new Set()
+}
+
+async function completeOnboarding() {
+    const user = useSupabaseUser()
+    const client = useSupabaseClient()
+
+    if (user.value) {
+        try {
+            await client.from('profiles').upsert({
+                id: user.value.id,
+                spoiler_mode: spoilerPref.value,
+                onboarding_completed: true,
+            }, { onConflict: 'id' })
+
+            if (watchedSet.value.size > 0) {
+                const slugToTitle = new Map(allTitles.map((t: any) => [t.slug, t]))
+                const { data: dbTitles } = await client
+                    .from('titles')
+                    .select('id, slug')
+
+                if (dbTitles && dbTitles.length > 0) {
+                    const slugToId = new Map(dbTitles.map(t => [t.slug, t.id]))
+                    const progressRows = Array.from(watchedSet.value)
+                        .filter(slug => slugToId.has(slug))
+                        .map(slug => ({
+                            user_id: user.value!.id,
+                            title_id: slugToId.get(slug)!,
+                            status: 'watched' as const,
+                            watched_at: new Date().toISOString(),
+                        }))
+
+                    if (progressRows.length > 0) {
+                        await client.from('progress').upsert(progressRows, { onConflict: 'user_id,title_id' })
+                    }
+                }
+            }
+        } catch {
+            // Supabase unavailable — continue to timeline anyway
+        }
+    }
+
+    localStorage.setItem('ck:mode', selectedMode.value)
+    navigateTo('/timeline')
 }
 </script>

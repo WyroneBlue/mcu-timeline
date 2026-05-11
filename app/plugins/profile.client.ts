@@ -9,11 +9,9 @@ export default defineNuxtPlugin(async () => {
                     id: newUser.id,
                     username: newUser.user_metadata?.user_name || newUser.email?.split('@')[0] || 'Nieuwe gebruiker',
                     avatar_url: newUser.user_metadata?.avatar_url,
-                    level_int: 1,
-                    xp_total: 0
-                })
-            } catch (error) {
-                console.error('Error creating profile:', error)
+                }, { onConflict: 'id', ignoreDuplicates: true })
+            } catch {
+                // Profile creation may fail with placeholder Supabase
             }
         }
     }, { immediate: true })
