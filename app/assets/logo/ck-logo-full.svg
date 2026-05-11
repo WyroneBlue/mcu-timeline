@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 48" fill="none">
+  <!-- Shield icon (scaled to 48px) -->
+  <g transform="translate(0, 0)">
+    <path d="M24 3L6 12v12c0 10.8 7.68 20.88 18 24 10.32-3.12 18-13.2 18-24V12L24 3z" fill="#F5A623"/>
+    <path d="M19.5 16.5v15l12-7.5-12-7.5z" fill="#0A0E1A"/>
+  </g>
+  <!-- Text: CANONKEEPER -->
+  <text x="56" y="34" font-family="'Space Grotesk', system-ui, sans-serif" font-weight="700" font-size="28" fill="white" letter-spacing="2">CANONKEEPER</text>
+</svg>
