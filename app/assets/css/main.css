@@ -101,20 +101,7 @@
    STATUS COLORS
    ============================================================ */
 
-.status-watched { --status-color: #34D399; }
-.status-watching { --status-color: #3B82F6; }
-.status-queued { --status-color: #8A8F9E; }
+.status-watched { --status-color: #48BB78; }
+.status-watching { --status-color: #4299E1; }
+.status-queued { --status-color: #A0AEC0; }
 .status-skipped { --status-color: #ED8936; }
-
-/* ============================================================
-   FRANCHISE ACCENT SYSTEM
-   ============================================================ */
-
-:root {
-    --franchise-accent: #F5A623;
-}
-
-[data-franchise="mcu"] { --franchise-accent: #F5A623; }
-[data-franchise="star-wars"] { --franchise-accent: #60A5FA; }
-[data-franchise="harry-potter"] { --franchise-accent: #7C3AED; }
-[data-franchise="fast-furious"] { --franchise-accent: #22C55E; }
