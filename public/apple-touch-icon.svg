@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <rect width="180" height="180" rx="36" fill="#0A0E1A"/>
+  <!-- Shield -->
+  <path d="M90 30L45 52.5v30c0 27 19.2 52.2 45 60 25.8-7.8 45-33 45-60v-30L90 30z" fill="#F5A623"/>
+  <!-- Play -->
+  <path d="M75 63.75v52.5l41.25-26.25L75 63.75z" fill="#0A0E1A"/>
+</svg>
