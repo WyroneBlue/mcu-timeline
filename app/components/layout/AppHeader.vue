@@ -1,5 +1,5 @@
 <template>
-    <header class="fixed top-0 left-0 right-0 z-50 bg-[#0A0E1A]/80 backdrop-blur-xl border-b border-white/5">
+    <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl border-b border-white/5" style="background-color: color-mix(in srgb, var(--theme-bg), transparent 20%)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <NuxtLink to="/" class="flex items-center gap-2.5">
                 <img src="~/assets/logo/ck-shield.svg" alt="Canonkeeper" class="w-7 h-7" />
@@ -42,7 +42,7 @@
                 <button
                     v-if="isLoggedIn"
                     class="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors"
-                    :title="spoilerMode === 'smart' ? 'Spoiler-vrije modus aan' : 'Spoiler-vrije modus uit'"
+                    :title="spoilerMode === 'smart' ? $t('spoiler.modeOn') : $t('spoiler.modeOff')"
                     @click="toggleSpoilerMode"
                 >
                     <svg v-if="spoilerMode === 'smart'" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,15 +75,16 @@ defineEmits<{
     toggleMenu: []
 }>()
 
+const { t } = useI18n()
 const { isLoggedIn } = useAuth()
 const { unreadCount } = useNotifications()
 const { spoilerMode, toggleSpoilerMode } = useSpoilerGuard()
 
-const navLinks = [
-    { to: '/timeline', label: 'Timeline' },
-    { to: '/quiz', label: 'Quiz' },
-    { to: '/friends', label: 'Vrienden' },
-    { to: '/leaderboard', label: 'Leaderboard' },
-    { to: '/profile', label: 'Profiel' },
-]
+const navLinks = computed(() => [
+    { to: '/timeline', label: t('nav.timeline') },
+    { to: '/quiz', label: t('nav.quiz') },
+    { to: '/friends', label: t('nav.friends') },
+    { to: '/leaderboard', label: t('nav.leaderboard') },
+    { to: '/profile', label: t('nav.profile') },
+])
 </script>

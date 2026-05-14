@@ -36,7 +36,7 @@
                 <div class="flex items-center gap-2 text-xs text-white/30 mb-4">
                     <span class="px-2 py-0.5 rounded-full border border-white/[0.08] bg-white/[0.03]">{{ typeLabel }}</span>
                     <span v-if="location.realm" class="px-2 py-0.5 rounded-full border border-white/[0.08] bg-white/[0.03]">{{ location.realm }}</span>
-                    <span class="text-white/20">{{ titleSlugs.length }} titles</span>
+                    <span class="text-white/20">{{ titleSlugs.length }} {{ $t('location.titles') }}</span>
                 </div>
 
                 <p v-if="location.description" class="text-sm text-white/30 leading-relaxed mb-5">
@@ -46,7 +46,7 @@
                 <div class="w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent mb-5" />
 
                 <div v-if="titles.length > 0">
-                    <h4 class="text-xs font-medium text-white/40 uppercase tracking-wider mb-3">Films & Series</h4>
+                    <h4 class="text-xs font-medium text-white/40 uppercase tracking-wider mb-3">{{ $t('location.filmsAndSeries') }}</h4>
                     <div class="grid grid-cols-3 gap-2">
                         <NuxtLink
                             v-for="title in titles"
@@ -74,7 +74,7 @@
                 </div>
 
                 <div v-else class="text-center py-8">
-                    <p class="text-white/20 text-sm">Geen titels op deze locatie</p>
+                    <p class="text-white/20 text-sm">{{ $t('location.noTitles') }}</p>
                 </div>
             </div>
         </div>
@@ -108,17 +108,12 @@ onUnmounted(() => {
     window.removeEventListener('resize', checkMobile)
 })
 
-const typeLabels: Record<string, string> = {
-    planet: 'Planet',
-    realm: 'Realm',
-    dimension: 'Dimension',
-    construct: 'Construct',
-    region: 'Region',
-}
+const { t } = useI18n()
 
 const typeLabel = computed(() => {
     if (!props.location) return ''
-    return typeLabels[props.location.type] || props.location.type
+    const key = `location.type_${props.location.type}`
+    return t(key)
 })
 
 const titleSlugs = computed(() => props.location?.title_slugs ?? [])

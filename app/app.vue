@@ -3,7 +3,7 @@
         <Head>
             <Title>Canonkeeper — Keep the Canon</Title>
             <Meta name="description" content="Master every franchise. Track your watch journey through the MCU and beyond." />
-            <Meta name="theme-color" content="#0A0E1A" />
+            <Meta name="theme-color" :content="currentTheme.bgColor" />
             <Meta name="apple-mobile-web-app-capable" content="yes" />
             <Meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
             <Meta property="og:title" content="Canonkeeper — Keep the Canon" />
@@ -18,14 +18,26 @@
     </div>
 </template>
 
+<script setup lang="ts">
+const { currentTheme } = useSettings()
+useThemeVariables()
+</script>
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @layer base {
     :root {
-        --color-bg: #0A0E1A;
-        --color-bg-elevated: #141825;
+        --theme-bg: #050508;
+        --theme-accent: #8B5CF6;
+        --theme-particle: #ffffff;
+        --theme-glow: #8B5CF6;
+        --theme-nebula-1: #1a0533;
+        --theme-nebula-2: #0a1628;
+
+        --color-bg: var(--theme-bg);
+        --color-bg-elevated: color-mix(in srgb, var(--theme-bg), white 6%);
         --color-bg-card: rgba(255, 255, 255, 0.03);
         --color-border: rgba(255, 255, 255, 0.08);
         --color-border-hover: rgba(255, 255, 255, 0.15);

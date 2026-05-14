@@ -1,5 +1,5 @@
 export default defineEventHandler(async (event) => {
-    requireAdmin(event)
+    await requireAdmin(event)
     const db = adminClient()
 
     const { data, error } = await db

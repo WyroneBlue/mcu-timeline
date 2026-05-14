@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen bg-[#0A0E1A] text-white">
+    <div class="min-h-screen text-white" style="background-color: var(--theme-bg)">
         <Transition name="focus-slide-up">
             <LayoutAppHeader v-show="!focusMode" @toggle-menu="mobileMenuOpen = true" />
         </Transition>
@@ -13,15 +13,15 @@
             <LayoutBottomNav v-show="!focusMode" />
         </Transition>
 
-        <TransitionsMultiverseTransition />
-        <EasterEggsSnapEffect />
-        <EasterEggsStanLeeCameo />
+        <EasterEggsSnapEffect v-if="settings.showEasterEggs" />
+        <EasterEggsStanLeeCameo v-if="settings.showEasterEggs" />
     </div>
 </template>
 
 <script setup lang="ts">
 const mobileMenuOpen = ref(false)
 const { focusMode } = useFocusMode()
+const { settings } = useSettings()
 
 const route = useRoute()
 watch(() => route.path, () => {

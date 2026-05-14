@@ -8,12 +8,12 @@
                 :alt="title"
                 class="w-full h-full object-cover"
             />
-            <div v-else class="w-full h-full bg-gradient-to-br from-[#1a1a2e] to-[#0A0E1A]" />
+            <div v-else class="w-full h-full bg-gradient-to-br from-[color-mix(in_srgb,var(--theme-bg),white_8%)] to-[var(--theme-bg)]" />
         </div>
 
         <!-- Gradient overlays -->
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0A0E1A] via-[#0A0E1A]/60 to-transparent" />
-        <div class="absolute inset-0 bg-gradient-to-r from-[#0A0E1A]/80 to-transparent" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[var(--theme-bg)] via-[var(--theme-bg)]/60 to-transparent" />
+        <div class="absolute inset-0 bg-gradient-to-r from-[var(--theme-bg)]/80 to-transparent" />
 
         <!-- Content -->
         <div class="relative pt-28 pb-8 px-4 sm:px-6 max-w-5xl mx-auto">

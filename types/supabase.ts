@@ -79,9 +79,10 @@ export type Database = {
                     spoiler_mode: 'smart' | 'reveal_all'
                     country_code: string | null
                     city: string | null
+                    is_admin: boolean
                     created_at: string | null
                 }
-                Insert: { id: string; username?: string | null; avatar_url?: string | null; favorite_hero?: string | null }
+                Insert: { id: string; username?: string | null; avatar_url?: string | null; favorite_hero?: string | null; is_admin?: boolean }
                 Update: Partial<Database['public']['Tables']['profiles']['Row']>
                 Relationships: []
             }

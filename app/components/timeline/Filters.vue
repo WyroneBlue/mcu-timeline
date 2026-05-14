@@ -3,14 +3,15 @@
         <!-- Filter toggle button -->
         <button
             class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
-            :class="hasActiveFilters ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : 'bg-white/5 border border-white/5 text-white/40 hover:text-white/60'"
+            :class="hasActiveFilters ? 'border' : 'bg-white/5 border border-white/5 text-white/40 hover:text-white/60'"
+            :style="hasActiveFilters ? { backgroundColor: currentTheme.accentColor + '33', color: currentTheme.accentColor + 'CC', borderColor: currentTheme.accentColor + '4D' } : {}"
             @click="isOpen = !isOpen"
         >
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
-            Filters
-            <span v-if="activeCount > 0" class="ml-1 w-4 h-4 rounded-full bg-purple-500 text-white text-[10px] flex items-center justify-center">
+            {{ $t('filters.title') }}
+            <span v-if="activeCount > 0" class="ml-1 w-4 h-4 rounded-full text-white text-[10px] flex items-center justify-center" :style="{ backgroundColor: currentTheme.accentColor }">
                 {{ activeCount }}
             </span>
         </button>
@@ -21,20 +22,20 @@
                 <div class="max-w-4xl mx-auto px-4 sm:px-6">
                     <div class="glass-card p-4 sm:p-5 max-h-[60vh] overflow-y-auto">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-sm font-medium text-white/60">Filters</span>
+                            <span class="text-sm font-medium text-white/60">{{ $t('filters.title') }}</span>
                             <button
                                 v-if="hasActiveFilters"
                                 class="text-xs text-white/30 hover:text-white/60 transition-colors"
                                 @click="clearAll"
                             >
-                                Clear all
+                                {{ $t('filters.clearAll') }}
                             </button>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <!-- Franchise filter -->
                             <TimelineFilterGroup
-                                label="Franchise"
+                                :label="$t('filters.franchise')"
                                 :options="franchiseOptions"
                                 :selected="filters.franchises"
                                 @toggle="toggleFilter('franchises', $event)"
@@ -42,7 +43,7 @@
 
                             <!-- Team filter -->
                             <TimelineFilterGroup
-                                label="Team"
+                                :label="$t('filters.team')"
                                 :options="teamOptions"
                                 :selected="filters.teams"
                                 @toggle="toggleFilter('teams', $event)"
@@ -50,7 +51,7 @@
 
                             <!-- Character filter -->
                             <TimelineFilterGroup
-                                label="Character"
+                                :label="$t('filters.character')"
                                 :options="characterOptions"
                                 :selected="filters.characters"
                                 @toggle="toggleFilter('characters', $event)"
@@ -59,7 +60,7 @@
 
                             <!-- Year filter -->
                             <TimelineFilterGroup
-                                label="Year"
+                                :label="$t('filters.year')"
                                 :options="yearOptions"
                                 :selected="filters.years"
                                 @toggle="toggleFilter('years', $event)"
@@ -67,7 +68,7 @@
 
                             <!-- Type filter -->
                             <TimelineFilterGroup
-                                label="Type"
+                                :label="$t('filters.type')"
                                 :options="typeOptions"
                                 :selected="filters.types"
                                 @toggle="toggleFilter('types', $event)"
@@ -75,7 +76,7 @@
 
                             <!-- Status filter -->
                             <TimelineFilterGroup
-                                label="Status"
+                                :label="$t('filters.status')"
                                 :options="statusOptions"
                                 :selected="filters.statuses"
                                 @toggle="toggleFilter('statuses', $event)"
@@ -83,7 +84,7 @@
 
                             <!-- Canon level filter -->
                             <TimelineFilterGroup
-                                label="Canon Level"
+                                :label="$t('filters.canonLevel')"
                                 :options="canonOptions"
                                 :selected="filters.canonLevels"
                                 @toggle="toggleFilter('canonLevels', $event)"
@@ -91,7 +92,7 @@
 
                             <!-- Saga filter -->
                             <TimelineFilterGroup
-                                label="Saga"
+                                :label="$t('filters.saga')"
                                 :options="sagaOptions"
                                 :selected="filters.sagas"
                                 @toggle="toggleFilter('sagas', $event)"
@@ -99,7 +100,7 @@
 
                             <!-- Release status filter -->
                             <TimelineFilterGroup
-                                label="Release"
+                                :label="$t('filters.release')"
                                 :options="releaseStatusOptions"
                                 :selected="filters.releaseStatuses"
                                 @toggle="toggleFilter('releaseStatuses', $event)"
@@ -107,7 +108,7 @@
                         </div>
 
                         <div v-if="hasActiveFilters" class="mt-4 pt-3 border-t border-white/5 text-xs text-white/30">
-                            {{ filteredCount }} of {{ totalCount }} titles shown
+                            {{ $t('filters.titlesShown', { filtered: filteredCount, total: totalCount }) }}
                         </div>
                     </div>
                 </div>
@@ -119,6 +120,9 @@
 <script setup lang="ts">
 import type { Database } from '~/types/supabase'
 type Title = Database['public']['Tables']['titles']['Row']
+
+const { t } = useI18n()
+const { currentTheme } = useSettings()
 
 interface Filters {
     franchises: Set<string>
@@ -174,27 +178,27 @@ const teamOptions = computed(() => collectFromTitles(t => t.teams).filter(t => t
 const characterOptions = computed(() => collectFromTitles(t => t.characters))
 const yearOptions = computed(() => collectFromTitles(t => t.release_date?.slice(0, 4)).sort((a, b) => b.localeCompare(a)))
 const typeOptions = computed(() => [
-    { value: 'movie', label: 'Film' },
-    { value: 'series', label: 'Serie' },
+    { value: 'movie', label: t('filters.movie') },
+    { value: 'series', label: t('filters.series') },
 ])
 const statusOptions = computed(() => [
-    { value: 'watched', label: 'Watched' },
-    { value: 'watching', label: 'Watching' },
-    { value: 'queued', label: 'Queued' },
-    { value: 'skipped', label: 'Skipped' },
-    { value: 'none', label: 'Not started' },
+    { value: 'watched', label: t('filters.watched') },
+    { value: 'watching', label: t('filters.watching') },
+    { value: 'queued', label: t('filters.queued') },
+    { value: 'skipped', label: t('filters.skipped') },
+    { value: 'none', label: t('filters.notStarted') },
 ])
 const canonOptions = computed(() => [
-    { value: 'core', label: 'Core' },
-    { value: 'extended', label: 'Extended' },
-    { value: 'adjacent', label: 'Adjacent' },
-    { value: 'standalone', label: 'Standalone' },
+    { value: 'core', label: t('filters.core') },
+    { value: 'extended', label: t('filters.extended') },
+    { value: 'adjacent', label: t('filters.adjacent') },
+    { value: 'standalone', label: t('filters.standalone') },
 ])
 const sagaOptions = computed(() => collectFromTitles(t => t.saga))
 const releaseStatusOptions = computed(() => [
-    { value: 'released', label: 'Released' },
-    { value: 'upcoming', label: 'Upcoming' },
-    { value: 'announced', label: 'Announced' },
+    { value: 'released', label: t('filters.released') },
+    { value: 'upcoming', label: t('filters.upcoming') },
+    { value: 'announced', label: t('filters.announced') },
 ])
 
 function toggleFilter(key: keyof Filters, value: string) {

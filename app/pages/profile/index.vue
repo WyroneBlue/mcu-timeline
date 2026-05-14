@@ -7,7 +7,7 @@
                     <span class="font-display text-4xl text-white">{{ userInitial }}</span>
                 </div>
                 <div class="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-white/10 border border-white/10 text-[10px] font-mono text-white/60">
-                    Lvl {{ level }}
+                    {{ $t('profile.lvl') }} {{ level }}
                 </div>
             </div>
             <h1 class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-1">{{ displayName }}</h1>
@@ -22,29 +22,29 @@
         <!-- Stats grid -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div class="glass-card p-4 text-center">
-                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Gezien</span>
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('profile.watched') }}</span>
                 <span class="font-display text-2xl text-white">{{ watchedCount }}</span>
             </div>
             <div class="glass-card p-4 text-center">
-                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Kijktijd</span>
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('profile.watchTime') }}</span>
                 <span class="font-display text-2xl text-white">{{ formattedWatchTime }}</span>
             </div>
             <div class="glass-card p-4 text-center">
-                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Streak</span>
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('profile.streak') }}</span>
                 <span class="font-display text-2xl text-white">{{ streak }}<span class="text-sm text-white/30">d</span></span>
             </div>
             <div class="glass-card p-4 text-center">
-                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Badges</span>
+                <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('profile.badges') }}</span>
                 <span class="font-display text-2xl text-white">{{ earnedBadgeCount }}</span>
             </div>
         </div>
 
         <!-- Progress overview -->
         <div class="glass-card p-6">
-            <h2 class="font-display text-xl tracking-wider text-white mb-4">Voortgang</h2>
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">{{ $t('profile.progress') }}</h2>
             <div class="space-y-3">
                 <div v-for="phase in phaseProgress" :key="phase.number" class="flex items-center gap-4">
-                    <span class="text-xs text-white/30 font-mono w-16 shrink-0">Phase {{ phase.number }}</span>
+                    <span class="text-xs text-white/30 font-mono w-16 shrink-0">{{ $t('common.phase') }} {{ phase.number }}</span>
                     <div class="flex-1 relative h-2 rounded-full bg-white/5 overflow-hidden">
                         <div
                             class="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
@@ -58,7 +58,7 @@
 
         <!-- Recent Activity -->
         <div v-if="recentActivity.length > 0" class="glass-card p-6">
-            <h2 class="font-display text-xl tracking-wider text-white mb-4">Recente Activiteit</h2>
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">{{ $t('profile.recentActivity') }}</h2>
             <div class="space-y-3">
                 <div
                     v-for="(event, i) in recentActivity"
@@ -81,7 +81,7 @@
 
         <!-- Badges -->
         <div>
-            <h2 class="font-display text-xl tracking-wider text-white mb-4">Badges</h2>
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">{{ $t('profile.badges') }}</h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 <UiBadgeCard
                     v-for="badge in allBadges"
@@ -96,14 +96,15 @@
         </div>
 
         <!-- Settings -->
-        <div class="glass-card p-6">
-            <h2 class="font-display text-xl tracking-wider text-white mb-4">Instellingen</h2>
-            <div class="space-y-4">
-                <!-- Spoiler toggle -->
+        <div>
+            <h2 class="font-display text-xl tracking-wider text-white mb-4">{{ $t('profile.settings') }}</h2>
+
+            <!-- Spoiler toggle (kept in its own card) -->
+            <div class="glass-card p-5 mb-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-white/80">Spoiler Bescherming</p>
-                        <p class="text-xs text-white/30">{{ spoilerMode === 'smart' ? 'Verbergt details van onbekeken titels' : 'Alles is zichtbaar' }}</p>
+                        <p class="text-sm text-white/80">{{ $t('profile.spoilerProtection') }}</p>
+                        <p class="text-xs text-white/30">{{ spoilerMode === 'smart' ? $t('profile.spoilerSmart') : $t('profile.spoilerOff') }}</p>
                     </div>
                     <button
                         :class="[
@@ -114,19 +115,21 @@
                         ]"
                         @click="toggleSpoilerMode"
                     >
-                        {{ spoilerMode === 'smart' ? 'Smart' : 'Alles Tonen' }}
+                        {{ spoilerMode === 'smart' ? $t('profile.spoilerSmartLabel') : $t('profile.spoilerShowAll') }}
                     </button>
                 </div>
+            </div>
 
-                <!-- Sign out -->
-                <div class="pt-2 border-t border-white/5">
-                    <button
-                        class="text-sm text-white/30 hover:text-red-400 transition-colors"
-                        @click="handleSignOut"
-                    >
-                        Uitloggen
-                    </button>
-                </div>
+            <UiSettingsPanel />
+
+            <!-- Sign out -->
+            <div class="pt-4 mt-2 border-t border-white/5">
+                <button
+                    class="text-sm text-white/30 hover:text-red-400 transition-colors"
+                    @click="handleSignOut"
+                >
+                    {{ $t('profile.signOut') }}
+                </button>
             </div>
         </div>
     </div>
@@ -137,6 +140,7 @@ definePageMeta({ ssr: false })
 
 import mcuTitlesJson from '../../../data/mcu-titles.json'
 
+const { t } = useI18n()
 const user = useSupabaseUser()
 const { getLevelFromXP, getLevelName, getTotalXP } = useXP()
 const { signOut } = useAuth()
@@ -164,23 +168,23 @@ const recentActivity = ref<ActivityEvent[]>([])
 
 const level = computed(() => getLevelFromXP(totalXP.value))
 const levelName = computed(() => getLevelName(level.value))
-const displayName = computed(() => user.value?.email?.split('@')[0] || 'Gebruiker')
+const displayName = computed(() => user.value?.email?.split('@')[0] || t('profile.user'))
 const userInitial = computed(() => displayName.value.charAt(0).toUpperCase())
 const earnedBadgeCount = computed(() => earnedCodes.value.size)
 
 const formattedWatchTime = computed(() => {
     const hours = Math.floor(watchedTotalMinutes.value / 60)
-    if (hours === 0) return `${watchedTotalMinutes.value}m`
-    return `${hours}u`
+    if (hours === 0) return t('profile.timeMinutes', { n: watchedTotalMinutes.value })
+    return t('profile.timeHours', { n: hours })
 })
 
-const allBadges = [
-    { code: 'first_watch', name: 'First Watch', description: 'Eerste titel gezien', icon: '🎬' },
-    { code: 'half_way', name: 'Halverwege', description: '50% voltooid', icon: '⚡' },
-    { code: 'streak_7', name: 'Week Streak', description: '7 dagen op rij', icon: '🔥' },
-    { code: 'binge_master', name: 'Binge Master', description: '5 titels in 7 dagen', icon: '🍿' },
-    { code: 'completionist', name: 'Completionist', description: 'Alles gezien', icon: '🏆' },
-]
+const allBadges = computed(() => [
+    { code: 'first_watch', name: t('badges.firstWatch'), description: t('badges.firstWatchDesc'), icon: '🎬' },
+    { code: 'half_way', name: t('badges.halfway'), description: t('badges.halfwayDesc'), icon: '⚡' },
+    { code: 'streak_7', name: t('badges.weekStreak'), description: t('badges.weekStreakDesc'), icon: '🔥' },
+    { code: 'binge_master', name: t('badges.bingeMaster'), description: t('badges.bingeMasterDesc'), icon: '🍿' },
+    { code: 'completionist', name: t('badges.completionist'), description: t('badges.completionistDesc'), icon: '🏆' },
+])
 
 const phaseProgress = computed(() => {
     const phases: { number: number; watched: number; total: number; percent: number }[] = []
@@ -229,22 +233,22 @@ function activityBg(type: string): string {
 }
 
 function activityLabel(event: ActivityEvent): string {
-    if (event.type === 'watch') return event.title ? `${event.title} gekeken` : 'Titel gekeken'
-    if (event.type === 'quiz') return 'Quiz vraag correct'
-    if (event.type === 'badge') return 'Badge verdiend'
-    if (event.type === 'streak') return 'Streak bonus'
-    return 'XP verdiend'
+    if (event.type === 'watch') return event.title ? t('profile.titleWatched', { title: event.title }) : t('profile.watchedTitle')
+    if (event.type === 'quiz') return t('profile.quizCorrect')
+    if (event.type === 'badge') return t('profile.badgeEarned')
+    if (event.type === 'streak') return t('profile.streakBonus')
+    return t('profile.xpEarned')
 }
 
 function formatTimeAgo(dateStr: string): string {
     const diff = Date.now() - new Date(dateStr).getTime()
     const mins = Math.floor(diff / 60000)
-    if (mins < 60) return `${mins}m`
+    if (mins < 60) return t('profile.timeAgoMinutes', { n: mins })
     const hours = Math.floor(mins / 60)
-    if (hours < 24) return `${hours}u`
+    if (hours < 24) return t('profile.timeAgoHours', { n: hours })
     const days = Math.floor(hours / 24)
-    if (days < 7) return `${days}d`
-    return `${Math.floor(days / 7)}w`
+    if (days < 7) return t('profile.timeAgoDays', { n: days })
+    return t('profile.timeAgoWeeks', { n: Math.floor(days / 7) })
 }
 
 function toggleSpoilerMode() {

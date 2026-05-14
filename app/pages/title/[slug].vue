@@ -36,7 +36,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
-                    Terug naar Timeline
+                    {{ $t('titlePage.backToTimeline') }}
                 </NuxtLink>
 
                 <!-- New release banner -->
@@ -61,8 +61,8 @@
                     </div>
                 </Transition>
 
-                <!-- Previously On... -->
-                <TitlePreviouslyOn
+                <!-- Before You Watch -->
+                <TitleBeforeYouWatch
                     v-if="skippedSlugs.size > 0"
                     :current-slug="slug"
                     :skipped-slugs="skippedSlugs"
@@ -74,26 +74,26 @@
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
                         </svg>
-                        Retcon Info
+                        {{ $t('titlePage.retconInfo') }}
                     </h3>
                     <div v-if="retcons.causedBy.length > 0" class="space-y-2">
                         <p v-for="r in retcons.causedBy" :key="r.id" class="text-sm text-white/50">
-                            <span class="text-white/70">{{ r.source_title?.title }}</span> heeft een aspect van deze titel aangepast: {{ r.description }}
+                            {{ $t('titlePage.retconCausedBy', { source: r.source_title?.title, desc: r.description }) }}
                         </p>
                     </div>
                     <div v-if="retcons.causes.length > 0" class="space-y-2 mt-3">
                         <p v-for="r in retcons.causes" :key="r.id" class="text-sm text-white/50">
-                            Deze titel past <span class="text-white/70">{{ r.affected_title?.title }}</span> aan: {{ r.description }}
+                            {{ $t('titlePage.retconCauses', { affected: r.affected_title?.title, desc: r.description }) }}
                         </p>
                     </div>
                 </div>
 
                 <!-- Synopsis (spoiler guarded) -->
                 <div ref="synopsisEl" class="glass-card p-6">
-                    <h3 class="font-display text-xl tracking-wider text-white mb-3">Synopsis</h3>
+                    <h3 class="font-display text-xl tracking-wider text-white mb-3">{{ $t('titlePage.synopsis') }}</h3>
                     <div :class="[!canRevealSynopsis && 'spoiler-blur']">
                         <p class="text-white/50 leading-relaxed">
-                            {{ title.overview || 'Geen synopsis beschikbaar voor deze titel.' }}
+                            {{ title.overview || $t('titlePage.noSynopsis') }}
                         </p>
                     </div>
                     <button
@@ -101,7 +101,7 @@
                         class="mt-3 text-xs text-white/30 hover:text-white/50 transition-colors"
                         @click="handleMarkWatched"
                     >
-                        Markeer als watched om synopsis te onthullen
+                        {{ $t('titlePage.markWatchedToReveal') }}
                     </button>
                 </div>
 
@@ -116,19 +116,19 @@
                 <!-- Metadata grid -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div class="glass-card p-4 text-center">
-                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Positie</span>
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('titlePage.position') }}</span>
                         <span class="font-display text-2xl text-white">{{ title.chronology_index }}</span>
                     </div>
                     <div class="glass-card p-4 text-center">
-                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Fase</span>
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('titlePage.phaseLabel') }}</span>
                         <span class="font-display text-2xl text-white">{{ phaseNumber || '—' }}</span>
                     </div>
                     <div class="glass-card p-4 text-center">
-                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Relevantie</span>
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('titlePage.relevance') }}</span>
                         <span class="font-display text-2xl text-white">{{ title.mcu_relevance_score || '—' }}<span class="text-sm text-white/30">/10</span></span>
                     </div>
                     <div class="glass-card p-4 text-center">
-                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">Status</span>
+                        <span class="text-xs text-white/30 uppercase tracking-wider block mb-1">{{ $t('titlePage.statusLabel') }}</span>
                         <span class="font-display text-2xl" :class="statusColor">{{ statusLabel }}</span>
                     </div>
                 </div>
@@ -158,9 +158,9 @@
         <!-- Not found -->
         <div v-else class="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
             <div class="font-display text-4xl text-white mb-2">404</div>
-            <p class="text-white/40 text-sm mb-6">Titel niet gevonden.</p>
+            <p class="text-white/40 text-sm mb-6">{{ $t('titlePage.notFound') }}</p>
             <NuxtLink to="/timeline" class="text-sm text-white/50 hover:text-white transition-colors">
-                Terug naar Timeline
+                {{ $t('titlePage.backToTimelineShort') }}
             </NuxtLink>
         </div>
     </div>
@@ -173,6 +173,7 @@ import type { Database } from '~/types/supabase'
 
 type Title = Database['public']['Tables']['titles']['Row']
 
+const { t } = useI18n()
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
 
@@ -218,10 +219,10 @@ const canRevealSynopsis = computed(() => {
 
 const statusLabel = computed(() => {
     const labels: Record<string, string> = {
-        queued: 'Queue',
-        watching: 'Kijken',
-        watched: 'Gezien',
-        skipped: 'Skipped',
+        queued: t('titlePage.statusQueued'),
+        watching: t('titlePage.statusWatching'),
+        watched: t('titlePage.statusWatched'),
+        skipped: t('titlePage.statusSkipped'),
     }
     return currentStatus.value ? labels[currentStatus.value] : '—'
 })

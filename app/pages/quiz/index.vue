@@ -1,8 +1,8 @@
 <template>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
         <div class="pt-4">
-            <h1 class="font-display text-3xl tracking-wider text-white mb-1">MCU QUIZ</h1>
-            <p class="text-white/30 text-sm">Test je kennis van het Marvel Cinematic Universe.</p>
+            <h1 class="font-display text-3xl tracking-wider text-white mb-1">{{ $t('quiz.title') }}</h1>
+            <p class="text-white/30 text-sm">{{ $t('quiz.subtitle') }}</p>
         </div>
 
         <!-- Quiz selection -->
@@ -11,21 +11,21 @@
             <div class="grid grid-cols-3 gap-3">
                 <div class="glass-card p-4 text-center">
                     <span class="font-display text-2xl text-white">{{ totalAnswered }}</span>
-                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">Beantwoord</span>
+                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">{{ $t('quiz.answered') }}</span>
                 </div>
                 <div class="glass-card p-4 text-center">
                     <span class="font-display text-2xl text-green-400">{{ totalCorrect }}</span>
-                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">Correct</span>
+                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">{{ $t('quiz.correct') }}</span>
                 </div>
                 <div class="glass-card p-4 text-center">
                     <span class="font-display text-2xl text-white">{{ correctPercent }}<span class="text-sm text-white/30">%</span></span>
-                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">Score</span>
+                    <span class="block text-[10px] text-white/30 uppercase tracking-wider mt-1">{{ $t('quiz.score') }}</span>
                 </div>
             </div>
 
             <!-- Phase selection -->
             <div class="space-y-3">
-                <h2 class="font-display text-lg tracking-wider text-white/60">KIES EEN QUIZ</h2>
+                <h2 class="font-display text-lg tracking-wider text-white/60">{{ $t('quiz.chooseQuiz') }}</h2>
 
                 <button
                     class="glass-card p-5 w-full text-left flex items-center gap-4 hover:border-white/15 transition-colors"
@@ -35,8 +35,8 @@
                         <span class="font-display text-xl text-white/40">∞</span>
                     </div>
                     <div class="flex-1">
-                        <span class="text-sm text-white font-medium block">Alle Fases</span>
-                        <span class="text-xs text-white/30">{{ allQuestions.length }} vragen uit het hele MCU</span>
+                        <span class="text-sm text-white font-medium block">{{ $t('quiz.allPhases') }}</span>
+                        <span class="text-xs text-white/30">{{ $t('quiz.questionsFromAll', { count: allQuestions.length }) }}</span>
                     </div>
                     <svg class="w-4 h-4 text-white/20 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -54,7 +54,7 @@
                     </div>
                     <div class="flex-1">
                         <span class="text-sm text-white font-medium block">{{ phase }}</span>
-                        <span class="text-xs text-white/30">{{ questionsForPhase(phase).length }} vragen</span>
+                        <span class="text-xs text-white/30">{{ $t('quiz.questionsCount', { count: questionsForPhase(phase).length }) }}</span>
                     </div>
                     <svg class="w-4 h-4 text-white/20 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -68,7 +68,7 @@
             <!-- Progress -->
             <div class="flex items-center gap-3">
                 <button class="text-white/30 hover:text-white/50 transition-colors text-sm" @click="exitQuiz">
-                    ← Stoppen
+                    ← {{ $t('quiz.stop') }}
                 </button>
                 <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
                     <div class="h-full bg-white/30 rounded-full transition-all duration-500" :style="{ width: `${quizProgress}%` }" />
@@ -116,13 +116,13 @@
                 <!-- Feedback -->
                 <div v-if="answered !== null" class="flex items-center justify-between pt-2">
                     <span :class="answered === currentQuestion.correct_index ? 'text-green-400' : 'text-red-400'" class="text-sm font-medium">
-                        {{ answered === currentQuestion.correct_index ? 'Correct! +25 XP' : 'Helaas, fout' }}
+                        {{ answered === currentQuestion.correct_index ? $t('quiz.correctXP') : $t('quiz.wrong') }}
                     </span>
                     <button
                         class="px-5 py-2 rounded-xl bg-white/10 border border-white/10 text-sm text-white hover:bg-white/15 transition-colors"
                         @click="nextQuestion"
                     >
-                        {{ currentIndex < activeQuestions.length - 1 ? 'Volgende' : 'Bekijk resultaat' }}
+                        {{ currentIndex < activeQuestions.length - 1 ? $t('quiz.nextQuestion') : $t('quiz.viewResult') }}
                     </button>
                 </div>
             </div>
@@ -138,7 +138,7 @@
                     <p class="text-white/60">
                         {{ resultMessage }}
                     </p>
-                    <p class="text-sm text-green-400 font-mono">+{{ score * 25 }} XP verdiend</p>
+                    <p class="text-sm text-green-400 font-mono">{{ $t('quiz.xpEarned', { xp: score * 25 }) }}</p>
                 </div>
 
                 <!-- Per-question review -->
@@ -160,13 +160,13 @@
                         class="px-6 py-3 rounded-xl bg-white/10 border border-white/10 text-sm text-white hover:bg-white/15 transition-colors"
                         @click="startQuiz(lastPhase)"
                     >
-                        Opnieuw proberen
+                        {{ $t('quiz.tryAgain') }}
                     </button>
                     <button
                         class="px-6 py-3 rounded-xl bg-white/5 border border-white/5 text-sm text-white/60 hover:bg-white/10 transition-colors"
                         @click="exitQuiz"
                     >
-                        Terug naar overzicht
+                        {{ $t('quiz.backToOverview') }}
                     </button>
                 </div>
             </div>
@@ -192,6 +192,7 @@ interface QuizQuestion {
 const allQuestions = quizData as QuizQuestion[]
 const user = useSupabaseUser()
 const { awardXP } = useXP()
+const { t } = useI18n()
 
 const phases = computed(() => {
     const set = new Set(allQuestions.map(q => q.phase))
@@ -252,11 +253,11 @@ const score = computed(() => {
 
 const resultMessage = computed(() => {
     const pct = activeQuestions.value.length > 0 ? score.value / activeQuestions.value.length : 0
-    if (pct === 1) return 'Perfect! Je kent het MCU door en door.'
-    if (pct >= 0.8) return 'Uitstekend! Je bent een ware MCU-fan.'
-    if (pct >= 0.6) return 'Goed gedaan! Je weet behoorlijk wat.'
-    if (pct >= 0.4) return 'Niet slecht, maar er valt nog wat te leren.'
-    return 'Tijd om wat films te kijken!'
+    if (pct === 1) return t('quiz.resultPerfect')
+    if (pct >= 0.8) return t('quiz.resultExcellent')
+    if (pct >= 0.6) return t('quiz.resultGood')
+    if (pct >= 0.4) return t('quiz.resultOkay')
+    return t('quiz.resultLow')
 })
 
 function shuffle<T>(arr: T[]): T[] {

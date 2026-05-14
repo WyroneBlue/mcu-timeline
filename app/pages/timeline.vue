@@ -27,7 +27,6 @@
                 <div class="flex flex-col items-center gap-2">
                     <div class="flex items-center gap-2">
                         <TimelineModeSelector v-model="mode" :sort-by="sortBy" :view-mode="viewMode" @update:sort-by="sortBy = $event" @update:view-mode="onViewModeChange" />
-                        <TransitionsTransitionSelector />
                         <TimelineFilters
                             v-model:filters="activeFilters"
                             :titles="allTitles"
@@ -46,13 +45,19 @@
 
         <!-- Empty state -->
         <div v-else-if="titles.length === 0" class="text-center py-24 px-6">
-            <p class="text-white/30 text-sm">Geen titels voor deze modus.</p>
+            <p class="text-white/30 text-sm">{{ $t('timeline.noTitles') }}</p>
         </div>
 
+        <!-- Warp overlay for 3D view transitions -->
+        <Transition name="warp-flash">
+            <div v-if="isWarping" class="fixed inset-0 z-[60] pointer-events-none warp-overlay" />
+        </Transition>
+
+        <Transition v-if="!loading && titles.length > 0" name="view-fade" mode="out-in">
         <!-- Universe 3D View -->
-        <div v-else-if="viewMode === 'universe'" class="relative">
+        <div v-if="viewMode === 'universe'" key="universe" class="relative">
             <TimelineUniverse
-                :titles="sortBy === 'story' ? storyTitles : chronologicalTitles"
+                :titles="sortBy === 'story' ? storyTitles : sortBy === 'phase' ? phaseSortedTitles : chronologicalTitles"
                 :progress-map="progressMap"
                 :active-phase="scrollPhase"
                 @mark-watched="handleMarkWatched"
@@ -60,11 +65,13 @@
             />
         </div>
 
-        <!-- Branches View (Loki-style Sacred Timeline) -->
-        <div v-else-if="viewMode === 'branches'" class="relative">
-            <TimelineBranchView
+        <!-- Planet View (3D Solar System) -->
+        <div v-else-if="viewMode === 'planet'" key="planet" class="relative">
+            <TimelinePlanetView
                 :titles="chronologicalTitles"
                 :progress-map="progressMap"
+                @mark-watched="handleMarkWatched"
+                @mark-skipped="handleMarkSkipped"
             />
         </div>
 
@@ -72,12 +79,13 @@
         <div v-else-if="sortBy === 'phase'" :key="'phase-' + filterKey" class="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
             <template v-for="(phase, phaseIdx) in phases" :key="phase.number">
                 <TimelinePhaseTransition
-                    v-if="phaseIdx > 0"
+                    v-if="phaseIdx > 0 && settings.showPhaseLabels"
                     :from-phase="phases[phaseIdx - 1].number"
                     :to-phase="phase.number"
                 />
 
                 <TimelinePhaseHeader
+                    v-if="settings.showPhaseLabels"
                     :phase="phase.number"
                     :saga="phase.saga"
                 />
@@ -104,9 +112,9 @@
 
             <div v-if="progressPercent === 100" class="text-center py-16">
                 <div class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-2">
-                    JOURNEY COMPLETE
+                    {{ $t('timeline.journeyComplete') }}
                 </div>
-                <p class="text-white/40 text-sm">Je hebt alles gezien. Respect.</p>
+                <p class="text-white/40 text-sm">{{ $t('timeline.journeyCompleteDesc') }}</p>
             </div>
         </div>
 
@@ -132,9 +140,9 @@
 
             <div v-if="progressPercent === 100" class="text-center py-16">
                 <div class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-2">
-                    JOURNEY COMPLETE
+                    {{ $t('timeline.journeyComplete') }}
                 </div>
-                <p class="text-white/40 text-sm">Je hebt alles gezien. Respect.</p>
+                <p class="text-white/40 text-sm">{{ $t('timeline.journeyCompleteDesc') }}</p>
             </div>
         </div>
 
@@ -161,11 +169,12 @@
 
             <div v-if="progressPercent === 100" class="text-center py-16">
                 <div class="font-display text-3xl sm:text-4xl tracking-wider text-white mb-2">
-                    JOURNEY COMPLETE
+                    {{ $t('timeline.journeyComplete') }}
                 </div>
-                <p class="text-white/40 text-sm">Je hebt alles gezien. Respect.</p>
+                <p class="text-white/40 text-sm">{{ $t('timeline.journeyCompleteDesc') }}</p>
             </div>
         </div>
+        </Transition>
     </div>
 </template>
 
@@ -177,9 +186,10 @@ import type { Database } from '~/types/supabase'
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
+const { t } = useI18n()
+const { settings } = useSettings()
 const timelineContainer = ref<HTMLElement | null>(null)
 const { focusMode, exitFocusMode } = useFocusMode()
-const { playTransition } = useMultiverseTransitions()
 
 interface Filters {
     franchises: Set<string>
@@ -199,7 +209,7 @@ const mode = ref<'simple' | 'in_depth' | 'extreme'>(
 const sortBy = ref<'phase' | 'chronological' | 'story'>(
     (typeof localStorage !== 'undefined' && localStorage.getItem('ck:sortBy') as any) || 'phase'
 )
-const viewMode = ref<'list' | 'universe' | 'branches'>(
+const viewMode = ref<'list' | 'universe' | 'planet'>(
     (typeof localStorage !== 'undefined' && localStorage.getItem('ck:viewMode') as any) || 'list'
 )
 
@@ -210,11 +220,14 @@ watch(viewMode, (v) => {
     if (v === 'list') exitFocusMode()
 })
 
-function onViewModeChange(v: 'list' | 'universe' | 'branches') {
-    const from3D = viewMode.value === 'universe' || viewMode.value === 'branches'
-    const to3D = v === 'universe' || v === 'branches'
-    if (from3D && to3D && v !== viewMode.value) {
-        playTransition()
+const isWarping = ref(false)
+
+function onViewModeChange(v: 'list' | 'universe' | 'planet') {
+    const from = viewMode.value
+    const is3D = (from === 'universe' || from === 'planet') && (v === 'universe' || v === 'planet') && from !== v
+    if (is3D) {
+        isWarping.value = true
+        setTimeout(() => { isWarping.value = false }, 700)
     }
     viewMode.value = v
 }
@@ -336,6 +349,10 @@ const storyTitles = computed(() => {
         const bOrder = 'story_order' in b ? (b as any).story_order : null
         return (aOrder ?? 999) - (bOrder ?? 999)
     })
+})
+
+const phaseSortedTitles = computed(() => {
+    return phases.value.flatMap(p => p.titles)
 })
 
 const introPosters = computed(() => {
@@ -474,3 +491,39 @@ async function handleMarkSkipped(titleId: number) {
     }
 }
 </script>
+
+<style scoped>
+.view-fade-enter-active {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+}
+.view-fade-leave-active {
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 1, 1), transform 0.4s cubic-bezier(0.4, 0, 1, 1), filter 0.4s ease;
+}
+.view-fade-enter-from {
+    opacity: 0;
+    transform: scale(0.92);
+    filter: blur(4px);
+}
+.view-fade-leave-to {
+    opacity: 0;
+    transform: scale(1.1);
+    filter: blur(6px);
+}
+
+.warp-overlay {
+    background: radial-gradient(ellipse at center, rgba(140, 180, 255, 0.15) 0%, rgba(60, 100, 200, 0.08) 30%, transparent 70%);
+}
+
+.warp-flash-enter-active {
+    transition: opacity 0.2s ease-out;
+}
+.warp-flash-leave-active {
+    transition: opacity 0.5s ease-in;
+}
+.warp-flash-enter-from {
+    opacity: 0;
+}
+.warp-flash-leave-to {
+    opacity: 0;
+}
+</style>

@@ -2,10 +2,10 @@
     <div
         ref="containerEl"
         :class="[
-            'universe-container relative w-full bg-[#050508]',
-            focusMode ? 'fixed inset-0 z-[100]' : ''
+            'universe-container w-full',
+            focusMode ? 'fixed inset-0 z-[100]' : 'relative'
         ]"
-        :style="focusMode ? undefined : { height: containerHeight }"
+        :style="{ backgroundColor: currentTheme.bgColor, ...(focusMode ? {} : { height: containerHeight }) }"
     >
         <ClientOnly>
             <TresCanvas
@@ -13,7 +13,7 @@
                 :alpha="false"
                 :antialias="true"
                 :power-preference="'high-performance'"
-                :clear-color="'#050508'"
+                :clear-color="currentTheme.bgColor"
                 class="!absolute inset-0 !z-0"
             >
                 <TresPerspectiveCamera ref="cameraRef" :position="[0, 5, 18]" :fov="55" :near="0.1" :far="500" />
@@ -24,27 +24,52 @@
                     :hovered-id="hoveredId"
                     :selected-id="selectedId"
                     :focused-index="focusedIndex"
+                    :theme-bg="currentTheme.bgColor"
+                    :layout="layout"
                     @hover="hoveredId = $event"
                     @select="handleSelect"
                     @update:focused-index="focusedIndex = $event"
                 />
+                <component
+                    v-if="settings.showEasterEggs && watcherPosition"
+                    :is="TheWatcherSprite"
+                    :position="watcherPosition"
+                />
             </TresCanvas>
 
             <template #fallback>
-                <div class="flex items-center justify-center h-full bg-[#050508]">
+                <div class="flex items-center justify-center h-full" :style="{ backgroundColor: currentTheme.bgColor }">
                     <div class="flex flex-col items-center gap-3">
-                        <div class="w-8 h-8 border-2 border-purple-500/20 border-t-purple-500/60 rounded-full animate-spin" />
-                        <span class="text-white/20 text-xs tracking-widest uppercase">Loading Universe</span>
+                        <div class="w-8 h-8 border-2 rounded-full animate-spin" :style="{ borderColor: currentTheme.accentColor + '33', borderTopColor: currentTheme.accentColor + '99' }" />
+                        <span class="text-white/20 text-xs tracking-widest uppercase">{{ $t('timeline.loadingUniverse') }}</span>
                     </div>
                 </div>
             </template>
         </ClientOnly>
 
         <!-- Controls -->
-        <div class="absolute top-4 left-4 z-30 flex flex-col gap-2">
+        <div class="absolute top-4 left-4 z-30 flex flex-col gap-2" @pointerdown.stop @click.stop>
+            <!-- Settings toggle -->
+            <button
+                :class="[
+                    'group w-10 h-10 rounded-xl border backdrop-blur-md flex items-center justify-center transition-all duration-300',
+                    controlsOpen
+                        ? 'bg-white/[0.08] border-white/10 text-white/80'
+                        : 'bg-black/40 border-white/[0.06] text-white/40 hover:text-white/80 hover:bg-white/[0.06] hover:border-white/10'
+                ]"
+                title="Settings"
+                @click="controlsOpen = !controlsOpen"
+            >
+                <svg class="w-4.5 h-4.5 transition-transform duration-300" :class="controlsOpen ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7 7 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.248a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.282c-.062-.373-.312-.686-.644-.87a7 7 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+
+            <!-- Quick actions -->
             <button
                 class="group w-10 h-10 rounded-xl bg-black/40 border border-white/[0.06] backdrop-blur-md flex items-center justify-center text-white/40 hover:text-white/80 hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300"
-                title="Reset camera"
+                :title="$t('timeline.resetCamera')"
                 @click="resetCamera"
             >
                 <svg class="w-4.5 h-4.5 transition-transform duration-300 group-hover:rotate-[-45deg]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,10 +81,11 @@
                 :class="[
                     'group w-10 h-10 rounded-xl border backdrop-blur-md flex items-center justify-center transition-all duration-300',
                     focusMode
-                        ? 'bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30'
+                        ? ''
                         : 'bg-black/40 border-white/[0.06] text-white/40 hover:text-white/80 hover:bg-white/[0.06] hover:border-white/10'
                 ]"
-                :title="focusMode ? 'Exit focus mode' : 'Focus mode'"
+                :style="focusMode ? { backgroundColor: currentTheme.accentColor + '33', borderColor: currentTheme.accentColor + '4D', color: currentTheme.accentColor + 'CC' } : {}"
+                :title="focusMode ? $t('timeline.exitFocusMode') : $t('timeline.focusMode')"
                 @click="toggleFocusMode"
             >
                 <svg v-if="!focusMode" class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,15 +96,169 @@
                 </svg>
             </button>
 
+            <!-- Collapsible settings panel -->
+            <Transition name="settings-panel">
+                <div
+                    v-if="controlsOpen"
+                    class="universe-settings w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
+                >
+                    <!-- Layout section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.layout = !sectionOpen.layout"
+                    >
+                        <span>Layout</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.layout ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.layout" class="px-2 pb-2">
+                            <div class="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto scrollbar-thin pr-0.5">
+                                <button
+                                    v-for="l in layoutOptions"
+                                    :key="l.value"
+                                    :class="[
+                                        'w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200',
+                                        layout === l.value
+                                            ? 'bg-white/10 text-white/90 shadow-sm ring-1 ring-white/10'
+                                            : 'text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
+                                    ]"
+                                    :title="l.label"
+                                    @click="layout = l.value"
+                                >
+                                    <LayoutIcon :layout="l.value" />
+                                </button>
+                            </div>
+                            <div class="mt-1.5 px-1 text-[10px] text-white/25 truncate">{{ layoutOptions.find(l => l.value === layout)?.label }}</div>
+                        </div>
+                    </Transition>
+
+                    <div class="h-px bg-white/[0.04] mx-2" />
+
+                    <!-- Navigation section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.navigation = !sectionOpen.navigation"
+                    >
+                        <span>Navigation</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.navigation ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.navigation" class="px-3 pb-3 flex flex-col gap-2.5">
+                            <div>
+                                <div class="text-[10px] text-white/30 mb-1.5">Scroll</div>
+                                <div class="flex gap-1">
+                                    <button
+                                        v-for="opt in (['snap', 'free'] as const)"
+                                        :key="opt"
+                                        :class="[
+                                            'flex-1 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-200',
+                                            settings.scrollBehavior === opt
+                                                ? 'bg-white/10 text-white/80'
+                                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.03]'
+                                        ]"
+                                        @click="settings.scrollBehavior = opt"
+                                    >
+                                        {{ opt === 'snap' ? 'Snap' : 'Free' }}
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Prev/Next controls</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.scrollToNextEnabled ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.scrollToNextEnabled = !settings.scrollToNextEnabled"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.scrollToNextEnabled ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Camera auto-reset</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.cameraAutoReset ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.cameraAutoReset = !settings.cameraAutoReset"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.cameraAutoReset ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                        </div>
+                    </Transition>
+
+                    <div class="h-px bg-white/[0.04] mx-2" />
+
+                    <!-- Visuals section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.visuals = !sectionOpen.visuals"
+                    >
+                        <span>Visuals</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.visuals ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.visuals" class="px-3 pb-3 flex flex-col gap-2.5">
+                            <div>
+                                <div class="text-[10px] text-white/30 mb-1.5">Particles</div>
+                                <div class="flex gap-1">
+                                    <button
+                                        v-for="opt in (['low', 'medium', 'high'] as const)"
+                                        :key="opt"
+                                        :class="[
+                                            'flex-1 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-200',
+                                            settings.particleDensity === opt
+                                                ? 'bg-white/10 text-white/80'
+                                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.03]'
+                                        ]"
+                                        @click="settings.particleDensity = opt"
+                                    >
+                                        {{ opt.charAt(0).toUpperCase() + opt.slice(1) }}
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Layout drift</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.layoutDrift ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.layoutDrift = !settings.layoutDrift"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.layoutDrift ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Reduced motion</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.reducedMotion ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.reducedMotion = !settings.reducedMotion"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.reducedMotion ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Easter eggs</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.showEasterEggs ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.showEasterEggs = !settings.showEasterEggs"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.showEasterEggs ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                        </div>
+                    </Transition>
+                </div>
+            </Transition>
         </div>
 
         <!-- Navigation controls (Prev / Next) — buttons fixed, title centered between them -->
-        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]">
+        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]" @pointerdown.stop @click.stop>
             <div class="relative flex items-center justify-between">
                 <button
                     :disabled="focusedIndex <= 0"
                     class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
-                    title="Vorige"
+                    :title="$t('timeline.previous')"
                     @click="goPrev"
                 >
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +276,7 @@
                 <button
                     :disabled="focusedIndex >= sortedTitles.length - 1"
                     class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
-                    title="Volgende"
+                    :title="$t('timeline.nextTitle')"
                     @click="goNext"
                 >
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,11 +295,11 @@
                 <svg class="w-4 h-4 opacity-50 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                 </svg>
-                <span>Drag to explore</span>
+                <span>{{ $t('location.dragToExplore') }}</span>
                 <span class="w-px h-3 bg-white/10 hidden sm:block" />
-                <span class="hidden sm:inline">Scroll to zoom</span>
+                <span class="hidden sm:inline">{{ $t('location.scrollToZoom') }}</span>
                 <span class="w-px h-3 bg-white/10 hidden sm:block" />
-                <span class="hidden sm:inline">Click a title</span>
+                <span class="hidden sm:inline">{{ $t('location.clickTitle') }}</span>
             </div>
         </Transition>
 
@@ -134,21 +314,20 @@
                         : 'right-0 top-0 bottom-0 w-[340px] max-w-[85vw]'
                 ]"
             >
+                <button
+                    class="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-200"
+                    @click="selectedId = null"
+                >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
                 <div :class="[
                     'h-full bg-black/70 backdrop-blur-xl p-5 sm:p-6 flex flex-col overflow-y-auto',
                     isMobile
                         ? 'border-t border-white/[0.06] rounded-t-2xl'
                         : 'border-l border-white/[0.06]'
                 ]">
-                    <button
-                        class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-200"
-                        @click="selectedId = null"
-                    >
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-
                     <!-- Chronology number -->
                     <div class="text-white/[0.04] font-display text-6xl tracking-tighter mb-2">#{{ selectedTitle.chronology_index }}</div>
 
@@ -230,7 +409,8 @@
                         <!-- Next in flow button -->
                         <button
                             v-if="focusedIndex < sortedTitles.length - 1"
-                            class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium bg-purple-500/10 hover:bg-purple-500/15 text-purple-300/80 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200"
+                            class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-medium border transition-all duration-200"
+                            :style="{ backgroundColor: currentTheme.accentColor + '1A', color: currentTheme.accentColor + 'CC', borderColor: currentTheme.accentColor + '1A' }"
                             @click="goNext"
                         >
                             Next: {{ sortedTitles[focusedIndex + 1]?.title }}
@@ -273,6 +453,8 @@
 <script setup lang="ts">
 import type { Database } from '~/types/supabase'
 import UniverseScene from './UniverseScene.vue'
+import LayoutIcon from './LayoutIcon.vue'
+import TheWatcherSprite from '../easter-eggs/TheWatcherSprite.vue'
 
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
@@ -288,7 +470,63 @@ const emit = defineEmits<{
     markSkipped: [id: number]
 }>()
 
+export type UniverseLayout = 'phase' | 'spiral' | 'zigzag' | 'grid' | 'helix' | 'galaxy' | 'scatter' | 'wave' | 'ring' | 'sphere' | 'constellation' | 'funnel' | 'flower' | 'pyramid' | 'infinity' | 'cross' | 'hourglass' | 'tree' | 'diamond' | 'coil' | 'vortex' | 'dna' | 'staircase' | 'galaxy-ring' | 'web'
+
 const { focusMode, toggleFocusMode } = useFocusMode()
+const { discoverEasterEgg } = useEasterEggs()
+const { settings, currentTheme, getFavoriteCharacter } = useSettings()
+
+const layout = ref<UniverseLayout>('phase')
+const controlsOpen = ref(false)
+const sectionOpen = reactive({ layout: true, navigation: false, visuals: false })
+const layoutOptions: { value: UniverseLayout; label: string }[] = [
+    { value: 'phase', label: 'Phase Clusters' },
+    { value: 'spiral', label: 'Spiral' },
+    { value: 'zigzag', label: 'Zigzag' },
+    { value: 'grid', label: 'Grid' },
+    { value: 'helix', label: 'Helix' },
+    { value: 'galaxy', label: 'Galaxy' },
+    { value: 'scatter', label: 'Scatter' },
+    { value: 'wave', label: 'Wave' },
+    { value: 'ring', label: 'Ring' },
+    { value: 'sphere', label: 'Sphere' },
+    { value: 'constellation', label: 'Constellation' },
+    { value: 'funnel', label: 'Funnel' },
+    { value: 'flower', label: 'Flower' },
+    { value: 'pyramid', label: 'Pyramid' },
+    { value: 'infinity', label: 'Infinity' },
+    { value: 'cross', label: 'Cross' },
+    { value: 'hourglass', label: 'Hourglass' },
+    { value: 'tree', label: 'Tree' },
+    { value: 'diamond', label: 'Diamond' },
+    { value: 'coil', label: 'Coil' },
+    { value: 'vortex', label: 'Vortex' },
+    { value: 'dna', label: 'DNA' },
+    { value: 'staircase', label: 'Staircase' },
+    { value: 'galaxy-ring', label: 'Galaxy Ring' },
+    { value: 'web', label: 'Web' },
+]
+
+const watcherPosition = ref<[number, number, number] | null>(null)
+
+function pickWatcherPosition(): [number, number, number] {
+    const spots: [number, number, number][] = [
+        [-18, 14, -10],
+        [35, 16, -20],
+        [-10, 12, -30],
+        [55, 10, -8],
+        [20, 18, -38],
+        [-40, 11, 5],
+    ]
+    return spots[Math.floor(Math.random() * spots.length)]
+}
+
+watch(() => settings.showEasterEggs, (enabled) => {
+    if (enabled && !watcherPosition.value) {
+        watcherPosition.value = pickWatcherPosition()
+        discoverEasterEgg('the-watcher')
+    }
+}, { immediate: true })
 
 const containerEl = ref<HTMLElement | null>(null)
 const cameraRef = ref<any>(null)
@@ -299,15 +537,33 @@ const showDragHint = ref(true)
 const tooltipPos = ref({ x: 0, y: 0 })
 const prefersReducedMotion = ref(false)
 
-const sortedTitles = computed(() =>
-    [...props.titles].sort((a, b) => (a.chronology_index ?? 0) - (b.chronology_index ?? 0))
-)
+const sortedTitles = computed(() => props.titles)
 
 const focusedTitle = computed(() => sortedTitles.value[focusedIndex.value] ?? null)
 
+watch(() => props.titles, (newTitles) => {
+    const currentId = selectedId.value
+    if (currentId != null) {
+        const newIdx = newTitles.findIndex(t => t.id === currentId)
+        focusedIndex.value = newIdx >= 0 ? newIdx : 0
+    } else {
+        focusedIndex.value = 0
+    }
+})
+
 onMounted(() => {
-    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches || settings.reducedMotion
     setTimeout(() => { showDragHint.value = false }, 5000)
+
+    // Start at favorite character's first title
+    const favChar = getFavoriteCharacter()
+    if (favChar?.startFromSlug) {
+        const idx = sortedTitles.value.findIndex(t => t.slug === favChar.startFromSlug)
+        if (idx >= 0) {
+            focusedIndex.value = idx
+            selectedId.value = sortedTitles.value[idx].id
+        }
+    }
 
     const onKeydown = (e: KeyboardEvent) => {
         if (e.key === 'Escape' && focusMode.value) {
@@ -443,5 +699,50 @@ onMounted(() => {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.settings-panel-enter-active {
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.settings-panel-leave-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.settings-panel-enter-from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+}
+.settings-panel-leave-to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+}
+
+.section-enter-active {
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+    max-height: 300px;
+    overflow: hidden;
+}
+.section-leave-active {
+    transition: max-height 0.2s ease, opacity 0.15s ease;
+    max-height: 300px;
+    overflow: hidden;
+}
+.section-enter-from {
+    max-height: 0;
+    opacity: 0;
+}
+.section-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.universe-settings .scrollbar-thin::-webkit-scrollbar {
+    width: 3px;
+}
+.universe-settings .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+.universe-settings .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
 }
 </style>

@@ -11,7 +11,7 @@
                 ]"
                 @click="filterType = null"
             >
-                All
+                {{ $t('common.all') }}
             </button>
             <button
                 v-for="t in typeOptions"
@@ -31,7 +31,7 @@
         <!-- Reset camera button -->
         <button
             class="absolute top-4 right-4 z-10 w-9 h-9 rounded-lg bg-black/40 border border-white/[0.06] backdrop-blur-xl flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-200"
-            title="Reset camera"
+            :title="$t('location.resetCamera')"
             @click="resetCamera"
         >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,7 +44,7 @@
             <TresCanvas
                 :style="{ height: containerHeight + 'px' }"
                 class="w-full"
-                :clear-color="0x0A0A0F"
+                :clear-color="currentTheme.bgColor"
                 antialias
                 power-preference="high-performance"
                 @wheel.prevent="() => {}"
@@ -59,6 +59,11 @@
                     @hover="hoveredCode = $event"
                     @select="onSelect"
                     @update:focused-index="focusedIndex = $event"
+                />
+                <component
+                    v-if="settings.showEasterEggs && watcherPosition"
+                    :is="TheWatcherSprite"
+                    :position="watcherPosition"
                 />
             </TresCanvas>
         </ClientOnly>
@@ -104,9 +109,9 @@
                 <svg class="w-4 h-4 opacity-50 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                 </svg>
-                <span>Drag to explore</span>
+                <span>{{ $t('location.dragToExplore') }}</span>
                 <span class="w-px h-3 bg-white/10 hidden sm:block" />
-                <span class="hidden sm:inline">Click a location</span>
+                <span class="hidden sm:inline">{{ $t('location.clickLocation') }}</span>
             </div>
         </Transition>
 
@@ -130,9 +135,14 @@
 <script setup lang="ts">
 import type { LocationJson } from '~/types/multiverse'
 import PlanetSceneComponent from '~/components/planet/PlanetScene.vue'
+import TheWatcherSprite from '~/components/easter-eggs/TheWatcherSprite.vue'
 import locationsJson from '../../data/locations.json'
 
 definePageMeta({ ssr: false })
+
+const { t } = useI18n()
+const { settings, currentTheme } = useSettings()
+const { discoverEasterEgg } = useEasterEggs()
 
 const hoveredCode = ref<string | null>(null)
 const selectedCode = ref<string | null>(null)
@@ -140,13 +150,34 @@ const focusedIndex = ref(0)
 const filterType = ref<string | null>(null)
 const showDragHint = ref(true)
 
-const typeOptions = [
-    { value: 'planet', label: 'Planets' },
-    { value: 'realm', label: 'Realms' },
-    { value: 'dimension', label: 'Dimensions' },
-    { value: 'construct', label: 'Constructs' },
-    { value: 'region', label: 'Regions' },
-]
+const watcherPosition = ref<[number, number, number] | null>(null)
+
+function pickWatcherPosition(): [number, number, number] {
+    const spots: [number, number, number][] = [
+        [-25, 12, -15],
+        [22, 18, -25],
+        [-15, 20, -35],
+        [30, 14, -12],
+        [0, 22, -40],
+        [-30, 10, 8],
+    ]
+    return spots[Math.floor(Math.random() * spots.length)]
+}
+
+watch(() => settings.showEasterEggs, (enabled) => {
+    if (enabled && !watcherPosition.value) {
+        watcherPosition.value = pickWatcherPosition()
+        discoverEasterEgg('the-watcher')
+    }
+}, { immediate: true })
+
+const typeOptions = computed(() => [
+    { value: 'planet', label: t('location.type_planets') },
+    { value: 'realm', label: t('location.type_realms') },
+    { value: 'dimension', label: t('location.type_dimensions') },
+    { value: 'construct', label: t('location.type_constructs') },
+    { value: 'region', label: t('location.type_regions') },
+])
 
 const filteredLocations = computed(() => {
     let locs = locationsJson as LocationJson[]

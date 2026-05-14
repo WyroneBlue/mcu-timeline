@@ -62,8 +62,9 @@
                     <svg v-if="option.value === 'list'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                     </svg>
-                    <svg v-else-if="option.value === 'branches'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12h16M8 8l-4 4 4 4M12 6l4 6-4 6M16 4l4 8-4 8" />
+                    <svg v-else-if="option.value === 'planet'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5" stroke-width="1.5" />
+                        <ellipse cx="12" cy="12" rx="10" ry="3" stroke-width="1.5" transform="rotate(-20 12 12)" />
                     </svg>
                     <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3" stroke-width="2" />
@@ -82,30 +83,32 @@
 defineProps<{
     modelValue: 'simple' | 'in_depth' | 'extreme'
     sortBy: 'phase' | 'chronological' | 'story'
-    viewMode: 'list' | 'universe' | 'branches'
+    viewMode: 'list' | 'universe' | 'planet'
 }>()
 
 defineEmits<{
     'update:modelValue': [value: 'simple' | 'in_depth' | 'extreme']
     'update:sortBy': [value: 'phase' | 'chronological' | 'story']
-    'update:viewMode': [value: 'list' | 'universe' | 'branches']
+    'update:viewMode': [value: 'list' | 'universe' | 'planet']
 }>()
 
-const modes = [
-    { value: 'simple' as const, label: 'Simple' },
-    { value: 'in_depth' as const, label: 'In Depth' },
-    { value: 'extreme' as const, label: 'Extreme' },
-]
+const { t } = useI18n()
 
-const sortOptions = [
-    { value: 'phase' as const, label: 'Phase' },
-    { value: 'chronological' as const, label: 'Release' },
-    { value: 'story' as const, label: 'Story' },
-]
+const modes = computed(() => [
+    { value: 'simple' as const, label: t('modes.simple') },
+    { value: 'in_depth' as const, label: t('modes.inDepth') },
+    { value: 'extreme' as const, label: t('modes.extreme') },
+])
 
-const viewOptions = [
-    { value: 'list' as const, label: 'List' },
-    { value: 'universe' as const, label: 'Universe' },
-    { value: 'branches' as const, label: 'Branches' },
-]
+const sortOptions = computed(() => [
+    { value: 'phase' as const, label: t('modes.phase') },
+    { value: 'chronological' as const, label: t('modes.releaseOrder') },
+    { value: 'story' as const, label: t('modes.story') },
+])
+
+const viewOptions = computed(() => [
+    { value: 'list' as const, label: t('modes.list') },
+    { value: 'universe' as const, label: t('modes.universe') },
+    { value: 'planet' as const, label: t('modes.planets') },
+])
 </script>

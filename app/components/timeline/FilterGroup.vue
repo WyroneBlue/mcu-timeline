@@ -7,7 +7,7 @@
             v-if="searchable && normalizedOptions.length > 10"
             v-model="search"
             type="text"
-            :placeholder="`Search ${label.toLowerCase()}...`"
+            :placeholder="$t('filters.searchPlaceholder', { label })"
             class="w-full px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white/60 placeholder-white/20 outline-none focus:border-white/15 mb-2"
         />
 
@@ -18,9 +18,10 @@
                 :class="[
                     'px-2 py-1 rounded-md text-[11px] transition-all duration-150 border',
                     selected.has(option.value)
-                        ? 'bg-purple-500/20 text-purple-300 border-purple-500/30'
+                        ? 'border-transparent'
                         : 'bg-white/5 text-white/40 border-transparent hover:text-white/60 hover:bg-white/8',
                 ]"
+                :style="selected.has(option.value) ? { backgroundColor: currentTheme.accentColor + '33', color: currentTheme.accentColor + 'CC', borderColor: currentTheme.accentColor + '4D' } : {}"
                 @click="$emit('toggle', option.value)"
             >
                 {{ option.label }}
@@ -30,6 +31,8 @@
 </template>
 
 <script setup lang="ts">
+const { currentTheme } = useSettings()
+
 const props = defineProps<{
     label: string
     options: (string | { value: string; label: string })[]

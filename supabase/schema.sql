@@ -118,6 +118,7 @@ create table if not exists profiles (
     spoiler_mode text check (spoiler_mode in ('smart', 'reveal_all')) not null default 'smart',
     country_code text,
     city text,
+    is_admin boolean not null default false,
     created_at timestamptz default now()
 );
 
@@ -127,7 +128,9 @@ alter table profiles enable row level security;
 -- Client queries should only select public columns (username, avatar_url, xp_total, level_int)
 create policy "profiles read authenticated" on profiles for select using (auth.role() = 'authenticated');
 create policy "profiles insert own" on profiles for insert with check (auth.uid() = id);
-create policy "profiles update own" on profiles for update using (auth.uid() = id);
+create policy "profiles update own" on profiles for update using (auth.uid() = id) with check (
+    is_admin = (select is_admin from profiles where id = auth.uid())
+);
 -- No delete: profiles are tied to auth.users cascade
 
 -- ============================================================

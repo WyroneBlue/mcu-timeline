@@ -25,6 +25,8 @@ export interface LocationJson {
     radius: number
     parent_code: string | null
     title_slugs: string[]
+    lat?: number
+    lng?: number
 }
 
 export interface Universe {
@@ -79,5 +81,3 @@ export interface TitleLocation {
     location_code: string
     is_primary: boolean
 }
-
-export type TransitionType = 'portal' | 'incursion' | 'space-stone' | 'strange-trip' | 'time-jump' | 'bifrost' | 'darkhold'

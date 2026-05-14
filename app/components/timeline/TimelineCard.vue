@@ -4,7 +4,7 @@
             <div class="glass-card overflow-hidden transition-all duration-300 hover:border-white/15">
                 <div class="relative flex flex-col sm:flex-row">
                     <!-- Poster -->
-                    <div class="relative sm:w-40 md:w-48 shrink-0 overflow-hidden sm:min-h-[240px]">
+                    <div :class="['relative shrink-0 overflow-hidden', posterSizeClass]">
                         <div class="aspect-[2/3] sm:aspect-auto sm:absolute sm:inset-0 overflow-hidden">
                             <img
                                 v-if="title.poster_url"
@@ -149,8 +149,19 @@ defineEmits<{
     markSkipped: [id: number]
 }>()
 
+const { settings } = useSettings()
+
 const cardEl = ref<HTMLElement | null>(null)
 const posterImg = ref<HTMLElement | null>(null)
+
+const posterSizeClass = computed(() => {
+    const map: Record<string, string> = {
+        small: 'sm:w-28 sm:min-h-[168px]',
+        medium: 'sm:w-40 md:w-48 sm:min-h-[240px]',
+        large: 'sm:w-52 md:w-60 sm:min-h-[312px]',
+    }
+    return map[settings.cardSize] ?? map.medium
+})
 
 const releaseYear = computed(() => {
     if (!props.title.release_date) return ''

@@ -1,40 +1,43 @@
-# MarvelPath - MCU Onboarding & Experience App
+# Canonkeeper — Keep the Canon
 
-Een moderne web applicatie voor het verkennen en volgen van het Marvel Cinematic Universe, gebouwd met Nuxt 3, Supabase en Tailwind CSS.
+Een moderne web applicatie voor het verkennen en volgen van het Marvel Cinematic Universe (en toekomstige franchises), gebouwd met Nuxt 4, Supabase en Tailwind CSS.
 
-## 🚀 Features
+## Features
 
 ### Core Functionaliteit
-- **Experience Modes**: Simple (core films), In Depth (films + series), Extreme (alles inclusief Sony/Fox)
 - **Timeline View**: Chronologische lijst met voortgangsindicatoren
 - **3D Planet View**: Interactieve 3D weergave met TresJS/Three.js
-- **Title Details**: Uitgebreide informatie per film/serie
+- **Title Details**: Uitgebreide informatie per film/serie met cast, trailers en streaming links
+- **Before You Watch**: AI-gegenereerde gepersonaliseerde samenvattingen van geskipte titels (per-film of als doorlopend verhaal)
 - **Progress Tracking**: XP systeem, levels en badges
 - **Social Features**: Vrienden toevoegen en vergelijken
 - **Quiz System**: Wekelijkse MCU quizzen met leaderboards
-- **Notifications**: Push notificaties en email updates
+- **Spoiler Guard**: Automatische spoilerbescherming op basis van kijkvoortgang
+- **i18n**: Meertalige ondersteuning (EN, NL, ES, PT, IT, TR, AR, ZH, JA)
 - **Mobile Ready**: Capacitor voor iOS/Android apps
 
 ### Technische Features
-- **Modern Stack**: Nuxt 3, Supabase, Pinia, Tailwind CSS
+- **Modern Stack**: Nuxt 4, Supabase, Pinia, Tailwind CSS
+- **AI Summaries**: Anthropic Claude API voor gepersonaliseerde "Before You Watch" samenvattingen
 - **Authentication**: OAuth met Google/GitHub
 - **Database**: PostgreSQL met Row Level Security
-- **Styling**: Nuxt UI componenten met Tailwind CSS
 - **3D Graphics**: TresJS voor WebGL rendering
 - **Mobile**: Capacitor voor native apps
 - **Type Safety**: Volledige TypeScript ondersteuning
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-- **Frontend**: Nuxt 3, Vue 3, TypeScript
-- **Styling**: Tailwind CSS, Nuxt UI
+- **Frontend**: Nuxt 4, Vue 3, TypeScript
+- **Styling**: Tailwind CSS
 - **Backend**: Supabase (PostgreSQL, Auth, Storage)
+- **AI**: Anthropic Claude API (gepersonaliseerde samenvattingen)
 - **State Management**: Pinia
 - **3D Graphics**: TresJS, Three.js
+- **i18n**: @nuxtjs/i18n (9 talen)
 - **Mobile**: Capacitor
 - **Deployment**: Vercel/Netlify ready
 
-## 📦 Installatie
+## Installatie
 
 1. **Clone de repository**
    ```bash
@@ -49,7 +52,7 @@ Een moderne web applicatie voor het verkennen en volgen van het Marvel Cinematic
 
 3. **Configureer environment variabelen**
    ```bash
-   cp .env.example .env
+   cp env.example .env
    ```
    
    Vul de volgende variabelen in:
@@ -57,9 +60,17 @@ Een moderne web applicatie voor het verkennen en volgen van het Marvel Cinematic
    SUPABASE_URL=your-supabase-url
    SUPABASE_KEY=your-supabase-anon-key
    SUPABASE_SERVICE_KEY=your-supabase-service-key
-   NUXT_PUBLIC_APP_NAME=MarvelPath
-   NUXT_PUBLIC_DEFAULT_MODE=simple
+   TMDB_API_KEY=your-tmdb-api-key
+   ANTHROPIC_API_KEY=your-anthropic-api-key
    ```
+
+   | Variabele | Doel | Verplicht |
+   |-----------|------|-----------|
+   | `SUPABASE_URL` | Supabase project URL | Ja |
+   | `SUPABASE_KEY` | Supabase anon/public key | Ja |
+   | `SUPABASE_SERVICE_KEY` | Supabase service role key (admin API) | Ja |
+   | `TMDB_API_KEY` | TMDB API key voor posters, cast & trailers | Ja |
+   | `ANTHROPIC_API_KEY` | Anthropic API key voor AI-samenvattingen (Before You Watch) | Nee (feature disabled zonder key) |
 
 4. **Setup Supabase database**
    ```bash
@@ -77,21 +88,22 @@ Een moderne web applicatie voor het verkennen en volgen van het Marvel Cinematic
    bun run dev
    ```
 
-## 🗄️ Database Schema
+## Database Schema
 
 ### Tabellen
 - `titles` - MCU films en series
 - `profiles` - Gebruikersprofielen
-- `progress` - Voortgang per gebruiker
+- `progress` - Voortgang per gebruiker (watched/skipped/queued)
 - `badges` - Beschikbare badges
 - `user_badges` - Verdiende badges
 - `xp_events` - XP transacties
 - `friends` - Vriendschappen
+- `context_summaries` - Statische samenvattingen per titel (fallback voor AI)
 
 ### Row Level Security
 Alle tabellen hebben RLS policies voor data privacy en security.
 
-## 📱 Mobile App
+## Mobile App
 
 ### Capacitor Setup
 ```bash
@@ -107,30 +119,11 @@ bun run cap:ios
 bun run cap:android
 ```
 
-## 🎨 Styling & Theming
-
-De app gebruikt:
-- **Tailwind CSS** voor utility-first styling
-- **Nuxt UI** voor componenten
-- **Custom CSS** in `assets/css/main.css`
-- **Responsive design** voor alle schermformaten
-- **Dark mode** ondersteuning
-
-## 🧪 Testing
-
-```bash
-# Unit tests (toekomstig)
-bun run test
-
-# E2E tests (toekomstig)
-bun run test:e2e
-```
-
-## 🚀 Deployment
+## Deployment
 
 ### Vercel
 1. Connect je GitHub repository
-2. Set environment variabelen
+2. Set environment variabelen (zie tabel hierboven)
 3. Deploy automatisch
 
 ### Netlify
@@ -138,44 +131,18 @@ bun run test:e2e
 2. Build command: `bun run generate`
 3. Publish directory: `dist`
 
-## 📊 Analytics & Monitoring
+### Environment variabelen (productie)
 
-- **Error Tracking**: Sentry (toekomstig)
-- **Analytics**: Google Analytics (toekomstig)
-- **Performance**: Web Vitals monitoring
+Zorg dat alle verplichte keys zijn ingesteld. `ANTHROPIC_API_KEY` is optioneel — zonder key wordt de "Before You Watch" AI-feature uitgeschakeld en valt de app terug op statische samenvattingen.
 
-## 🔒 Security
+## Security
 
 - **Authentication**: Supabase Auth met OAuth
 - **Database**: Row Level Security policies
-- **API**: Server-side validation
-- **CORS**: Properly configured
+- **API**: Server-side validation, admin endpoints beveiligd met service key
+- **AI**: Anthropic API calls zijn server-side only (key niet zichtbaar in client)
 - **Environment**: Secure secret management
 
-## 🤝 Contributing
-
-1. Fork de repository
-2. Maak een feature branch
-3. Commit je changes
-4. Push naar de branch
-5. Open een Pull Request
-
-## 📄 License
+## License
 
 Dit project is gelicenseerd onder de MIT License.
-
-## 🙏 Acknowledgments
-
-- Marvel Studios voor de geweldige content
-- Supabase voor de backend services
-- Nuxt team voor het geweldige framework
-- Tailwind CSS voor de styling utilities
-- Three.js community voor 3D graphics
-
-## 📞 Support
-
-Voor vragen of support, open een issue in de GitHub repository.
-
----
-
-**MarvelPath** - Jouw persoonlijke gids door het Marvel Cinematic Universe! 🦸‍♂️

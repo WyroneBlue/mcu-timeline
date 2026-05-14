@@ -1,13 +1,13 @@
 <template>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
         <div class="pt-4">
-            <h1 class="font-display text-3xl tracking-wider text-white mb-1">NOTIFICATIES</h1>
-            <p class="text-white/30 text-sm">Updates over nieuwe releases en je voortgang.</p>
+            <h1 class="font-display text-3xl tracking-wider text-white mb-1">{{ $t('notifications.title') }}</h1>
+            <p class="text-white/30 text-sm">{{ $t('notifications.subtitle') }}</p>
         </div>
 
         <!-- Upcoming releases -->
         <div v-if="upcomingReleases.length > 0">
-            <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">AANKOMENDE RELEASES</h2>
+            <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">{{ $t('notifications.upcoming') }}</h2>
             <div class="space-y-2">
                 <NuxtLink
                     v-for="release in upcomingReleases"
@@ -24,8 +24,8 @@
                         <p class="text-sm text-white/80 truncate">{{ release.title }}</p>
                         <p class="text-xs text-white/30">{{ formatReleaseDate(release.release_date) }}</p>
                     </div>
-                    <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 shrink-0">
-                        {{ release.release_status === 'announced' ? 'Aangekondigd' : 'Binnenkort' }}
+                    <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0" :style="{ backgroundColor: currentTheme.accentColor + '1A', color: currentTheme.accentColor + 'B3', borderColor: currentTheme.accentColor + '33' }">
+                        {{ release.release_status === 'announced' ? $t('notifications.announced') : $t('notifications.comingSoon') }}
                     </span>
                 </NuxtLink>
             </div>
@@ -33,14 +33,14 @@
 
         <!-- Notifications list -->
         <div>
-            <h2 v-if="upcomingReleases.length > 0" class="font-display text-lg tracking-wider text-white/60 mb-3">MELDINGEN</h2>
+            <h2 v-if="upcomingReleases.length > 0" class="font-display text-lg tracking-wider text-white/60 mb-3">{{ $t('notifications.alerts') }}</h2>
 
             <div v-if="notifications.length === 0" class="glass-card p-8 text-center">
                 <svg class="w-10 h-10 text-white/10 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
-                <p class="text-white/40 text-sm">Geen meldingen</p>
-                <p class="text-white/20 text-xs mt-1">Je krijgt een melding bij nieuwe MCU releases en prestaties.</p>
+                <p class="text-white/40 text-sm">{{ $t('notifications.noAlerts') }}</p>
+                <p class="text-white/20 text-xs mt-1">{{ $t('notifications.alertsDesc') }}</p>
             </div>
 
             <div v-else class="space-y-2">
@@ -49,7 +49,7 @@
                     class="text-xs text-white/30 hover:text-white/50 transition-colors mb-2"
                     @click="handleMarkAllRead"
                 >
-                    Alles als gelezen markeren
+                    {{ $t('notifications.markAllRead') }}
                 </button>
                 <div
                     v-for="n in notifications"
@@ -77,6 +77,8 @@ definePageMeta({ ssr: false })
 
 import mcuTitlesJson from '../../data/mcu-titles.json'
 
+const { t, locale } = useI18n()
+const { currentTheme } = useSettings()
 const notifications = ref<any[]>([])
 
 const upcomingReleases = computed(() => {
@@ -92,12 +94,12 @@ const upcomingReleases = computed(() => {
 const hasUnread = computed(() => notifications.value.some(n => !n.read))
 
 function formatDate(date: string): string {
-    return new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })
+    return new Date(date).toLocaleDateString(locale.value, { day: 'numeric', month: 'short' })
 }
 
 function formatReleaseDate(date: string | null): string {
-    if (!date) return 'Datum onbekend'
-    return new Date(date).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })
+    if (!date) return t('common.dateUnknown')
+    return new Date(date).toLocaleDateString(locale.value, { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 async function handleRead(n: any) {

@@ -19,8 +19,8 @@
         </div>
 
         <!-- Gradient overlay -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0E1A] via-transparent to-[#0A0E1A]" />
-        <div ref="overlayEl" class="absolute inset-0 bg-[#0A0E1A]/40" />
+        <div class="absolute inset-0 bg-gradient-to-b from-[var(--theme-bg)] via-transparent to-[var(--theme-bg)]" />
+        <div ref="overlayEl" class="absolute inset-0 bg-[var(--theme-bg)]/40" />
 
         <!-- Content -->
         <div ref="contentEl" class="relative text-center px-6 max-w-2xl mx-auto">

@@ -16,13 +16,17 @@ import type { Database } from '~/types/supabase'
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
-const props = defineProps<{
+type UniverseLayout = 'phase' | 'spiral' | 'zigzag' | 'grid' | 'helix' | 'galaxy' | 'scatter' | 'wave' | 'ring' | 'sphere' | 'constellation' | 'funnel' | 'flower' | 'pyramid' | 'infinity' | 'cross' | 'hourglass' | 'tree' | 'diamond' | 'coil' | 'vortex' | 'dna' | 'staircase' | 'galaxy-ring' | 'web'
+
+const props = withDefaults(defineProps<{
     titles: Title[]
     progressMap: Map<number, ProgressStatus>
     hoveredId: number | null
     selectedId: number | null
     focusedIndex: number
-}>()
+    themeBg?: string
+    layout?: UniverseLayout
+}>(), { themeBg: '#050508', layout: 'phase' })
 
 const emit = defineEmits<{
     hover: [id: number | null]
@@ -434,7 +438,435 @@ const cardGroup = new Group()
 scene.add(cardGroup)
 
 let currentTitleCount = 0
+let currentLayout: UniverseLayout | null = null
 const disposables: { dispose: () => void }[] = []
+
+function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[] {
+    const count = titles.length
+    if (count === 0) return []
+
+    if (layoutType === 'spiral') {
+        const maxRadius = 35
+        const totalTurns = 4
+        const heightAmp = 5
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const angle = t * Math.PI * 2 * totalTurns
+            const r = 3 + t * (maxRadius - 3)
+            const y = Math.sin(t * Math.PI * 4) * heightAmp * t
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    if (layoutType === 'zigzag') {
+        const spacing = 4.5
+        const amplitude = 8
+        const depthAmp = 6
+        const totalLength = (count - 1) * spacing
+        const startX = -totalLength / 2
+        return titles.map((_, i) => {
+            const x = startX + i * spacing
+            const side = i % 2 === 0 ? 1 : -1
+            const progress = count > 1 ? i / (count - 1) : 0.5
+            const y = side * amplitude * 0.5
+            const z = Math.sin(progress * Math.PI) * -depthAmp
+            return new Vector3(x, y, z)
+        })
+    }
+
+    if (layoutType === 'grid') {
+        const cols = Math.ceil(Math.sqrt(count * 1.5))
+        const spacingX = 5
+        const spacingZ = 6
+        const totalW = (cols - 1) * spacingX
+        const rows = Math.ceil(count / cols)
+        const totalD = (rows - 1) * spacingZ
+        return titles.map((_, i) => {
+            const col = i % cols
+            const row = Math.floor(i / cols)
+            const x = col * spacingX - totalW / 2
+            const z = row * spacingZ - totalD / 2
+            const y = Math.sin(col * 0.8) * Math.cos(row * 0.8) * 1.5
+            return new Vector3(x, y, z)
+        })
+    }
+
+    if (layoutType === 'helix') {
+        const turns = 3
+        const heightRange = 35
+        const radius = 12
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const angle = t * Math.PI * 2 * turns
+            const strand = i % 2 === 0 ? 1 : -1
+            return new Vector3(
+                Math.cos(angle) * radius * strand,
+                t * heightRange - heightRange / 2,
+                Math.sin(angle) * radius * strand,
+            )
+        })
+    }
+
+    if (layoutType === 'galaxy') {
+        const arms = 3
+        const maxRadius = 38
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const arm = i % arms
+            const armOffset = (arm / arms) * Math.PI * 2
+            const angle = t * Math.PI * 3 + armOffset
+            const r = 2 + t * (maxRadius - 2)
+            const y = Math.sin(angle * 0.7) * 2.5 * t
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    if (layoutType === 'scatter') {
+        let seed = 42
+        const random = () => {
+            seed = (seed * 16807 + 0) % 2147483647
+            return seed / 2147483647
+        }
+        const spread = 30
+        return titles.map(() => new Vector3(
+            (random() - 0.5) * spread * 2,
+            (random() - 0.5) * spread * 1.2,
+            (random() - 0.5) * spread * 2,
+        ))
+    }
+
+    if (layoutType === 'wave') {
+        const cols = Math.ceil(Math.sqrt(count * 1.5))
+        const spacingX = 5
+        const spacingZ = 6
+        const totalW = (cols - 1) * spacingX
+        const rows = Math.ceil(count / cols)
+        const totalD = (rows - 1) * spacingZ
+        return titles.map((_, i) => {
+            const col = i % cols
+            const row = Math.floor(i / cols)
+            const x = col * spacingX - totalW / 2
+            const z = row * spacingZ - totalD / 2
+            const y = Math.sin(col * 0.6 + row * 0.4) * 6 + Math.cos(col * 0.3 - row * 0.7) * 3.5
+            return new Vector3(x, y, z)
+        })
+    }
+
+    if (layoutType === 'ring') {
+        const radius = 25
+        return titles.map((_, i) => {
+            const angle = (i / count) * Math.PI * 2
+            const wobbleY = Math.sin(angle * 3) * 3
+            const wobbleR = Math.cos(angle * 5) * 2
+            return new Vector3(
+                Math.cos(angle) * (radius + wobbleR),
+                wobbleY,
+                Math.sin(angle) * (radius + wobbleR),
+            )
+        })
+    }
+
+    if (layoutType === 'sphere') {
+        const radius = 22
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5))
+        return titles.map((_, i) => {
+            const y = 1 - (i / (count - 1 || 1)) * 2
+            const radiusAtY = Math.sqrt(1 - y * y)
+            const theta = goldenAngle * i
+            return new Vector3(
+                Math.cos(theta) * radiusAtY * radius,
+                y * radius,
+                Math.sin(theta) * radiusAtY * radius,
+            )
+        })
+    }
+
+    if (layoutType === 'constellation') {
+        let seed = 137
+        const random = () => {
+            seed = (seed * 16807 + 0) % 2147483647
+            return seed / 2147483647
+        }
+        const clusterCount = Math.max(3, Math.ceil(count / 6))
+        const clusterSpread = 28
+        const innerSpread = 7
+
+        const centers: Vector3[] = []
+        for (let c = 0; c < clusterCount; c++) {
+            centers.push(new Vector3(
+                (random() - 0.5) * clusterSpread * 2,
+                (random() - 0.5) * clusterSpread * 0.8,
+                (random() - 0.5) * clusterSpread * 2,
+            ))
+        }
+
+        return titles.map((_, i) => {
+            const center = centers[i % clusterCount]
+            const offsetAngle = random() * Math.PI * 2
+            const offsetR = random() * innerSpread
+            const offsetY = (random() - 0.5) * innerSpread * 0.6
+            return new Vector3(
+                center.x + Math.cos(offsetAngle) * offsetR,
+                center.y + offsetY,
+                center.z + Math.sin(offsetAngle) * offsetR,
+            )
+        })
+    }
+
+    if (layoutType === 'funnel') {
+        const height = 35
+        const maxRadius = 28
+        const turns = 4
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const y = t * height - height / 2
+            const r = maxRadius * (1 - t * 0.85)
+            const angle = t * Math.PI * 2 * turns
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    if (layoutType === 'flower') {
+        const petals = 6
+        const centerRadius = 3
+        const petalRadius = 18
+        return titles.map((_, i) => {
+            if (i === 0) return new Vector3(0, 0, 0)
+            const petal = (i - 1) % petals
+            const ring = Math.floor((i - 1) / petals)
+            const petalAngle = (petal / petals) * Math.PI * 2
+            const r = centerRadius + (ring + 1) * 4.5
+            const spread = (ring + 1) * 0.3
+            const offsetAngle = petalAngle + Math.sin(ring * 1.5) * spread
+            const y = Math.sin(ring * 0.8) * 2
+            return new Vector3(
+                Math.cos(offsetAngle) * Math.min(r, petalRadius + ring * 2),
+                y,
+                Math.sin(offsetAngle) * Math.min(r, petalRadius + ring * 2),
+            )
+        })
+    }
+
+    if (layoutType === 'pyramid') {
+        const positions: Vector3[] = []
+        const layerSpacing = 6
+        let placed = 0
+        let layer = 0
+        while (placed < count) {
+            const side = layer + 1
+            const layerSize = side * side
+            const y = -layer * layerSpacing
+            for (let j = 0; j < layerSize && placed < count; j++) {
+                const row = Math.floor(j / side)
+                const col = j % side
+                positions.push(new Vector3(
+                    col * 5.5 - (side - 1) * 2.75,
+                    y,
+                    row * 5.5 - (side - 1) * 2.75,
+                ))
+                placed++
+            }
+            layer++
+        }
+        return positions
+    }
+
+    if (layoutType === 'infinity') {
+        const scaleX = 22
+        const scaleZ = 12
+        return titles.map((_, i) => {
+            const t = (i / count) * Math.PI * 2
+            return new Vector3(
+                Math.sin(t) * scaleX,
+                Math.sin(t * 3) * 3,
+                Math.sin(t) * Math.cos(t) * scaleZ,
+            )
+        })
+    }
+
+    if (layoutType === 'cross') {
+        const spacing = 4.5
+        return titles.map((_, i) => {
+            const arm = i % 4
+            const dist = Math.floor(i / 4) * spacing + spacing
+            const y = Math.sin(dist * 0.3) * 1.5
+            switch (arm) {
+                case 0: return new Vector3(dist, y, 0)
+                case 1: return new Vector3(-dist, y, 0)
+                case 2: return new Vector3(0, y, dist)
+                default: return new Vector3(0, y, -dist)
+            }
+        })
+    }
+
+    if (layoutType === 'hourglass') {
+        const height = 35
+        const maxRadius = 22
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const y = t * height - height / 2
+            const pinch = Math.abs(t - 0.5) * 2
+            const r = 2 + pinch * maxRadius
+            const angle = t * Math.PI * 2 * 5
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    if (layoutType === 'tree') {
+        const positions: Vector3[] = []
+        const trunkCount = Math.max(1, Math.floor(count * 0.15))
+        const crownCount = count - trunkCount
+        const trunkHeight = 12
+
+        for (let i = 0; i < trunkCount; i++) {
+            const t = i / (trunkCount - 1 || 1)
+            positions.push(new Vector3(Math.sin(t * 2) * 0.6, -18 + t * trunkHeight, Math.cos(t * 2) * 0.6))
+        }
+
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5))
+        for (let i = 0; i < crownCount; i++) {
+            const t = i / (crownCount - 1 || 1)
+            const y = 1 - t * 1.4
+            const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y))
+            const theta = goldenAngle * i
+            positions.push(new Vector3(
+                Math.cos(theta) * radiusAtY * 20,
+                -6 + trunkHeight + (1 - t) * 16,
+                Math.sin(theta) * radiusAtY * 20,
+            ))
+        }
+        return positions
+    }
+
+    if (layoutType === 'diamond') {
+        const height = 35
+        const maxRadius = 20
+        const turns = 6
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const y = t * height - height / 2
+            const diamond = 1 - Math.abs(t - 0.5) * 2
+            const r = diamond * maxRadius + 1.5
+            const angle = t * Math.PI * 2 * turns
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    if (layoutType === 'coil') {
+        const radius = 12
+        const height = 40
+        const turns = 8
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const angle = t * Math.PI * 2 * turns
+            return new Vector3(Math.cos(angle) * radius, t * height - height / 2, Math.sin(angle) * radius)
+        })
+    }
+
+    if (layoutType === 'vortex') {
+        const maxRadius = 28
+        const height = 30
+        const turns = 5
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const angle = t * Math.PI * 2 * turns
+            const r = maxRadius * (1 - t * 0.7)
+            const y = t * height - height / 2
+            const wobble = Math.sin(t * Math.PI * 8) * 1.5 * (1 - t)
+            return new Vector3(Math.cos(angle) * (r + wobble), y, Math.sin(angle) * (r + wobble))
+        })
+    }
+
+    if (layoutType === 'dna') {
+        const radius = 10
+        const height = 40
+        const turns = 4
+        return titles.map((_, i) => {
+            const t = i / (count - 1 || 1)
+            const angle = t * Math.PI * 2 * turns
+            const y = t * height - height / 2
+            const strand = i % 3
+            if (strand === 2) {
+                const midAngle = angle + Math.PI * 0.5
+                return new Vector3(Math.cos(midAngle) * radius * 0.3, y, Math.sin(midAngle) * radius * 0.3)
+            }
+            const offset = strand === 0 ? 0 : Math.PI
+            return new Vector3(Math.cos(angle + offset) * radius, y, Math.sin(angle + offset) * radius)
+        })
+    }
+
+    if (layoutType === 'staircase') {
+        const stepWidth = 5.5
+        const stepHeight = 2.5
+        const stepsPerFlight = 6
+        const flightDepth = 8
+        return titles.map((_, i) => {
+            const flight = Math.floor(i / stepsPerFlight)
+            const step = i % stepsPerFlight
+            const direction = flight % 2 === 0 ? 1 : -1
+            const x = step * stepWidth * direction - (stepsPerFlight * stepWidth * direction) / 2
+            const y = i * stepHeight - (count * stepHeight) / 2
+            const z = flight * flightDepth - (Math.floor(count / stepsPerFlight) * flightDepth) / 2
+            return new Vector3(x, y, z)
+        })
+    }
+
+    if (layoutType === 'galaxy-ring') {
+        const rings = 3
+        const baseRadius = 10
+        return titles.map((_, i) => {
+            const ringIdx = i % rings
+            const posInRing = Math.floor(i / rings)
+            const ringCount = Math.ceil(count / rings)
+            const angle = (posInRing / ringCount) * Math.PI * 2
+            const r = baseRadius + ringIdx * 8
+            const tilt = ringIdx * 0.3
+            const y = Math.sin(angle) * r * Math.sin(tilt) + Math.sin(angle * 3) * 1.5
+            return new Vector3(
+                Math.cos(angle) * r * Math.cos(tilt),
+                y,
+                Math.sin(angle) * r,
+            )
+        })
+    }
+
+    if (layoutType === 'web') {
+        const spokes = 8
+        const maxRadius = 28
+        return titles.map((_, i) => {
+            if (i === 0) return new Vector3(0, 0, 0)
+            const spoke = (i - 1) % spokes
+            const ringNum = Math.floor((i - 1) / spokes) + 1
+            const angle = (spoke / spokes) * Math.PI * 2 + (ringNum % 2) * (Math.PI / spokes)
+            const r = ringNum * (maxRadius / Math.ceil(count / spokes))
+            const y = Math.sin(ringNum * 0.8 + spoke * 0.5) * 2
+            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        })
+    }
+
+    // 'phase' layout: original phase-cluster arc positioning
+    const phaseGroups = new Map<number, { indices: number[] }>()
+    titles.forEach((title, i) => {
+        const p = getPhaseNumber(title.phase)
+        if (!phaseGroups.has(p)) phaseGroups.set(p, { indices: [] })
+        phaseGroups.get(p)!.indices.push(i)
+    })
+
+    const positions = new Array<Vector3>(count)
+    for (const [phaseNum, group] of phaseGroups) {
+        const pl = getLayoutForPhase(phaseNum)
+        const gc = group.indices.length
+        group.indices.forEach((globalIdx, localIdx) => {
+            const t = gc > 1 ? localIdx / (gc - 1) : 0.5
+            const angle = -pl.arcAngle / 2 + t * pl.arcAngle
+            const x = pl.center.x + Math.sin(angle) * pl.arcRadius
+            const y = pl.yOffset + Math.sin(t * Math.PI) * 2.5 + Math.cos(angle * 2) * 0.8
+            const z = pl.center.z + Math.cos(angle) * pl.arcRadius * 0.4
+            positions[globalIdx] = new Vector3(x, y, z)
+        })
+    }
+    return positions
+}
 
 function buildCards() {
     while (cardGroup.children.length > 0) cardGroup.remove(cardGroup.children[0])
@@ -443,29 +875,11 @@ function buildCards() {
     disposables.forEach(d => d.dispose())
     disposables.length = 0
 
-    sortedTitles = [...props.titles].sort((a, b) => (a.chronology_index ?? 0) - (b.chronology_index ?? 0))
+    sortedTitles = [...props.titles]
+    const positions = computePositions(sortedTitles, props.layout)
 
-    const phaseGroups = new Map<number, { titles: Title[], globalIndices: number[] }>()
     sortedTitles.forEach((title, globalIdx) => {
-        const p = getPhaseNumber(title.phase)
-        if (!phaseGroups.has(p)) phaseGroups.set(p, { titles: [], globalIndices: [] })
-        phaseGroups.get(p)!.titles.push(title)
-        phaseGroups.get(p)!.globalIndices.push(globalIdx)
-    })
-
-    const allPathPoints: Vector3[] = []
-
-    for (const [phaseNum, group] of phaseGroups) {
-        const layout = getLayoutForPhase(phaseNum)
-        const count = group.titles.length
-
-        group.titles.forEach((title, localIdx) => {
-            const t = count > 1 ? localIdx / (count - 1) : 0.5
-            const angle = -layout.arcAngle / 2 + t * layout.arcAngle
-
-            const x = layout.center.x + Math.sin(angle) * layout.arcRadius
-            const y = layout.yOffset + Math.sin(t * Math.PI) * 2.5 + Math.cos(angle * 2) * 0.8
-            const z = layout.center.z + Math.cos(angle) * layout.arcRadius * 0.4
+            const pos = positions[globalIdx]
 
             const status = props.progressMap.get(title.id)
             const colors = getPhaseColors(title.phase)
@@ -483,7 +897,6 @@ function buildCards() {
             })
             disposables.push(cardMat)
             const card = new Mesh(cardGeo, cardMat)
-            const pos = new Vector3(x, y, z)
             card.position.copy(pos)
             card.userData.titleId = title.id
             cardGroup.add(card)
@@ -528,11 +941,8 @@ function buildCards() {
             bgMesh.position.z -= 0.2
             cardGroup.add(bgMesh)
 
-            const globalIdx = group.globalIndices[localIdx]
-            cardMeshes.push({ card, glow, bg: bgMesh, titleId: title.id, basePos: pos.clone(), phaseNum, index: globalIdx })
-            allPathPoints.push(pos.clone())
-        })
-    }
+            cardMeshes.push({ card, glow, bg: bgMesh, titleId: title.id, basePos: pos.clone(), phaseNum: getPhaseNumber(title.phase), index: globalIdx })
+    })
 
     // Sort path points by global index for the connecting line
     const sortedCards = [...cardMeshes].sort((a, b) => a.index - b.index)
@@ -620,16 +1030,25 @@ function buildCards() {
     }
 
     currentTitleCount = sortedTitles.length
+    currentLayout = props.layout
 }
 
-watch(() => props.titles.length, () => {
-    if (props.titles.length !== currentTitleCount) buildCards()
+watch(() => props.titles, () => {
+    buildCards()
+    if (settings.cameraAutoReset) flyToCard(props.focusedIndex)
+})
+watch(() => props.layout, (newLayout) => {
+    if (newLayout !== currentLayout) buildCards()
 })
 buildCards()
 
 const { camera, renderer } = useTres()
-if (renderer.value) renderer.value.setClearColor(0x050508, 1)
-watch(renderer, (r) => { if (r) r.setClearColor(0x050508, 1) })
+function applyBg() {
+    if (renderer.value) renderer.value.setClearColor(new Color(props.themeBg), 1)
+}
+applyBg()
+watch(renderer, () => applyBg())
+watch(() => props.themeBg, () => applyBg())
 
 // Camera system
 let isDragging = false
@@ -663,7 +1082,7 @@ function flyToCard(index: number) {
 
 // Watch focused index changes from parent (Next/Prev buttons)
 watch(() => props.focusedIndex, (newIdx) => {
-    flyToCard(newIdx)
+    if (settings.cameraAutoReset) flyToCard(newIdx)
 })
 
 function onPointerDown(e: PointerEvent) {
@@ -723,25 +1142,35 @@ function onPointerUp(e: PointerEvent) {
 
 
 let scrollCooldown = false
+const { settings } = useSettings()
 
 function onWheel(e: WheelEvent) {
     e.preventDefault()
     autoRotate = false
 
+    // Ctrl/Cmd + scroll = zoom
     if (e.ctrlKey || e.metaKey) {
         const speed = 0.004
         targetDistance = Math.max(4, Math.min(60, targetDistance + e.deltaY * speed))
         return
     }
 
-    if (scrollCooldown) return
-    scrollCooldown = true
-    setTimeout(() => { scrollCooldown = false }, 300)
+    if (settings.scrollBehavior === 'snap') {
+        // Snap: jump one card per scroll tick
+        if (scrollCooldown) return
+        scrollCooldown = true
+        setTimeout(() => { scrollCooldown = false }, 300)
 
-    const direction = e.deltaY > 0 ? 1 : -1
-    const nextIndex = Math.max(0, Math.min(cardMeshes.length - 1, props.focusedIndex + direction))
-    if (nextIndex !== props.focusedIndex) {
-        emit('update:focusedIndex', nextIndex)
+        const direction = e.deltaY > 0 ? 1 : -1
+        const nextIndex = Math.max(0, Math.min(cardMeshes.length - 1, props.focusedIndex + direction))
+        if (nextIndex !== props.focusedIndex) {
+            emit('update:focusedIndex', nextIndex)
+        }
+    } else {
+        // Free scroll: smooth camera movement along the timeline
+        const speed = 0.015
+        targetCenter.x += e.deltaY * speed
+        targetCenter.x = Math.max(-50, Math.min(70, targetCenter.x))
     }
 }
 
@@ -821,12 +1250,28 @@ onLoop(({ delta }) => {
         const bgMat = bg.material as MeshBasicMaterial
         const status = props.progressMap.get(titleId)
 
+        let driftX = 0, driftY = 0, driftZ = 0
+        if (settings.layoutDrift) {
+            const driftSpeed = 0.12
+            const driftAmp = 1.2
+            const phase = index * 0.7
+            driftX = Math.sin(elapsed * driftSpeed + phase) * driftAmp * Math.cos(index * 0.3)
+            driftY = Math.cos(elapsed * driftSpeed * 0.7 + phase * 1.3) * driftAmp * 0.5
+            driftZ = Math.sin(elapsed * driftSpeed * 0.5 + phase * 0.9) * driftAmp * Math.sin(index * 0.5)
+        }
+
         const bobSpeed = 0.4 + (index % 5) * 0.08
         const bobAmp = 0.08 + (index % 3) * 0.03
         const bob = Math.sin(elapsed * bobSpeed + basePos.x * 0.3 + index * 1.1) * bobAmp
-        card.position.y = basePos.y + bob
-        glow.position.y = basePos.y + bob
-        bg.position.y = basePos.y + bob
+        card.position.x = basePos.x + driftX
+        card.position.y = basePos.y + bob + driftY
+        card.position.z = basePos.z + driftZ
+        glow.position.x = basePos.x + driftX
+        glow.position.y = basePos.y + bob + driftY
+        glow.position.z = basePos.z + driftZ
+        bg.position.x = basePos.x + driftX
+        bg.position.y = basePos.y + bob + driftY
+        bg.position.z = basePos.z + driftZ
 
         if (camera.value) {
             const dir = new Vector3().subVectors(camera.value.position, card.position)

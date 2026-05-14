@@ -1,17 +1,31 @@
 <template>
     <div>
         <NuxtLayout name="admin">
-            <div v-if="!isAuthenticated" class="max-w-sm mx-auto mt-20">
+            <div v-if="isLoading" class="text-center py-20">
+                <p class="text-gray-400">Laden...</p>
+            </div>
+
+            <div v-else-if="!user" class="max-w-sm mx-auto mt-20">
                 <h1 class="text-2xl font-bold mb-6">Admin Login</h1>
                 <form @submit.prevent="login">
-                    <input v-model="keyInput" type="password" placeholder="Service key"
+                    <input v-model="email" type="email" placeholder="E-mail"
                         class="w-full px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors" />
-                    <button type="submit"
-                        class="w-full mt-4 px-4 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors">
-                        Inloggen
+                    <input v-model="password" type="password" placeholder="Wachtwoord"
+                        class="w-full mt-3 px-4 py-3 rounded-lg bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 transition-colors" />
+                    <button type="submit" :disabled="loggingIn"
+                        class="w-full mt-4 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg font-medium transition-colors">
+                        {{ loggingIn ? 'Bezig...' : 'Inloggen' }}
                     </button>
                     <p v-if="error" class="mt-3 text-red-400 text-sm">{{ error }}</p>
                 </form>
+            </div>
+
+            <div v-else-if="isAdmin === false" class="text-center py-20">
+                <p class="text-gray-400 text-lg">Je hebt geen admin-rechten.</p>
+                <button @click="logout"
+                    class="mt-4 px-4 py-2 text-sm text-red-400 hover:text-red-300 transition-colors">
+                    Uitloggen
+                </button>
             </div>
 
             <div v-else>
@@ -35,9 +49,14 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
 
-const { isAuthenticated, setKey, adminFetch, restoreKey } = useAdmin()
-const keyInput = ref('')
+const client = useSupabaseClient()
+const user = useSupabaseUser()
+const { isAuthenticated, isLoading, isAdmin, checkAdmin, adminFetch } = useAdmin()
+
+const email = ref('')
+const password = ref('')
 const error = ref('')
+const loggingIn = ref(false)
 
 const stats = reactive<Record<string, number>>({})
 
@@ -52,20 +71,26 @@ const cards = [
 
 async function login() {
     error.value = ''
+    loggingIn.value = true
     try {
-        await $fetch('/api/admin/titles', {
-            headers: { Authorization: `Bearer ${keyInput.value}` },
+        const { error: authError } = await client.auth.signInWithPassword({
+            email: email.value,
+            password: password.value,
         })
-        setKey(keyInput.value)
-        loadStats()
-    } catch (e: any) {
-        const status = e?.response?.status || e?.statusCode
-        if (status === 403) {
-            error.value = 'Ongeldige key'
-        } else {
-            error.value = 'Server error — controleer je Supabase configuratie'
+        if (authError) {
+            error.value = authError.message
+            return
         }
+        await checkAdmin()
+    } catch {
+        error.value = 'Er ging iets mis. Probeer opnieuw.'
+    } finally {
+        loggingIn.value = false
     }
+}
+
+async function logout() {
+    await client.auth.signOut()
 }
 
 async function loadStats() {
@@ -89,8 +114,12 @@ async function loadStats() {
     }
 }
 
-onMounted(() => {
-    restoreKey()
+watch(isAuthenticated, (val) => {
+    if (val) loadStats()
+})
+
+onMounted(async () => {
+    await checkAdmin()
     if (isAuthenticated.value) loadStats()
 })
 </script>

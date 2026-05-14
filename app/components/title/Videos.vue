@@ -24,7 +24,7 @@
         <div v-if="activeVideo" class="glass-card overflow-hidden">
             <div class="relative w-full aspect-video bg-black">
                 <iframe
-                    :src="`https://www.youtube-nocookie.com/embed/${activeVideo.key}?rel=0&modestbranding=1`"
+                    :src="embedUrl"
                     :title="activeVideo.name"
                     class="absolute inset-0 w-full h-full"
                     frameborder="0"
@@ -75,6 +75,8 @@
 </template>
 
 <script setup lang="ts">
+const { settings } = useSettings()
+
 const props = defineProps<{
     tmdbId?: number | null
     type?: string
@@ -107,6 +109,21 @@ const allVideos = ref<Video[]>([])
 const activeTab = ref('')
 const activeVideo = ref<Video | null>(null)
 const containerEl = ref<HTMLElement | null>(null)
+
+const shouldAutoplay = computed(() => {
+    if (settings.autoplayTrailers === 'always') return true
+    if (settings.autoplayTrailers === 'wifi') {
+        const conn = (navigator as any).connection
+        return conn ? conn.type === 'wifi' || conn.effectiveType === '4g' : false
+    }
+    return false
+})
+
+const embedUrl = computed(() => {
+    if (!activeVideo.value) return ''
+    const base = `https://www.youtube-nocookie.com/embed/${activeVideo.value.key}?rel=0&modestbranding=1`
+    return shouldAutoplay.value ? `${base}&autoplay=1` : base
+})
 
 const groupedVideos = computed<VideoGroup[]>(() => {
     const groups = new Map<string, Video[]>()

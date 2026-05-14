@@ -1,8 +1,8 @@
 <template>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 space-y-6 pb-24">
         <div class="pt-4">
-            <h1 class="font-display text-3xl tracking-wider text-white mb-1">VRIENDEN</h1>
-            <p class="text-white/30 text-sm">Vergelijk je voortgang met andere MCU-fans.</p>
+            <h1 class="font-display text-3xl tracking-wider text-white mb-1">{{ $t('friends.title') }}</h1>
+            <p class="text-white/30 text-sm">{{ $t('friends.subtitle') }}</p>
         </div>
 
         <!-- Not logged in -->
@@ -10,21 +10,21 @@
             <svg class="w-10 h-10 text-white/10 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
             </svg>
-            <p class="text-white/40 text-sm mb-4">Log in om vrienden toe te voegen.</p>
+            <p class="text-white/40 text-sm mb-4">{{ $t('friends.loginPrompt') }}</p>
             <NuxtLink to="/login" class="inline-flex px-5 py-2 rounded-xl bg-white/10 border border-white/10 text-sm text-white hover:bg-white/15 transition-colors">
-                Inloggen
+                {{ $t('common.login') }}
             </NuxtLink>
         </div>
 
         <template v-else>
             <!-- Add friend -->
             <div class="glass-card p-5">
-                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">VRIEND TOEVOEGEN</h2>
+                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">{{ $t('friends.addFriend') }}</h2>
                 <form class="flex gap-2" @submit.prevent="sendRequest">
                     <input
                         v-model="searchUsername"
                         type="text"
-                        placeholder="Gebruikersnaam"
+                        :placeholder="$t('friends.username')"
                         class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
                     />
                     <button
@@ -32,7 +32,7 @@
                         :disabled="!searchUsername.trim() || sending"
                         class="px-5 py-2 rounded-xl bg-white/10 border border-white/10 text-sm text-white hover:bg-white/15 transition-colors disabled:opacity-30"
                     >
-                        {{ sending ? '...' : 'Verstuur' }}
+                        {{ sending ? '...' : $t('common.send') }}
                     </button>
                 </form>
                 <p v-if="requestMessage" :class="requestError ? 'text-red-400' : 'text-green-400'" class="text-xs mt-2">
@@ -42,7 +42,7 @@
 
             <!-- Pending requests -->
             <div v-if="pendingRequests.length > 0">
-                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">VERZOEKEN</h2>
+                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">{{ $t('friends.requests') }}</h2>
                 <div class="space-y-2">
                     <div
                         v-for="req in pendingRequests"
@@ -54,37 +54,37 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <span class="text-sm text-white block truncate">{{ req.username }}</span>
-                            <span class="text-xs text-white/30">{{ req.incoming ? 'Wil je toevoegen' : 'Verzoek verstuurd' }}</span>
+                            <span class="text-xs text-white/30">{{ req.incoming ? $t('friends.wantsToAdd') : $t('friends.requestSent') }}</span>
                         </div>
                         <div v-if="req.incoming" class="flex gap-2 shrink-0">
                             <button
                                 class="px-3 py-1.5 rounded-lg text-xs bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"
                                 @click="acceptRequest(req.id)"
                             >
-                                Accepteren
+                                {{ $t('common.accept') }}
                             </button>
                             <button
                                 class="px-3 py-1.5 rounded-lg text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
                                 @click="declineRequest(req.id)"
                             >
-                                Weigeren
+                                {{ $t('common.decline') }}
                             </button>
                         </div>
-                        <span v-else class="text-xs text-white/20 shrink-0">Wacht...</span>
+                        <span v-else class="text-xs text-white/20 shrink-0">{{ $t('friends.waiting') }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Friends list -->
             <div>
-                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">MIJN VRIENDEN</h2>
+                <h2 class="font-display text-lg tracking-wider text-white/60 mb-3">{{ $t('friends.myFriends') }}</h2>
 
                 <div v-if="friends.length === 0 && !loading" class="glass-card p-8 text-center">
                     <svg class="w-10 h-10 text-white/10 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
                     </svg>
-                    <p class="text-white/40 text-sm">Nog geen vrienden.</p>
-                    <p class="text-white/20 text-xs mt-1">Voeg vrienden toe met hun gebruikersnaam.</p>
+                    <p class="text-white/40 text-sm">{{ $t('friends.noFriends') }}</p>
+                    <p class="text-white/20 text-xs mt-1">{{ $t('friends.addByUsername') }}</p>
                 </div>
 
                 <div v-else class="space-y-2">
@@ -103,7 +103,7 @@
                         </div>
                         <div class="text-right shrink-0">
                             <span class="font-mono text-sm text-white/60">{{ friend.xp.toLocaleString() }}</span>
-                            <span class="text-[10px] text-white/20 ml-1">XP</span>
+                            <span class="text-[10px] text-white/20 ml-1">{{ $t('common.xp') }}</span>
                         </div>
                     </NuxtLink>
                 </div>
@@ -138,6 +138,7 @@ interface PendingRequest {
     incoming: boolean
 }
 
+const { t } = useI18n()
 const client = useSupabaseClient<Database>()
 const user = useSupabaseUser()
 const { getLevelFromXP, getLevelName } = useXP()
@@ -175,7 +176,7 @@ async function loadFriends() {
             if (profiles) {
                 friends.value = profiles.map(p => {
                     const level = p.level_int || getLevelFromXP(p.xp_total || 0)
-                    const name = p.username || 'Anoniem'
+                    const name = p.username || t('common.anonymous')
                     return {
                         id: p.id,
                         username: name,
@@ -202,7 +203,7 @@ async function loadFriends() {
             if (pendingProfiles) {
                 pendingRequests.value = pendingProfiles.map(p => {
                     const match = pendingIds.find(pi => pi.odId === p.id)
-                    const name = p.username || 'Anoniem'
+                    const name = p.username || t('common.anonymous')
                     return {
                         id: p.id,
                         username: name,
@@ -233,13 +234,13 @@ async function sendRequest() {
             .single()
 
         if (!profile) {
-            requestMessage.value = 'Gebruiker niet gevonden.'
+            requestMessage.value = t('friends.userNotFound')
             requestError.value = true
             return
         }
 
         if (profile.id === user.value.id) {
-            requestMessage.value = 'Je kunt jezelf niet toevoegen.'
+            requestMessage.value = t('friends.cantAddSelf')
             requestError.value = true
             return
         }
@@ -252,19 +253,19 @@ async function sendRequest() {
 
         if (error) {
             if (error.code === '23505') {
-                requestMessage.value = 'Verzoek al verstuurd.'
+                requestMessage.value = t('friends.alreadySent')
             } else {
-                requestMessage.value = 'Er ging iets mis.'
+                requestMessage.value = t('friends.somethingWrong')
             }
             requestError.value = true
             return
         }
 
-        requestMessage.value = `Verzoek verstuurd naar ${searchUsername.value.trim()}.`
+        requestMessage.value = t('friends.requestSentTo', { username: searchUsername.value.trim() })
         searchUsername.value = ''
         await loadFriends()
     } catch {
-        requestMessage.value = 'Kon verzoek niet versturen.'
+        requestMessage.value = t('friends.couldNotSend')
         requestError.value = true
     } finally {
         sending.value = false

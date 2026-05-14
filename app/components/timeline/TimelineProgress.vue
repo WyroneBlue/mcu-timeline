@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed top-16 left-0 right-0 z-40 bg-[#0A0E1A]/80 backdrop-blur-xl border-b border-white/5">
+    <div class="fixed top-16 left-0 right-0 z-40 backdrop-blur-xl border-b border-white/5" style="background-color: color-mix(in srgb, var(--theme-bg), transparent 20%)">
         <div class="max-w-7xl mx-auto px-4 py-2 flex items-center gap-4">
             <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
                 <div

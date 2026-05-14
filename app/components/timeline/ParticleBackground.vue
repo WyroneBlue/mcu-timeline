@@ -28,10 +28,12 @@ const props = defineProps<{
     activePhase: number | null
 }>()
 
+const { settings } = useSettings()
+
 const prefersReducedMotion = ref(false)
 
 onMounted(() => {
-    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches || settings.reducedMotion
 })
 
 const phaseColors: Record<number, string> = {
@@ -58,12 +60,15 @@ const scrollProgress = computed(() => {
     return Math.min(1, Math.max(0, scrollY.value / docHeight))
 })
 
+const densityMultiplier: Record<string, number> = { low: 0.5, medium: 1, high: 1.5 }
+
 const particleCount = computed(() => {
     if (!import.meta.client) return 800
     const w = window.innerWidth
-    if (w < 640) return 400
-    if (w < 1024) return 600
-    return 800
+    let base = 800
+    if (w < 640) base = 400
+    else if (w < 1024) base = 600
+    return Math.round(base * (densityMultiplier[settings.particleDensity] ?? 1))
 })
 </script>
 

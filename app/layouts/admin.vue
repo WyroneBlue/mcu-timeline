@@ -15,9 +15,16 @@
                             </NuxtLink>
                         </nav>
                     </div>
-                    <NuxtLink to="/" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">
-                        Terug naar app
-                    </NuxtLink>
+                    <div class="flex items-center gap-4">
+                        <span v-if="user" class="text-sm text-gray-400">{{ user.email }}</span>
+                        <button v-if="user" @click="logout"
+                            class="text-sm text-gray-500 hover:text-gray-300 transition-colors">
+                            Uitloggen
+                        </button>
+                        <NuxtLink to="/" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">
+                            Terug naar app
+                        </NuxtLink>
+                    </div>
                 </div>
             </div>
         </header>
@@ -30,6 +37,13 @@
 
 <script setup lang="ts">
 const route = useRoute()
+const user = useSupabaseUser()
+const client = useSupabaseClient()
+
+async function logout() {
+    await client.auth.signOut()
+    navigateTo('/admin')
+}
 
 function isActive(to: string) {
     if (to === '/admin') return route.path === '/admin'

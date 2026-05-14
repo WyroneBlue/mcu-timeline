@@ -14,12 +14,37 @@ export default defineNuxtConfig({
         '@nuxtjs/supabase',
         '@tresjs/nuxt',
         '@vite-pwa/nuxt',
+        '@nuxtjs/i18n',
     ],
+
+    i18n: {
+        langDir: '../locales',
+        locales: [
+            { code: 'en', name: 'English', file: 'en.json' },
+            { code: 'nl', name: 'Nederlands', file: 'nl.json' },
+            { code: 'es', name: 'Español', file: 'es.json' },
+            { code: 'pt', name: 'Português', file: 'pt.json' },
+            { code: 'it', name: 'Italiano', file: 'it.json' },
+            { code: 'tr', name: 'Türkçe', file: 'tr.json' },
+            { code: 'ar', name: 'العربية', dir: 'rtl', file: 'ar.json' },
+            { code: 'zh', name: '中文', file: 'zh.json' },
+            { code: 'ja', name: '日本語', file: 'ja.json' },
+        ],
+        defaultLocale: 'en',
+        strategy: 'no_prefix',
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'ck_locale',
+            fallbackLocale: 'en',
+        },
+        vueI18n: './i18n.config.ts',
+    },
 
     css: ['~/assets/css/main.css'],
 
     runtimeConfig: {
         tmdbApiKey: process.env.TMDB_API_KEY,
+        anthropicApiKey: process.env.ANTHROPIC_API_KEY,
         supabase: {
             serviceKey: process.env.SUPABASE_SERVICE_KEY
         },

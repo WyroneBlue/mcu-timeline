@@ -42,6 +42,7 @@ const props = defineProps<{
     toPhase: number
 }>()
 
+const { settings } = useSettings()
 const triggerEl = ref<HTMLElement | null>(null)
 const labelEl = ref<HTMLElement | null>(null)
 const portalProgress = ref(0)
@@ -49,7 +50,7 @@ const isVisible = ref(false)
 const prefersReducedMotion = ref(false)
 
 onMounted(() => {
-    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches || settings.reducedMotion
 })
 
 const phaseColors: Record<number, string> = {
