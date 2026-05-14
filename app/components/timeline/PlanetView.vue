@@ -65,6 +65,24 @@
 
         <!-- Controls -->
         <div v-if="planetMode.viewState.value !== 'earth-detail'" class="absolute top-4 left-4 z-30 flex flex-col gap-2">
+            <!-- Settings toggle -->
+            <button
+                :class="[
+                    'group w-10 h-10 rounded-xl border backdrop-blur-md flex items-center justify-center transition-all duration-300',
+                    controlsOpen
+                        ? 'bg-white/[0.08] border-white/10 text-white/80'
+                        : 'bg-black/40 border-white/[0.06] text-white/40 hover:text-white/80 hover:bg-white/[0.06] hover:border-white/10'
+                ]"
+                title="Settings"
+                @click="controlsOpen = !controlsOpen"
+            >
+                <svg class="w-4.5 h-4.5 transition-transform duration-300" :class="controlsOpen ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7 7 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.248a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a7 7 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.282c-.062-.373-.312-.686-.644-.87a7 7 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a7 7 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+
+            <!-- Quick actions -->
             <button
                 class="group w-10 h-10 rounded-xl bg-black/40 border border-white/[0.06] backdrop-blur-md flex items-center justify-center text-white/40 hover:text-white/80 hover:bg-white/[0.06] hover:border-white/10 transition-all duration-300"
                 :title="$t('timeline.resetCamera')"
@@ -75,295 +93,106 @@
                 </svg>
             </button>
 
-            <!-- Drift toggle -->
-            <button
-                :class="[
-                    'group w-10 h-10 rounded-xl border backdrop-blur-md flex items-center justify-center transition-all duration-300',
-                    settings.layoutDrift
-                        ? 'bg-white/[0.08] border-white/[0.12] text-white/80'
-                        : 'bg-black/40 border-white/[0.06] text-white/30 hover:text-white/60 hover:bg-white/[0.04] hover:border-white/10'
-                ]"
-                title="Layout Drift"
-                @click="settings.layoutDrift = !settings.layoutDrift"
-            >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-            </button>
-
-            <!-- Camera auto-reset toggle -->
-            <button
-                :class="[
-                    'group w-10 h-10 rounded-xl border backdrop-blur-md flex items-center justify-center transition-all duration-300',
-                    settings.cameraAutoReset
-                        ? 'bg-white/[0.08] border-white/[0.12] text-white/80'
-                        : 'bg-black/40 border-white/[0.06] text-white/30 hover:text-white/60 hover:bg-white/[0.04] hover:border-white/10'
-                ]"
-                title="Camera Auto-Reset"
-                @click="settings.cameraAutoReset = !settings.cameraAutoReset"
-            >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9a3 3 0 100 6 3 3 0 000-6zM12 3v2m0 14v2M3 12h2m14 0h2m-3.5-6.5L16 7m-8 10l-1.5 1.5M19.5 17.5L18 17M6 7L4.5 5.5" />
-                </svg>
-            </button>
-
-            <!-- Layout selector -->
-            <div class="flex flex-col gap-1 p-1.5 rounded-xl bg-black/40 border border-white/[0.06] backdrop-blur-md">
-                <button
-                    v-for="l in layouts"
-                    :key="l.value"
-                    :class="[
-                        'w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200',
-                        layout === l.value
-                            ? 'bg-white/10 text-white/90 shadow-sm'
-                            : 'text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
-                    ]"
-                    :title="l.label"
-                    @click="layout = l.value"
+            <!-- Collapsible settings panel -->
+            <Transition name="settings-panel">
+                <div
+                    v-if="controlsOpen"
+                    class="planet-settings w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
                 >
-                    <!-- Orbital -->
-                    <svg v-if="l.value === 'orbital'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="2" stroke-width="2" />
-                        <circle cx="12" cy="12" r="6" stroke-width="1.2" stroke-dasharray="3 2" />
-                        <circle cx="12" cy="12" r="10" stroke-width="1" stroke-dasharray="4 3" />
-                        <circle cx="18" cy="12" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="7" r="1" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Spiral -->
-                    <svg v-else-if="l.value === 'spiral'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.5" stroke-linecap="round" d="M12 12c0-1.1.9-2 2-2s2 .9 2 2-.9 3-3 3-4-.9-4-3 .9-5 4-5 6 .9 6 4" />
-                        <circle cx="14" cy="10" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="9" cy="15" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="18" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Zigzag -->
-                    <svg v-else-if="l.value === 'zigzag'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <polyline stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="4,8 8,16 12,8 16,16 20,8" />
-                        <circle cx="4" cy="8" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="16" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="16" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="8" r="1.2" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Grid -->
-                    <svg v-else-if="l.value === 'grid'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="7" cy="7" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="7" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="7" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="12" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="12" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="17" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="17" r="1.5" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="17" r="1.5" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Helix -->
-                    <svg v-else-if="l.value === 'helix'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.3" stroke-linecap="round" d="M8 3c0 3 8 3 8 6s-8 3-8 6 8 3 8 6" />
-                        <circle cx="8" cy="3" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="9" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="15" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="21" r="1" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Galaxy -->
-                    <svg v-else-if="l.value === 'galaxy'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none" />
-                        <path stroke-width="1.2" stroke-linecap="round" d="M12 12c2-1 4 0 5 2s0 4-2 5" />
-                        <path stroke-width="1.2" stroke-linecap="round" d="M12 12c-2 1-4 0-5-2s0-4 2-5" />
-                        <circle cx="17" cy="14" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="10" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="15" cy="19" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="9" cy="5" r="0.7" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Scatter -->
-                    <svg v-else-if="l.value === 'scatter'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="5" cy="8" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="14" cy="5" r="1.4" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="11" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="14" r="1.3" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="17" r="1.1" fill="currentColor" stroke="none" />
-                        <circle cx="11" cy="19" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="6" cy="19" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="5" r="0.9" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Wave -->
-                    <svg v-else-if="l.value === 'wave'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.3" stroke-linecap="round" d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0" />
-                        <circle cx="6" cy="8" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="18" cy="8" r="0.9" fill="currentColor" stroke="none" />
-                        <path stroke-width="1" stroke-linecap="round" opacity="0.4" d="M3 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0" />
-                    </svg>
-                    <!-- Ring -->
-                    <svg v-else-if="l.value === 'ring'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="8" stroke-width="1.3" />
-                        <circle cx="12" cy="4" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="9" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="18" cy="17" r="1.1" fill="currentColor" stroke="none" />
-                        <circle cx="6" cy="17" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="5" cy="9" r="1.1" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Sphere -->
-                    <svg v-else-if="l.value === 'sphere'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9" stroke-width="1" />
-                        <ellipse cx="12" cy="12" rx="9" ry="4" stroke-width="0.8" opacity="0.4" />
-                        <ellipse cx="12" cy="12" rx="4" ry="9" stroke-width="0.8" opacity="0.4" />
-                        <circle cx="12" cy="4" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="8" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="16" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="15" cy="18" r="0.8" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Constellation -->
-                    <svg v-else-if="l.value === 'constellation'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="5" cy="6" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="4" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="8" r="0.8" fill="currentColor" stroke="none" />
-                        <line x1="5" y1="6" x2="8" y2="4" stroke-width="0.6" opacity="0.4" />
-                        <line x1="5" y1="6" x2="7" y2="8" stroke-width="0.6" opacity="0.4" />
-                        <circle cx="17" cy="7" r="1.1" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="5" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="10" r="0.7" fill="currentColor" stroke="none" />
-                        <line x1="17" y1="7" x2="20" y2="5" stroke-width="0.6" opacity="0.4" />
-                        <line x1="17" y1="7" x2="19" y2="10" stroke-width="0.6" opacity="0.4" />
-                        <circle cx="10" cy="17" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="14" cy="18" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="15" r="0.7" fill="currentColor" stroke="none" />
-                        <line x1="10" y1="17" x2="14" y2="18" stroke-width="0.6" opacity="0.4" />
-                        <line x1="12" y1="15" x2="10" y2="17" stroke-width="0.6" opacity="0.4" />
-                    </svg>
-                    <!-- Funnel -->
-                    <svg v-else-if="l.value === 'funnel'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linecap="round" d="M4 4h16M6 8h12M8 12h8M10 16h4" />
-                        <circle cx="12" cy="20" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="5" cy="4" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="4" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="12" r="0.7" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Flower -->
-                    <svg v-else-if="l.value === 'flower'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="6" r="1.3" stroke-width="1" />
-                        <circle cx="17" cy="9" r="1.3" stroke-width="1" />
-                        <circle cx="17" cy="15" r="1.3" stroke-width="1" />
-                        <circle cx="12" cy="18" r="1.3" stroke-width="1" />
-                        <circle cx="7" cy="15" r="1.3" stroke-width="1" />
-                        <circle cx="7" cy="9" r="1.3" stroke-width="1" />
-                    </svg>
-                    <!-- Pyramid -->
-                    <svg v-else-if="l.value === 'pyramid'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linejoin="round" d="M12 4L3 20h18L12 4z" />
-                        <circle cx="12" cy="4" r="1" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="14" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="14" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="5" cy="18" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="18" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="18" r="0.8" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Infinity -->
-                    <svg v-else-if="l.value === 'infinity'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.4" stroke-linecap="round" d="M8 12c-2-3-5-3-5 0s3 3 5 0 4-3 4 0M16 12c2 3 5 3 5 0s-3-3-5 0-4 3-4 0" />
-                        <circle cx="4" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Cross -->
-                    <svg v-else-if="l.value === 'cross'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <line x1="12" y1="3" x2="12" y2="21" stroke-width="1.2" />
-                        <line x1="3" y1="12" x2="21" y2="12" stroke-width="1.2" />
-                        <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="5" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="19" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="5" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Hourglass -->
-                    <svg v-else-if="l.value === 'hourglass'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linejoin="round" d="M6 3h12L12 12 18 21H6L12 12 6 3z" />
-                        <circle cx="8" cy="5" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="5" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="19" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="19" r="0.7" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Tree -->
-                    <svg v-else-if="l.value === 'tree'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <line x1="12" y1="21" x2="12" y2="13" stroke-width="1.5" />
-                        <circle cx="12" cy="9" r="5" stroke-width="1.2" />
-                        <circle cx="12" cy="6" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="9" cy="10" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="15" cy="10" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="0.7" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Diamond -->
-                    <svg v-else-if="l.value === 'diamond'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linejoin="round" d="M12 2L22 12 12 22 2 12z" />
-                        <circle cx="12" cy="2" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="22" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="22" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="2" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Coil -->
-                    <svg v-else-if="l.value === 'coil'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.3" stroke-linecap="round" d="M7 4h10M5 8h14M5 12h14M5 16h14M7 20h10" />
-                        <circle cx="7" cy="4" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="8" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="5" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="19" cy="16" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="20" r="0.8" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Vortex -->
-                    <svg v-else-if="l.value === 'vortex'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linecap="round" d="M3 4h18M5 8h14M7 12h10M9 16h6M11 20h2" />
-                        <circle cx="12" cy="4" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="8" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="12" r="0.8" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="20" r="0.9" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- DNA -->
-                    <svg v-else-if="l.value === 'dna'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.2" stroke-linecap="round" d="M7 3c0 4 10 4 10 8s-10 4-10 8" />
-                        <path stroke-width="1.2" stroke-linecap="round" d="M17 3c0 4-10 4-10 8s10 4 10 8" />
-                        <line x1="9" y1="7" x2="15" y2="7" stroke-width="0.8" opacity="0.5" />
-                        <line x1="9" y1="11" x2="15" y2="11" stroke-width="0.8" opacity="0.5" />
-                        <line x1="9" y1="15" x2="15" y2="15" stroke-width="0.8" opacity="0.5" />
-                    </svg>
-                    <!-- Staircase -->
-                    <svg v-else-if="l.value === 'staircase'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M4 20h4v-4h4v-4h4v-4h4" />
-                        <circle cx="4" cy="20" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="8" cy="16" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="12" cy="12" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="8" r="0.9" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="4" r="0.9" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Galaxy Ring -->
-                    <svg v-else-if="l.value === 'galaxy-ring'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <ellipse cx="12" cy="12" rx="9" ry="4" stroke-width="1" />
-                        <ellipse cx="12" cy="12" rx="9" ry="4" stroke-width="1" transform="rotate(60 12 12)" />
-                        <ellipse cx="12" cy="12" rx="9" ry="4" stroke-width="1" transform="rotate(120 12 12)" />
-                        <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
-                        <circle cx="20" cy="11" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="6" cy="8" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="16" cy="17" r="0.7" fill="currentColor" stroke="none" />
-                    </svg>
-                    <!-- Web -->
-                    <svg v-else-if="l.value === 'web'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
-                        <line x1="12" y1="12" x2="12" y2="3" stroke-width="0.7" opacity="0.4" />
-                        <line x1="12" y1="12" x2="20" y2="7" stroke-width="0.7" opacity="0.4" />
-                        <line x1="12" y1="12" x2="20" y2="17" stroke-width="0.7" opacity="0.4" />
-                        <line x1="12" y1="12" x2="12" y2="21" stroke-width="0.7" opacity="0.4" />
-                        <line x1="12" y1="12" x2="4" y2="17" stroke-width="0.7" opacity="0.4" />
-                        <line x1="12" y1="12" x2="4" y2="7" stroke-width="0.7" opacity="0.4" />
-                        <circle cx="12" cy="7" r="5" stroke-width="0.7" opacity="0.3" />
-                        <circle cx="12" cy="5" r="0.7" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="9" r="0.6" fill="currentColor" stroke="none" />
-                        <circle cx="7" cy="15" r="0.6" fill="currentColor" stroke="none" />
-                        <circle cx="17" cy="15" r="0.6" fill="currentColor" stroke="none" />
-                    </svg>
-                </button>
-            </div>
+                    <!-- Layout section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.layout = !sectionOpen.layout"
+                    >
+                        <span>Layout</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.layout ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.layout" class="px-2 pb-2">
+                            <div class="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto scrollbar-thin pr-0.5">
+                                <button
+                                    v-for="l in layouts"
+                                    :key="l.value"
+                                    :class="[
+                                        'w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200',
+                                        layout === l.value
+                                            ? 'bg-white/10 text-white/90 shadow-sm ring-1 ring-white/10'
+                                            : 'text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
+                                    ]"
+                                    :title="l.label"
+                                    @click="layout = l.value"
+                                >
+                                    <LayoutIcon :layout="l.value" />
+                                </button>
+                            </div>
+                            <div class="mt-1.5 px-1 text-[10px] text-white/25 truncate">{{ layouts.find(l => l.value === layout)?.label }}</div>
+                        </div>
+                    </Transition>
+
+                    <div class="h-px bg-white/[0.04] mx-2" />
+
+                    <!-- Navigation section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.navigation = !sectionOpen.navigation"
+                    >
+                        <span>Navigation</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.navigation ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.navigation" class="px-3 pb-3 flex flex-col gap-2.5">
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Camera auto-reset</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.cameraAutoReset ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.cameraAutoReset = !settings.cameraAutoReset"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.cameraAutoReset ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                        </div>
+                    </Transition>
+
+                    <div class="h-px bg-white/[0.04] mx-2" />
+
+                    <!-- Visuals section -->
+                    <button
+                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
+                        @click="sectionOpen.visuals = !sectionOpen.visuals"
+                    >
+                        <span>Visuals</span>
+                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.visuals ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <Transition name="section">
+                        <div v-if="sectionOpen.visuals" class="px-3 pb-3 flex flex-col gap-2.5">
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Layout drift</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.layoutDrift ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.layoutDrift = !settings.layoutDrift"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.layoutDrift ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Reduced motion</span>
+                                <button
+                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.reducedMotion ? 'bg-white/20' : 'bg-white/[0.06]']"
+                                    @click="settings.reducedMotion = !settings.reducedMotion"
+                                >
+                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.reducedMotion ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
+                                </button>
+                            </label>
+                        </div>
+                    </Transition>
+                </div>
+            </Transition>
         </div>
 
         <!-- Type legend -->
@@ -577,6 +406,7 @@ import type { Database } from '~/types/supabase'
 import type { LocationJson } from '~/types/multiverse'
 import SolarSystemScene from '../planet/SolarSystemScene.vue'
 import EarthGlobeScene from '../planet/EarthGlobeScene.vue'
+import LayoutIcon from './LayoutIcon.vue'
 import { usePlanetLayout } from '~/composables/usePlanetLayout'
 
 type Title = Database['public']['Tables']['titles']['Row']
@@ -597,6 +427,9 @@ const { settings, currentTheme } = useSettings()
 const titlesRef = computed(() => props.titles)
 const planetMode = usePlanetMode(titlesRef)
 const { layout, layouts } = usePlanetLayout()
+
+const controlsOpen = ref(false)
+const sectionOpen = reactive({ layout: true, navigation: false, visuals: false })
 
 const containerEl = ref<HTMLElement | null>(null)
 const cameraRef = ref<any>(null)
@@ -768,5 +601,50 @@ function resetCamera() {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.settings-panel-enter-active {
+    transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.settings-panel-leave-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.settings-panel-enter-from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+}
+.settings-panel-leave-to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+}
+
+.section-enter-active {
+    transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+    max-height: 300px;
+    overflow: hidden;
+}
+.section-leave-active {
+    transition: max-height 0.15s ease, opacity 0.1s ease;
+    max-height: 300px;
+    overflow: hidden;
+}
+.section-enter-from {
+    max-height: 0;
+    opacity: 0;
+}
+.section-leave-to {
+    max-height: 0;
+    opacity: 0;
+}
+
+.planet-settings .scrollbar-thin::-webkit-scrollbar {
+    width: 3px;
+}
+.planet-settings .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+.planet-settings .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
 }
 </style>

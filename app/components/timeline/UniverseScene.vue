@@ -894,9 +894,11 @@ function buildCards() {
                 map: texture, transparent: true,
                 opacity: status === 'skipped' ? 0.3 : 0.95,
                 side: FrontSide,
+                depthWrite: false,
             })
             disposables.push(cardMat)
             const card = new Mesh(cardGeo, cardMat)
+            card.renderOrder = 2
             card.position.copy(pos)
             card.userData.titleId = title.id
             cardGroup.add(card)
@@ -921,11 +923,11 @@ function buildCards() {
             })
             disposables.push(glowMat)
             const glow = new Mesh(glowGeo, glowMat)
+            glow.renderOrder = 1
             glow.position.copy(pos)
             glow.position.z -= 0.1
             cardGroup.add(glow)
 
-            // Soft background card — low-opacity phase-colored plane behind each card
             const bgGeo = new PlaneGeometry(cardW * 3.5, cardH * 3)
             disposables.push(bgGeo)
             const bgGlowTex = createGlowTexture(colors.dark)
@@ -937,6 +939,7 @@ function buildCards() {
             })
             disposables.push(bgMat)
             const bgMesh = new Mesh(bgGeo, bgMat)
+            bgMesh.renderOrder = 0
             bgMesh.position.copy(pos)
             bgMesh.position.z -= 0.2
             cardGroup.add(bgMesh)
@@ -1263,15 +1266,12 @@ onLoop(({ delta }) => {
         const bobSpeed = 0.4 + (index % 5) * 0.08
         const bobAmp = 0.08 + (index % 3) * 0.03
         const bob = Math.sin(elapsed * bobSpeed + basePos.x * 0.3 + index * 1.1) * bobAmp
-        card.position.x = basePos.x + driftX
-        card.position.y = basePos.y + bob + driftY
-        card.position.z = basePos.z + driftZ
-        glow.position.x = basePos.x + driftX
-        glow.position.y = basePos.y + bob + driftY
-        glow.position.z = basePos.z + driftZ
-        bg.position.x = basePos.x + driftX
-        bg.position.y = basePos.y + bob + driftY
-        bg.position.z = basePos.z + driftZ
+        const px = basePos.x + driftX
+        const py = basePos.y + bob + driftY
+        const pz = basePos.z + driftZ
+        card.position.set(px, py, pz)
+        glow.position.set(px, py, pz - 0.1)
+        bg.position.set(px, py, pz - 0.2)
 
         if (camera.value) {
             const dir = new Vector3().subVectors(camera.value.position, card.position)
@@ -1310,16 +1310,19 @@ onLoop(({ delta }) => {
 
         const baseCardOpacity = selected ? 1.0 : focused ? 1.0 : hover ? 1.0 : (status === 'skipped' ? 0.25 : 0.88)
         const targetCardOpacity = baseCardOpacity * (1.0 - occludeAmount * 0.97)
-        cardMat.opacity += (targetCardOpacity - cardMat.opacity) * 0.18
+        const cardDiff = targetCardOpacity - cardMat.opacity
+        cardMat.opacity = Math.abs(cardDiff) < 0.005 ? targetCardOpacity : cardMat.opacity + cardDiff * 0.18
 
         const glowPulse = selected || focused ? Math.sin(elapsed * 2.0) * 0.06 : 0
         const baseGlowOpacity = selected ? 0.55 + glowPulse : focused ? 0.4 + glowPulse : hover ? 0.3 : (status === 'watched' ? 0.2 : 0.06)
         const targetGlowOpacity = baseGlowOpacity * (1.0 - occludeAmount)
-        glowMat.opacity += (targetGlowOpacity - glowMat.opacity) * 0.14
+        const glowDiff = targetGlowOpacity - glowMat.opacity
+        glowMat.opacity = Math.abs(glowDiff) < 0.005 ? targetGlowOpacity : glowMat.opacity + glowDiff * 0.14
 
         const baseBgOpacity = selected ? 0.15 : focused ? 0.12 : hover ? 0.09 : 0.05
         const targetBgOpacity = baseBgOpacity * (1.0 - occludeAmount)
-        bgMat.opacity += (targetBgOpacity - bgMat.opacity) * 0.14
+        const bgDiff = targetBgOpacity - bgMat.opacity
+        bgMat.opacity = Math.abs(bgDiff) < 0.005 ? targetBgOpacity : bgMat.opacity + bgDiff * 0.14
     }
 
     if (camera.value && !isDragging) {

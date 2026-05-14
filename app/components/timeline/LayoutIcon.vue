@@ -241,6 +241,15 @@
             <circle cx="17" cy="9" r="0.6" fill="currentColor" stroke="none" />
             <circle cx="7" cy="15" r="0.6" fill="currentColor" stroke="none" />
         </template>
+        <!-- Orbital -->
+        <template v-else-if="layout === 'orbital'">
+            <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+            <circle cx="12" cy="12" r="6" stroke-width="0.8" opacity="0.4" />
+            <circle cx="12" cy="12" r="10" stroke-width="0.8" opacity="0.3" />
+            <circle cx="18" cy="12" r="1" fill="currentColor" stroke="none" />
+            <circle cx="6" cy="6" r="0.8" fill="currentColor" stroke="none" />
+            <circle cx="3" cy="14" r="0.7" fill="currentColor" stroke="none" />
+        </template>
         <!-- Fallback -->
         <template v-else>
             <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none" opacity="0.4" />
