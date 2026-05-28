@@ -22,7 +22,8 @@
     "dateTBA": "Datum volgt",
     "dateUnknown": "Datum onbekend",
     "anonymous": "Anoniem",
-    "all": "Alles"
+    "all": "Alles",
+    "close": "Sluiten"
   },
   "home": {
     "tagline": "Bewaar de canon",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "Home",
     "notifications": "Meldingen"
+  },
+  "controls": {
+    "title": "Weergaveopties",
+    "mode": "Detailniveau",
+    "sort": "Sorteren op",
+    "view": "Weergave",
+    "open": "Weergaveopties"
   }
 }

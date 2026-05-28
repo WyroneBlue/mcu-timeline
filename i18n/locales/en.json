@@ -22,7 +22,8 @@
     "dateTBA": "Date TBA",
     "dateUnknown": "Date unknown",
     "anonymous": "Anonymous",
-    "all": "All"
+    "all": "All",
+    "close": "Close"
   },
   "home": {
     "tagline": "Keep the canon",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "Home",
     "notifications": "Notifications"
+  },
+  "controls": {
+    "title": "View options",
+    "mode": "Detail level",
+    "sort": "Sort by",
+    "view": "View",
+    "open": "View options"
   }
 }

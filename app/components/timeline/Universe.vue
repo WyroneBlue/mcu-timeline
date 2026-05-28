@@ -48,7 +48,7 @@
         </ClientOnly>
 
         <!-- Controls -->
-        <div class="absolute top-4 left-4 z-30 flex flex-col gap-2" @pointerdown.stop @click.stop>
+        <div class="absolute top-16 sm:top-4 left-3 sm:left-4 z-30 flex flex-col gap-2" @pointerdown.stop @click.stop>
             <!-- Settings toggle -->
             <button
                 :class="[
@@ -253,7 +253,7 @@
         </div>
 
         <!-- Navigation controls (Prev / Next) — buttons fixed, title centered between them -->
-        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]" @pointerdown.stop @click.stop>
+        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]" @pointerdown.stop @click.stop>
             <div class="relative flex items-center justify-between">
                 <button
                     :disabled="focusedIndex <= 0"
@@ -303,31 +303,55 @@
             </div>
         </Transition>
 
+        <!-- Backdrop scrim (mobile) — tap to close, sits above everything else -->
+        <Transition name="fade">
+            <div
+                v-if="selectedTitle && isMobile"
+                class="absolute inset-0 z-40 bg-black/40"
+                @pointerdown.stop="selectedId = null"
+                @click.stop="selectedId = null"
+            />
+        </Transition>
+
         <!-- Info panel -->
         <Transition :name="isMobile ? 'panel-bottom' : 'panel'">
             <div
                 v-if="selectedTitle"
                 :class="[
-                    'absolute z-20 flex flex-col',
+                    'absolute flex flex-col',
                     isMobile
-                        ? 'left-0 right-0 bottom-0 max-h-[70vh]'
-                        : 'right-0 top-0 bottom-0 w-[340px] max-w-[85vw]'
+                        ? 'left-0 right-0 bottom-0 max-h-[72vh] z-50'
+                        : 'right-0 top-0 bottom-0 w-[340px] max-w-[85vw] z-20'
                 ]"
+                @pointerdown.stop
+                @click.stop
             >
+                <!-- Close button — large hit area, raised above all content -->
                 <button
-                    class="absolute top-4 right-4 z-30 w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-white/30 hover:text-white/60 hover:bg-white/[0.08] transition-all duration-200"
+                    :class="[
+                        'absolute z-30 flex items-center justify-center rounded-full bg-black/70 border border-white/15 backdrop-blur-md text-white/60 hover:text-white hover:bg-white/15 hover:border-white/25 transition-all duration-200 shadow-lg',
+                        isMobile ? '-top-12 right-4 w-10 h-10' : 'top-4 right-4 w-8 h-8'
+                    ]"
+                    aria-label="Close"
                     @click="selectedId = null"
                 >
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg :class="isMobile ? 'w-5 h-5' : 'w-3.5 h-3.5'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
                 <div :class="[
-                    'h-full bg-black/70 backdrop-blur-xl p-5 sm:p-6 flex flex-col overflow-y-auto',
+                    'h-full bg-black/80 backdrop-blur-xl flex flex-col overflow-y-auto',
                     isMobile
-                        ? 'border-t border-white/[0.06] rounded-t-2xl'
-                        : 'border-l border-white/[0.06]'
+                        ? 'border-t border-white/[0.08] rounded-t-2xl px-5 pb-5 pt-2'
+                        : 'border-l border-white/[0.06] p-5 sm:p-6'
                 ]">
+                    <!-- Drag handle (mobile) — tap to close -->
+                    <button
+                        v-if="isMobile"
+                        class="self-center shrink-0 w-12 h-1.5 rounded-full bg-white/20 mb-3 mt-1 hover:bg-white/30 transition-colors"
+                        aria-label="Close"
+                        @click="selectedId = null"
+                    />
                     <!-- Chronology number -->
                     <div class="text-white/[0.04] font-display text-6xl tracking-tighter mb-2">#{{ selectedTitle.chronology_index }}</div>
 
@@ -613,11 +637,15 @@ function handleSelect(id: number | null) {
     if (id) showDragHint.value = false
 }
 
+// When the detail panel is open, navigating advances through panels.
+// When it's closed (e.g. the floating prev/next bar), we only move the
+// camera focus so the galaxy stays visible instead of opening a panel.
 function goNext() {
     if (focusedIndex.value < sortedTitles.value.length - 1) {
+        const panelOpen = selectedId.value != null
         focusedIndex.value++
         const nextTitle = sortedTitles.value[focusedIndex.value]
-        if (nextTitle) {
+        if (nextTitle && panelOpen) {
             selectedId.value = nextTitle.id
         }
     }
@@ -625,9 +653,10 @@ function goNext() {
 
 function goPrev() {
     if (focusedIndex.value > 0) {
+        const panelOpen = selectedId.value != null
         focusedIndex.value--
         const prevTitle = sortedTitles.value[focusedIndex.value]
-        if (prevTitle) {
+        if (prevTitle && panelOpen) {
             selectedId.value = prevTitle.id
         }
     }

@@ -22,7 +22,8 @@
     "dateTBA": "日程未定",
     "dateUnknown": "日程不明",
     "anonymous": "匿名",
-    "all": "すべて"
+    "all": "すべて",
+    "close": "閉じる"
   },
   "home": {
     "tagline": "カノンを守れ",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "ホーム",
     "notifications": "通知"
+  },
+  "controls": {
+    "title": "表示オプション",
+    "mode": "詳細レベル",
+    "sort": "並び替え",
+    "view": "表示",
+    "open": "表示オプション"
   }
 }

@@ -18,7 +18,7 @@ export default defineNuxtConfig({
     ],
 
     i18n: {
-        langDir: '../locales',
+        langDir: 'locales',
         locales: [
             { code: 'en', name: 'English', file: 'en.json' },
             { code: 'nl', name: 'Nederlands', file: 'nl.json' },
@@ -32,12 +32,13 @@ export default defineNuxtConfig({
         ],
         defaultLocale: 'en',
         strategy: 'no_prefix',
-        detectBrowserLanguage: {
-            useCookie: true,
-            cookieKey: 'ck_locale',
-            fallbackLocale: 'en',
-        },
-        vueI18n: './i18n.config.ts',
+        // The active locale is owned by `settings.language` (persisted in
+        // localStorage) and applied via plugins/i18n-sync.client.ts. Leaving
+        // browser detection on adds a second source of truth (the ck_locale
+        // cookie) that overrides the stored preference on a fresh load, so the
+        // app boots in the cookie's locale instead of the user's choice.
+        detectBrowserLanguage: false,
+        vueI18n: 'i18n.config.ts',
     },
 
     css: ['~/assets/css/main.css'],

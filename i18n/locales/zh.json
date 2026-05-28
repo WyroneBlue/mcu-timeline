@@ -22,7 +22,8 @@
     "dateTBA": "日期待定",
     "dateUnknown": "日期未知",
     "anonymous": "匿名",
-    "all": "全部"
+    "all": "全部",
+    "close": "关闭"
   },
   "home": {
     "tagline": "守护正典",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "首页",
     "notifications": "通知"
+  },
+  "controls": {
+    "title": "查看选项",
+    "mode": "详细程度",
+    "sort": "排序方式",
+    "view": "视图",
+    "open": "查看选项"
   }
 }

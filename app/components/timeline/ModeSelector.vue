@@ -1,12 +1,12 @@
 <template>
-    <div class="flex flex-wrap items-center justify-center gap-2">
+    <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
         <!-- Content mode -->
         <div class="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/5">
             <button
                 v-for="option in modes"
                 :key="option.value"
                 :class="[
-                    'px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                    'px-2.5 sm:px-4 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-all duration-200 whitespace-nowrap',
                     modelValue === option.value
                         ? 'bg-white/10 text-white shadow-sm'
                         : 'text-white/40 hover:text-white/60',
@@ -18,18 +18,19 @@
         </div>
 
         <!-- Sort / View toggles -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1.5 sm:gap-2">
             <!-- Sort toggle -->
             <div class="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/5">
                 <button
                     v-for="option in sortOptions"
                     :key="option.value"
                     :class="[
-                        'flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                        'flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium transition-all duration-200',
                         sortBy === option.value
                             ? 'bg-white/10 text-white shadow-sm'
                             : 'text-white/40 hover:text-white/60',
                     ]"
+                    :title="option.label"
                     @click="$emit('update:sortBy', option.value)"
                 >
                     <svg v-if="option.value === 'phase'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +42,7 @@
                     <svg v-else class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    {{ option.label }}
+                    <span class="hidden sm:inline">{{ option.label }}</span>
                 </button>
             </div>
 

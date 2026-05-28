@@ -22,7 +22,8 @@
     "dateTBA": "Fecha por confirmar",
     "dateUnknown": "Fecha desconocida",
     "anonymous": "Anónimo",
-    "all": "Todo"
+    "all": "Todo",
+    "close": "Cerrar"
   },
   "home": {
     "tagline": "Protege el canon",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "Inicio",
     "notifications": "Notificaciones"
+  },
+  "controls": {
+    "title": "Opciones de vista",
+    "mode": "Nivel de detalle",
+    "sort": "Ordenar por",
+    "view": "Vista",
+    "open": "Opciones de vista"
   }
 }

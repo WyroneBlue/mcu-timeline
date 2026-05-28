@@ -22,7 +22,8 @@
     "dateTBA": "Tarih açıklanacak",
     "dateUnknown": "Tarih bilinmiyor",
     "anonymous": "Anonim",
-    "all": "Tümü"
+    "all": "Tümü",
+    "close": "Kapat"
   },
   "home": {
     "tagline": "Kanonu koru",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "Ana Sayfa",
     "notifications": "Bildirimler"
+  },
+  "controls": {
+    "title": "Görünüm seçenekleri",
+    "mode": "Ayrıntı düzeyi",
+    "sort": "Sırala",
+    "view": "Görünüm",
+    "open": "Görünüm seçenekleri"
   }
 }

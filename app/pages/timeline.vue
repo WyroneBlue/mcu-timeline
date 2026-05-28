@@ -22,21 +22,32 @@
                 :percent="progressPercent"
             />
 
-            <!-- Mode selector + Filters (floating) -->
-            <div class="sticky top-[7.5rem] z-30 py-4">
-                <div class="flex flex-col items-center gap-2">
-                    <div class="flex items-center gap-2">
-                        <TimelineModeSelector v-model="mode" :sort-by="sortBy" :view-mode="viewMode" @update:sort-by="sortBy = $event" @update:view-mode="onViewModeChange" />
-                        <TimelineFilters
-                            v-model:filters="activeFilters"
-                            :titles="allTitles"
-                            :filtered-count="filteredTitles.length"
-                            :total-count="allTitles.length"
-                        />
-                    </div>
+            <!-- Mode selector + Filters — inline bar on desktop only -->
+            <div class="hidden sm:block sticky top-[7.5rem] z-30 py-4 px-4">
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    <TimelineModeSelector v-model="mode" :sort-by="sortBy" :view-mode="viewMode" @update:sort-by="sortBy = $event" @update:view-mode="onViewModeChange" />
+                    <TimelineFilters
+                        v-model:filters="activeFilters"
+                        :titles="allTitles"
+                        :filtered-count="filteredTitles.length"
+                        :total-count="allTitles.length"
+                    />
                 </div>
             </div>
         </template>
+
+        <!-- Mobile: floating controls FAB + bottom sheet (also available in 3D / focus mode) -->
+        <TimelineControlsSheet
+            v-model="mode"
+            v-model:filters="activeFilters"
+            :sort-by="sortBy"
+            :view-mode="viewMode"
+            :titles="allTitles"
+            :filtered-count="filteredTitles.length"
+            :total-count="allTitles.length"
+            @update:sort-by="sortBy = $event"
+            @update:view-mode="onViewModeChange"
+        />
 
         <!-- Loading state -->
         <div v-if="loading" class="flex items-center justify-center py-24">

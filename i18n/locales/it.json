@@ -22,7 +22,8 @@
     "dateTBA": "Data da confermare",
     "dateUnknown": "Data sconosciuta",
     "anonymous": "Anonimo",
-    "all": "Tutto"
+    "all": "Tutto",
+    "close": "Chiudi"
   },
   "home": {
     "tagline": "Custodisci il canone",
@@ -367,5 +368,12 @@
   "mobileNav": {
     "home": "Home",
     "notifications": "Notifiche"
+  },
+  "controls": {
+    "title": "Opzioni di visualizzazione",
+    "mode": "Livello di dettaglio",
+    "sort": "Ordina per",
+    "view": "Vista",
+    "open": "Opzioni di visualizzazione"
   }
 }
