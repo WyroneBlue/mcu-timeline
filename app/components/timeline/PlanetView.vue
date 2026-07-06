@@ -24,6 +24,7 @@
                     :selected-code="planetMode.selectedLocationCode.value"
                     :focused-index="focusedIndex"
                     :layout="layout"
+                    :entry-from-earth="returnFromEarth"
                     @hover="hoveredCode = $event"
                     @select="onSelect"
                     @update:focused-index="focusedIndex = $event"
@@ -31,6 +32,7 @@
                 <component
                     v-else
                     :is="EarthGlobeScene"
+                    ref="earthRef"
                     :hovered-code="earthHoveredCode"
                     :selected-code="planetMode.selectedLocationCode.value"
                     :entry-dive="cameFromDive"
@@ -49,9 +51,9 @@
             </template>
         </ClientOnly>
 
-        <!-- Dive skip layer: any tap/click during the travel jumps to earth -->
+        <!-- Dive skip layer: any tap/click during the travel skips the animation -->
         <div
-            v-if="planetMode.viewState.value === 'traveling'"
+            v-if="planetMode.viewState.value === 'traveling' || returning"
             class="absolute inset-0 z-30 cursor-pointer"
             @pointerdown="skipDive"
         />
@@ -371,7 +373,10 @@ const controlsOpen = ref(false)
 
 const containerEl = ref<HTMLElement | null>(null)
 const solarRef = ref<{ diveToEarth: (onPeak: () => void) => void; cancelDive: () => void } | null>(null)
+const earthRef = ref<{ zoomOut: (onDone: () => void) => void; cancelZoomOut: () => void } | null>(null)
 const cameFromDive = ref(false)
+const returnFromEarth = ref(false)
+const returning = ref(false)
 const diveFlash = ref(false)
 let diveFlashTimeout: ReturnType<typeof setTimeout> | null = null
 const hoveredCode = ref<string | null>(null)
@@ -475,10 +480,25 @@ function onSelect(code: string | null) {
     }
 }
 
+function finishReturn() {
+    if (!returning.value) return
+    returning.value = false
+    diveFlash.value = true
+    cameFromDive.value = false
+    returnFromEarth.value = true
+    planetMode.exitEarth()
+    if (diveFlashTimeout) clearTimeout(diveFlashTimeout)
+    diveFlashTimeout = setTimeout(() => { diveFlash.value = false }, 280)
+}
+
 function skipDive() {
-    if (planetMode.viewState.value !== 'traveling') return
-    solarRef.value?.cancelDive()
-    flashAndSwap()
+    if (planetMode.viewState.value === 'traveling') {
+        solarRef.value?.cancelDive()
+        flashAndSwap()
+    } else if (returning.value) {
+        earthRef.value?.cancelZoomOut()
+        finishReturn()
+    }
 }
 
 function onEarthPinSelect(code: string | null) {
@@ -486,8 +506,15 @@ function onEarthPinSelect(code: string | null) {
 }
 
 function onExitEarth() {
-    cameFromDive.value = false
-    planetMode.exitEarth()
+    if (returning.value) return
+    if (prefersReducedMotion.value || settings.reducedMotion || !earthRef.value) {
+        cameFromDive.value = false
+        returnFromEarth.value = false
+        planetMode.exitEarth()
+        return
+    }
+    returning.value = true
+    earthRef.value.zoomOut(finishReturn)
 }
 
 function onTitleClick(title: Title) {

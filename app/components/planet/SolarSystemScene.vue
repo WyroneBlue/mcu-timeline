@@ -21,14 +21,15 @@ import locationsJson from '../../../data/locations.json'
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     titles: Title[]
     progressMap: Map<number, ProgressStatus>
     hoveredCode: string | null
     selectedCode: string | null
     focusedIndex: number
     layout: PlanetLayout
-}>()
+    entryFromEarth?: boolean
+}>(), { entryFromEarth: false })
 
 const emit = defineEmits<{
     hover: [code: string | null]
@@ -819,6 +820,20 @@ onMounted(() => {
     window.addEventListener('pointerdown', onPointerDown)
     window.addEventListener('pointermove', onPointerMove)
     window.addEventListener('pointerup', onPointerUp)
+
+    // Returning from the earth view: start the camera close to earth and
+    // pull back to the overview shot.
+    if (props.entryFromEarth) {
+        const earth = locationMeshes.find(e => e.code === 'earth')
+        if (earth) {
+            cameraState.target.copy(earth.basePos)
+            cameraGoal.target.copy(earth.basePos)
+            cameraState.distance = Math.max(2, earth.radius * 2.2)
+            cameraGoal.distance = cameraState.distance
+            gsap.to(cameraGoal.target, { x: 0, y: 0, z: 0, duration: 1.1, ease: 'power3.out' })
+            gsap.to(cameraGoal, { distance: 35, duration: 1.1, ease: 'power3.out' })
+        }
+    }
 })
 
 // --- Render loop ---

@@ -498,6 +498,32 @@ function onWheel(e: WheelEvent) {
     idleTime = 0
 }
 
+// Reverse dive: pull the camera away from the globe, then let the parent
+// swap back to the solar system at the visual peak.
+let zoomingOut = false
+
+function zoomOut(onDone: () => void) {
+    zoomingOut = true
+    gsap.killTweensOf(cameraDistanceGoal)
+    gsap.to(cameraDistanceGoal, {
+        value: 30,
+        duration: 0.55,
+        ease: 'power2.in',
+        onComplete: () => {
+            zoomingOut = false
+            onDone()
+        },
+    })
+}
+
+function cancelZoomOut() {
+    if (!zoomingOut) return
+    zoomingOut = false
+    gsap.killTweensOf(cameraDistanceGoal)
+}
+
+defineExpose({ zoomOut, cancelZoomOut })
+
 function flyToPin(pin: PinEntry) {
     const targetAngleY = Math.atan2(pin.surfacePos.x, pin.surfacePos.z)
     const targetAngleX = Math.asin(Math.max(-1, Math.min(1, pin.surfacePos.y / GLOBE_RADIUS)))
@@ -536,10 +562,11 @@ onLoop(({ delta }) => {
         cameraGoal.y += delta * 0.08
     }
 
-    // Smooth camera interpolation
+    // Smooth camera interpolation (faster while the exit zoom-out runs so
+    // the camera reaches the goal within the tween window)
     cameraAngle.x += (cameraGoal.x - cameraAngle.x) * 0.08
     cameraAngle.y += (cameraGoal.y - cameraAngle.y) * 0.08
-    cameraDistance.value += (cameraDistanceGoal.value - cameraDistance.value) * 0.08
+    cameraDistance.value += (cameraDistanceGoal.value - cameraDistance.value) * (zoomingOut ? 0.22 : 0.08)
 
     const dist = cameraDistance.value
     const cx = Math.sin(cameraAngle.y) * Math.cos(cameraAngle.x) * dist
