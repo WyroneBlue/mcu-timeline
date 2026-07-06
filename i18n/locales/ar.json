@@ -384,5 +384,16 @@
     "removeRating": "إزالة التقييم",
     "loginToRate": "سجّل الدخول لتقييم هذا العنوان",
     "xpAwarded": "+{xp} XP لتقييمك الأول"
+  },
+  "viewSettings": {
+    "title": "إعدادات العرض",
+    "layout": "التخطيط",
+    "navigation": "التنقل",
+    "visuals": "المرئيات",
+    "scroll": "التمرير",
+    "prevNext": "أزرار السابق/التالي",
+    "cameraAutoReset": "إعادة ضبط الكاميرا تلقائيًا",
+    "particles": "الجسيمات",
+    "layoutDrift": "انجراف التخطيط"
   }
 }

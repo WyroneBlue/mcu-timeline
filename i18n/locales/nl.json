@@ -384,5 +384,16 @@
     "removeRating": "Beoordeling verwijderen",
     "loginToRate": "Log in om deze titel te beoordelen",
     "xpAwarded": "+{xp} XP voor je eerste beoordeling"
+  },
+  "viewSettings": {
+    "title": "Weergave-instellingen",
+    "layout": "Indeling",
+    "navigation": "Navigatie",
+    "visuals": "Visueel",
+    "scroll": "Scrollen",
+    "prevNext": "Vorige/volgende-knoppen",
+    "cameraAutoReset": "Camera automatisch resetten",
+    "particles": "Deeltjes",
+    "layoutDrift": "Zwevende indeling"
   }
 }

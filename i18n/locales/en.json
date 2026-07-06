@@ -384,5 +384,16 @@
     "removeRating": "Remove rating",
     "loginToRate": "Sign in to rate this title",
     "xpAwarded": "+{xp} XP for your first rating"
+  },
+  "viewSettings": {
+    "title": "View settings",
+    "layout": "Layout",
+    "navigation": "Navigation",
+    "visuals": "Visuals",
+    "scroll": "Scroll",
+    "prevNext": "Prev/next controls",
+    "cameraAutoReset": "Camera auto-reset",
+    "particles": "Particles",
+    "layoutDrift": "Layout drift"
   }
 }

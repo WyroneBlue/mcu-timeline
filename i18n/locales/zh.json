@@ -384,5 +384,16 @@
     "removeRating": "移除评分",
     "loginToRate": "登录后即可评分",
     "xpAwarded": "首次评分获得 +{xp} XP"
+  },
+  "viewSettings": {
+    "title": "视图设置",
+    "layout": "布局",
+    "navigation": "导航",
+    "visuals": "视觉效果",
+    "scroll": "滚动",
+    "prevNext": "上一个/下一个控件",
+    "cameraAutoReset": "相机自动复位",
+    "particles": "粒子",
+    "layoutDrift": "布局漂移"
   }
 }

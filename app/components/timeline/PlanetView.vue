@@ -93,107 +93,34 @@
                 </svg>
             </button>
 
-            <!-- Collapsible settings panel -->
+            <!-- Collapsible settings panel (desktop popover) -->
             <Transition name="settings-panel">
                 <div
-                    v-if="controlsOpen"
-                    class="planet-settings w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
+                    v-if="controlsOpen && !isMobile"
+                    class="w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
                 >
-                    <!-- Layout section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.layout = !sectionOpen.layout"
-                    >
-                        <span>Layout</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.layout ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.layout" class="px-2 pb-2">
-                            <div class="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto scrollbar-thin pr-0.5">
-                                <button
-                                    v-for="l in layouts"
-                                    :key="l.value"
-                                    :class="[
-                                        'w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200',
-                                        layout === l.value
-                                            ? 'bg-white/10 text-white/90 shadow-sm ring-1 ring-white/10'
-                                            : 'text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
-                                    ]"
-                                    :title="l.label"
-                                    @click="layout = l.value"
-                                >
-                                    <LayoutIcon :layout="l.value" />
-                                </button>
-                            </div>
-                            <div class="mt-1.5 px-1 text-[10px] text-white/25 truncate">{{ layouts.find(l => l.value === layout)?.label }}</div>
-                        </div>
-                    </Transition>
-
-                    <div class="h-px bg-white/[0.04] mx-2" />
-
-                    <!-- Navigation section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.navigation = !sectionOpen.navigation"
-                    >
-                        <span>Navigation</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.navigation ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.navigation" class="px-3 pb-3 flex flex-col gap-2.5">
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Camera auto-reset</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.cameraAutoReset ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.cameraAutoReset = !settings.cameraAutoReset"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.cameraAutoReset ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                        </div>
-                    </Transition>
-
-                    <div class="h-px bg-white/[0.04] mx-2" />
-
-                    <!-- Visuals section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.visuals = !sectionOpen.visuals"
-                    >
-                        <span>Visuals</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.visuals ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.visuals" class="px-3 pb-3 flex flex-col gap-2.5">
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Layout drift</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.layoutDrift ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.layoutDrift = !settings.layoutDrift"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.layoutDrift ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Reduced motion</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.reducedMotion ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.reducedMotion = !settings.reducedMotion"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.reducedMotion ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                        </div>
-                    </Transition>
+                    <TimelineViewSettingsPanel
+                        :layout="layout"
+                        :layout-options="layouts"
+                        @update:layout="layout = $event as PlanetLayout"
+                    />
                 </div>
             </Transition>
         </div>
+
+        <!-- Settings bottom sheet (mobile) -->
+        <UiBottomSheet
+            v-if="isMobile"
+            :open="controlsOpen"
+            :title="$t('viewSettings.title')"
+            @update:open="controlsOpen = $event"
+        >
+            <TimelineViewSettingsPanel
+                :layout="layout"
+                :layout-options="layouts"
+                @update:layout="layout = $event as PlanetLayout"
+            />
+        </UiBottomSheet>
 
         <!-- Type legend -->
         <div v-if="planetMode.viewState.value !== 'earth-detail'" class="absolute top-4 right-4 z-10 flex flex-col gap-1.5 p-3 rounded-xl bg-black/40 border border-white/[0.06] backdrop-blur-xl">
@@ -205,7 +132,7 @@
         </div>
 
         <!-- Navigation controls (Prev / Next) -->
-        <div v-if="planetMode.viewState.value !== 'earth-detail'" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]">
+        <div v-if="planetMode.viewState.value !== 'earth-detail'" class="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]">
             <div class="relative flex items-center justify-between">
                 <button
                     :disabled="focusedIndex <= 0"
@@ -403,11 +330,9 @@
 
 <script setup lang="ts">
 import type { Database } from '~/types/supabase'
-import type { LocationJson } from '~/types/multiverse'
 import SolarSystemScene from '../planet/SolarSystemScene.vue'
 import EarthGlobeScene from '../planet/EarthGlobeScene.vue'
-import LayoutIcon from './LayoutIcon.vue'
-import { usePlanetLayout } from '~/composables/usePlanetLayout'
+import { usePlanetLayout, type PlanetLayout } from '~/composables/usePlanetLayout'
 
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
@@ -417,22 +342,20 @@ const props = defineProps<{
     progressMap: Map<number, ProgressStatus>
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
     markWatched: [id: number]
     markSkipped: [id: number]
 }>()
 
 const { t } = useI18n()
-const { settings, currentTheme } = useSettings()
+const { currentTheme } = useSettings()
 const titlesRef = computed(() => props.titles)
 const planetMode = usePlanetMode(titlesRef)
 const { layout, layouts } = usePlanetLayout()
 
 const controlsOpen = ref(false)
-const sectionOpen = reactive({ layout: true, navigation: false, visuals: false })
 
 const containerEl = ref<HTMLElement | null>(null)
-const cameraRef = ref<any>(null)
 const hoveredCode = ref<string | null>(null)
 const earthHoveredCode = ref<string | null>(null)
 const focusedIndex = ref(0)
@@ -476,21 +399,16 @@ function typeBadgeClass(type: string) {
     }
 }
 
-const windowHeight = ref(typeof window !== 'undefined' ? window.innerHeight : 800)
-const isMobile = computed(() => typeof window !== 'undefined' && window.innerWidth < 640)
+const { height: viewportHeight, isMobile } = useViewport()
 
 const containerHeight = computed(() => {
     const bottomNavOffset = isMobile.value ? 80 : 0
-    return `${Math.max(500, windowHeight.value - 140 - bottomNavOffset)}px`
+    return `${Math.max(500, viewportHeight.value - 140 - bottomNavOffset)}px`
 })
 
 onMounted(() => {
     prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     setTimeout(() => { showDragHint.value = false }, 5000)
-
-    const onResize = () => { windowHeight.value = window.innerHeight }
-    window.addEventListener('resize', onResize)
-    onUnmounted(() => window.removeEventListener('resize', onResize))
 })
 
 onMounted(() => {
@@ -618,33 +536,4 @@ function resetCamera() {
     transform: translateY(-4px) scale(0.98);
 }
 
-.section-enter-active {
-    transition: max-height 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-    max-height: 300px;
-    overflow: hidden;
-}
-.section-leave-active {
-    transition: max-height 0.15s ease, opacity 0.1s ease;
-    max-height: 300px;
-    overflow: hidden;
-}
-.section-enter-from {
-    max-height: 0;
-    opacity: 0;
-}
-.section-leave-to {
-    max-height: 0;
-    opacity: 0;
-}
-
-.planet-settings .scrollbar-thin::-webkit-scrollbar {
-    width: 3px;
-}
-.planet-settings .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-}
-.planet-settings .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
-}
 </style>

@@ -665,32 +665,18 @@ export function computeLayout(
 export function usePlanetLayout() {
     const layout = ref<PlanetLayout>('orbital')
 
+    // Curated subset mirroring the universe layouts (see types/universe.ts);
+    // the other layout functions still exist but aren't offered in the picker.
     const layouts: { value: PlanetLayout; label: string; icon: string }[] = [
         { value: 'orbital', label: 'Orbital', icon: 'orbital' },
-        { value: 'spiral', label: 'Spiral', icon: 'spiral' },
-        { value: 'zigzag', label: 'Zigzag', icon: 'zigzag' },
-        { value: 'grid', label: 'Grid', icon: 'grid' },
-        { value: 'helix', label: 'Helix', icon: 'helix' },
         { value: 'galaxy', label: 'Galaxy', icon: 'galaxy' },
-        { value: 'scatter', label: 'Scatter', icon: 'scatter' },
-        { value: 'wave', label: 'Wave', icon: 'wave' },
-        { value: 'ring', label: 'Ring', icon: 'ring' },
+        { value: 'spiral', label: 'Spiral', icon: 'spiral' },
+        { value: 'helix', label: 'Helix', icon: 'helix' },
+        { value: 'grid', label: 'Grid', icon: 'grid' },
         { value: 'sphere', label: 'Sphere', icon: 'sphere' },
-        { value: 'constellation', label: 'Constellation', icon: 'constellation' },
-        { value: 'funnel', label: 'Funnel', icon: 'funnel' },
-        { value: 'flower', label: 'Flower', icon: 'flower' },
-        { value: 'pyramid', label: 'Pyramid', icon: 'pyramid' },
-        { value: 'infinity', label: 'Infinity', icon: 'infinity' },
-        { value: 'cross', label: 'Cross', icon: 'cross' },
-        { value: 'hourglass', label: 'Hourglass', icon: 'hourglass' },
-        { value: 'tree', label: 'Tree', icon: 'tree' },
-        { value: 'diamond', label: 'Diamond', icon: 'diamond' },
-        { value: 'coil', label: 'Coil', icon: 'coil' },
+        { value: 'ring', label: 'Ring', icon: 'ring' },
+        { value: 'zigzag', label: 'Zigzag', icon: 'zigzag' },
         { value: 'vortex', label: 'Vortex', icon: 'vortex' },
-        { value: 'dna', label: 'DNA', icon: 'dna' },
-        { value: 'staircase', label: 'Staircase', icon: 'staircase' },
-        { value: 'galaxy-ring', label: 'Galaxy Ring', icon: 'galaxy-ring' },
-        { value: 'web', label: 'Web', icon: 'web' },
     ]
 
     return { layout, layouts }

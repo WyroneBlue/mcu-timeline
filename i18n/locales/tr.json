@@ -384,5 +384,16 @@
     "removeRating": "Puanı kaldır",
     "loginToRate": "Puan vermek için giriş yap",
     "xpAwarded": "İlk puanın için +{xp} XP"
+  },
+  "viewSettings": {
+    "title": "Görünüm ayarları",
+    "layout": "Düzen",
+    "navigation": "Gezinme",
+    "visuals": "Görseller",
+    "scroll": "Kaydırma",
+    "prevNext": "Önceki/sonraki kontrolleri",
+    "cameraAutoReset": "Kamera otomatik sıfırlama",
+    "particles": "Parçacıklar",
+    "layoutDrift": "Düzen kayması"
   }
 }

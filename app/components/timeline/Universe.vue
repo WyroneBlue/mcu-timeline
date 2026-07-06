@@ -96,164 +96,41 @@
                 </svg>
             </button>
 
-            <!-- Collapsible settings panel -->
+            <!-- Collapsible settings panel (desktop popover) -->
             <Transition name="settings-panel">
                 <div
-                    v-if="controlsOpen"
-                    class="universe-settings w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
+                    v-if="controlsOpen && !isMobile"
+                    class="w-56 rounded-xl bg-black/60 border border-white/[0.06] backdrop-blur-xl overflow-hidden"
                 >
-                    <!-- Layout section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.layout = !sectionOpen.layout"
-                    >
-                        <span>Layout</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.layout ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.layout" class="px-2 pb-2">
-                            <div class="grid grid-cols-5 gap-1">
-                                <button
-                                    v-for="l in layoutOptions"
-                                    :key="l.value"
-                                    :class="[
-                                        'w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200',
-                                        layout === l.value
-                                            ? 'bg-white/10 text-white/90 shadow-sm ring-1 ring-white/10'
-                                            : 'text-white/30 hover:text-white/60 hover:bg-white/[0.04]'
-                                    ]"
-                                    :title="l.label"
-                                    @click="layout = l.value"
-                                >
-                                    <LayoutIcon :layout="l.value" />
-                                </button>
-                            </div>
-                            <div class="mt-1.5 px-1 text-[10px] text-white/25 truncate">{{ layoutOptions.find(l => l.value === layout)?.label }}</div>
-                        </div>
-                    </Transition>
-
-                    <div class="h-px bg-white/[0.04] mx-2" />
-
-                    <!-- Navigation section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.navigation = !sectionOpen.navigation"
-                    >
-                        <span>Navigation</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.navigation ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.navigation" class="px-3 pb-3 flex flex-col gap-2.5">
-                            <div>
-                                <div class="text-[10px] text-white/30 mb-1.5">Scroll</div>
-                                <div class="flex gap-1">
-                                    <button
-                                        v-for="opt in (['snap', 'free'] as const)"
-                                        :key="opt"
-                                        :class="[
-                                            'flex-1 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-200',
-                                            settings.scrollBehavior === opt
-                                                ? 'bg-white/10 text-white/80'
-                                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.03]'
-                                        ]"
-                                        @click="settings.scrollBehavior = opt"
-                                    >
-                                        {{ opt === 'snap' ? 'Snap' : 'Free' }}
-                                    </button>
-                                </div>
-                            </div>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Prev/Next controls</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.scrollToNextEnabled ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.scrollToNextEnabled = !settings.scrollToNextEnabled"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.scrollToNextEnabled ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Camera auto-reset</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.cameraAutoReset ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.cameraAutoReset = !settings.cameraAutoReset"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.cameraAutoReset ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                        </div>
-                    </Transition>
-
-                    <div class="h-px bg-white/[0.04] mx-2" />
-
-                    <!-- Visuals section -->
-                    <button
-                        class="w-full flex items-center justify-between px-3 py-2.5 text-[11px] font-medium tracking-wider uppercase text-white/40 hover:text-white/60 transition-colors"
-                        @click="sectionOpen.visuals = !sectionOpen.visuals"
-                    >
-                        <span>Visuals</span>
-                        <svg class="w-3 h-3 transition-transform duration-200" :class="sectionOpen.visuals ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <Transition name="section">
-                        <div v-if="sectionOpen.visuals" class="px-3 pb-3 flex flex-col gap-2.5">
-                            <div>
-                                <div class="text-[10px] text-white/30 mb-1.5">Particles</div>
-                                <div class="flex gap-1">
-                                    <button
-                                        v-for="opt in (['low', 'medium', 'high'] as const)"
-                                        :key="opt"
-                                        :class="[
-                                            'flex-1 px-2 py-1.5 rounded-md text-[10px] font-medium transition-all duration-200',
-                                            settings.particleDensity === opt
-                                                ? 'bg-white/10 text-white/80'
-                                                : 'text-white/30 hover:text-white/50 hover:bg-white/[0.03]'
-                                        ]"
-                                        @click="settings.particleDensity = opt"
-                                    >
-                                        {{ opt.charAt(0).toUpperCase() + opt.slice(1) }}
-                                    </button>
-                                </div>
-                            </div>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Layout drift</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.layoutDrift ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.layoutDrift = !settings.layoutDrift"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.layoutDrift ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Reduced motion</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.reducedMotion ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.reducedMotion = !settings.reducedMotion"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.reducedMotion ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                            <label class="flex items-center justify-between cursor-pointer group">
-                                <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">Easter eggs</span>
-                                <button
-                                    :class="['relative w-7 h-4 rounded-full transition-colors duration-200', settings.showEasterEggs ? 'bg-white/20' : 'bg-white/[0.06]']"
-                                    @click="settings.showEasterEggs = !settings.showEasterEggs"
-                                >
-                                    <span :class="['absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200', settings.showEasterEggs ? 'left-3.5 bg-white/80' : 'left-0.5 bg-white/30']" />
-                                </button>
-                            </label>
-                        </div>
-                    </Transition>
+                    <TimelineViewSettingsPanel
+                        :layout="layout"
+                        :layout-options="layoutOptions"
+                        show-scroll
+                        show-prev-next
+                        @update:layout="layout = $event as UniverseLayout"
+                    />
                 </div>
             </Transition>
         </div>
 
+        <!-- Settings bottom sheet (mobile) -->
+        <UiBottomSheet
+            v-if="isMobile"
+            :open="controlsOpen"
+            :title="$t('viewSettings.title')"
+            @update:open="controlsOpen = $event"
+        >
+            <TimelineViewSettingsPanel
+                :layout="layout"
+                :layout-options="layoutOptions"
+                show-scroll
+                show-prev-next
+                @update:layout="layout = $event as UniverseLayout"
+            />
+        </UiBottomSheet>
+
         <!-- Navigation controls (Prev / Next) — buttons fixed, title centered between them -->
-        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]" @pointerdown.stop @click.stop>
+        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]" @pointerdown.stop @click.stop>
             <div class="relative flex items-center justify-between">
                 <button
                     :disabled="focusedIndex <= 0"
@@ -481,7 +358,6 @@
 import type { Database } from '~/types/supabase'
 import type { UniverseLayout } from '~/types/universe'
 import UniverseScene from './UniverseScene.vue'
-import LayoutIcon from './LayoutIcon.vue'
 import TheWatcherSprite from '../easter-eggs/TheWatcherSprite.vue'
 
 type Title = Database['public']['Tables']['titles']['Row']
@@ -522,7 +398,6 @@ if (import.meta.dev) {
 
 const layout = ref<UniverseLayout>('phase')
 const controlsOpen = ref(false)
-const sectionOpen = reactive({ layout: true, navigation: false, visuals: false })
 const layoutOptions: { value: UniverseLayout; label: string }[] = [
     { value: 'phase', label: 'Phase Clusters' },
     { value: 'galaxy', label: 'Galaxy' },
@@ -601,19 +476,11 @@ onMounted(() => {
     onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 })
 
-const windowHeight = ref(typeof window !== 'undefined' ? window.innerHeight : 800)
-
-onMounted(() => {
-    const onResize = () => { windowHeight.value = window.innerHeight }
-    window.addEventListener('resize', onResize)
-    onUnmounted(() => window.removeEventListener('resize', onResize))
-})
-
-const isMobile = computed(() => typeof window !== 'undefined' && window.innerWidth < 640)
+const { height: viewportHeight, isMobile } = useViewport()
 
 const containerHeight = computed(() => {
     const bottomNavOffset = isMobile.value ? 80 : 0
-    return `${Math.max(500, windowHeight.value - 140 - bottomNavOffset)}px`
+    return `${Math.max(500, viewportHeight.value - 140 - bottomNavOffset)}px`
 })
 
 onUnmounted(() => {
@@ -748,33 +615,4 @@ onMounted(() => {
     transform: translateY(-4px) scale(0.98);
 }
 
-.section-enter-active {
-    transition: max-height 0.25s ease, opacity 0.2s ease;
-    max-height: 300px;
-    overflow: hidden;
-}
-.section-leave-active {
-    transition: max-height 0.2s ease, opacity 0.15s ease;
-    max-height: 300px;
-    overflow: hidden;
-}
-.section-enter-from {
-    max-height: 0;
-    opacity: 0;
-}
-.section-leave-to {
-    max-height: 0;
-    opacity: 0;
-}
-
-.universe-settings .scrollbar-thin::-webkit-scrollbar {
-    width: 3px;
-}
-.universe-settings .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-}
-.universe-settings .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
-}
 </style>

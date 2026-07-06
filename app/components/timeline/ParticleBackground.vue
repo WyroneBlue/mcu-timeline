@@ -62,12 +62,13 @@ const scrollProgress = computed(() => {
 
 const densityMultiplier: Record<string, number> = { low: 0.5, medium: 1, high: 1.5 }
 
+const { width: viewportWidth } = useViewport()
+
 const particleCount = computed(() => {
     if (!import.meta.client) return 800
-    const w = window.innerWidth
     let base = 800
-    if (w < 640) base = 400
-    else if (w < 1024) base = 600
+    if (viewportWidth.value < 640) base = 400
+    else if (viewportWidth.value < 1024) base = 600
     return Math.round(base * (densityMultiplier[settings.particleDensity] ?? 1))
 })
 </script>

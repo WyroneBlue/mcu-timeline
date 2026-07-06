@@ -384,5 +384,16 @@
     "removeRating": "Rimuovi valutazione",
     "loginToRate": "Accedi per valutare questo titolo",
     "xpAwarded": "+{xp} XP per la tua prima valutazione"
+  },
+  "viewSettings": {
+    "title": "Impostazioni vista",
+    "layout": "Layout",
+    "navigation": "Navigazione",
+    "visuals": "Effetti visivi",
+    "scroll": "Scorrimento",
+    "prevNext": "Controlli precedente/successivo",
+    "cameraAutoReset": "Reset automatico camera",
+    "particles": "Particelle",
+    "layoutDrift": "Deriva del layout"
   }
 }

@@ -93,20 +93,7 @@ defineEmits<{
     close: []
 }>()
 
-const isMobile = ref(false)
-
-function checkMobile() {
-    isMobile.value = typeof window !== 'undefined' && window.innerWidth < 640
-}
-
-onMounted(() => {
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-})
-
-onUnmounted(() => {
-    window.removeEventListener('resize', checkMobile)
-})
+const { isMobile } = useViewport()
 
 const { t } = useI18n()
 

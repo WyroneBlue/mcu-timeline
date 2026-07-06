@@ -384,5 +384,16 @@
     "removeRating": "評価を削除",
     "loginToRate": "評価するにはログインしてください",
     "xpAwarded": "初回の評価で +{xp} XP 獲得"
+  },
+  "viewSettings": {
+    "title": "表示設定",
+    "layout": "レイアウト",
+    "navigation": "ナビゲーション",
+    "visuals": "ビジュアル",
+    "scroll": "スクロール",
+    "prevNext": "前へ/次へコントロール",
+    "cameraAutoReset": "カメラ自動リセット",
+    "particles": "パーティクル",
+    "layoutDrift": "レイアウトドリフト"
   }
 }

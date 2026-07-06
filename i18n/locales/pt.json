@@ -384,5 +384,16 @@
     "removeRating": "Remover avaliação",
     "loginToRate": "Entre para avaliar este título",
     "xpAwarded": "+{xp} XP pela sua primeira avaliação"
+  },
+  "viewSettings": {
+    "title": "Definições de vista",
+    "layout": "Disposição",
+    "navigation": "Navegação",
+    "visuals": "Visuais",
+    "scroll": "Rolagem",
+    "prevNext": "Controlos anterior/seguinte",
+    "cameraAutoReset": "Reinício automático da câmara",
+    "particles": "Partículas",
+    "layoutDrift": "Deriva da disposição"
   }
 }
