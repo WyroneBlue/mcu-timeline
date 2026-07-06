@@ -375,5 +375,14 @@
     "sort": "Sort by",
     "view": "View",
     "open": "View options"
+  },
+  "ratings": {
+    "yourRating": "Your rating",
+    "averageRating": "Average rating",
+    "ratingsCount": "{count} rating | {count} ratings",
+    "rateThis": "Rate this title",
+    "removeRating": "Remove rating",
+    "loginToRate": "Sign in to rate this title",
+    "xpAwarded": "+{xp} XP for your first rating"
   }
 }

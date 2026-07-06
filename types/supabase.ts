@@ -99,9 +99,27 @@ export type Database = {
                 Relationships: []
             }
             xp_events: {
-                Row: { id: number; user_id: string; title_id: number | null; event_type: 'watch' | 'review' | 'quiz' | 'badge' | 'streak'; xp_delta: number; created_at: string; metadata_json: unknown }
-                Insert: { user_id: string; title_id?: number | null; event_type: 'watch' | 'review' | 'quiz' | 'badge' | 'streak'; xp_delta: number; metadata_json?: unknown }
+                Row: { id: number; user_id: string; title_id: number | null; event_type: 'watch' | 'review' | 'quiz' | 'badge' | 'streak' | 'rating'; xp_delta: number; created_at: string; metadata_json: unknown }
+                Insert: { user_id: string; title_id?: number | null; event_type: 'watch' | 'review' | 'quiz' | 'badge' | 'streak' | 'rating'; xp_delta: number; metadata_json?: unknown }
                 Update: Partial<Database['public']['Tables']['xp_events']['Insert']>
+                Relationships: []
+            }
+            ratings: {
+                Row: {
+                    user_id: string
+                    title_id: number
+                    rating: number
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    user_id: string
+                    title_id: number
+                    rating: number
+                    created_at?: string
+                    updated_at?: string
+                }
+                Update: Partial<Database['public']['Tables']['ratings']['Insert']>
                 Relationships: []
             }
             friends: {
@@ -195,7 +213,12 @@ export type Database = {
                 Relationships: []
             }
         }
-        Views: {}
+        Views: {
+            title_rating_stats: {
+                Row: { title_id: number; avg_rating: number; rating_count: number }
+                Relationships: []
+            }
+        }
         Functions: {
             fn_recalc_xp: { Args: { uid: string }; Returns: void }
             fn_create_notification: { Args: { p_user_id: string; p_type: string; p_title: string; p_message?: string; p_data?: unknown }; Returns: number }

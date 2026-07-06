@@ -375,5 +375,14 @@
     "sort": "Ordina per",
     "view": "Vista",
     "open": "Opzioni di visualizzazione"
+  },
+  "ratings": {
+    "yourRating": "La tua valutazione",
+    "averageRating": "Valutazione media",
+    "ratingsCount": "{count} valutazione | {count} valutazioni",
+    "rateThis": "Valuta questo titolo",
+    "removeRating": "Rimuovi valutazione",
+    "loginToRate": "Accedi per valutare questo titolo",
+    "xpAwarded": "+{xp} XP per la tua prima valutazione"
   }
 }

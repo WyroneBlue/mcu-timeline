@@ -15,6 +15,7 @@ const XP_VALUES = {
     streak_3: 50,
     streak_7: 150,
     badge: 200,
+    rating: 25,
 } as const
 
 export function useXP() {

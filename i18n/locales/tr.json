@@ -375,5 +375,14 @@
     "sort": "Sırala",
     "view": "Görünüm",
     "open": "Görünüm seçenekleri"
+  },
+  "ratings": {
+    "yourRating": "Senin puanın",
+    "averageRating": "Ortalama puan",
+    "ratingsCount": "{count} puanlama",
+    "rateThis": "Bu yapımı puanla",
+    "removeRating": "Puanı kaldır",
+    "loginToRate": "Puan vermek için giriş yap",
+    "xpAwarded": "İlk puanın için +{xp} XP"
   }
 }

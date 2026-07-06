@@ -375,5 +375,14 @@
     "sort": "Sorteren op",
     "view": "Weergave",
     "open": "Weergaveopties"
+  },
+  "ratings": {
+    "yourRating": "Jouw beoordeling",
+    "averageRating": "Gemiddelde beoordeling",
+    "ratingsCount": "{count} beoordeling | {count} beoordelingen",
+    "rateThis": "Beoordeel deze titel",
+    "removeRating": "Beoordeling verwijderen",
+    "loginToRate": "Log in om deze titel te beoordelen",
+    "xpAwarded": "+{xp} XP voor je eerste beoordeling"
   }
 }

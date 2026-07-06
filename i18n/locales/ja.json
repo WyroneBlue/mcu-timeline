@@ -375,5 +375,14 @@
     "sort": "並び替え",
     "view": "表示",
     "open": "表示オプション"
+  },
+  "ratings": {
+    "yourRating": "あなたの評価",
+    "averageRating": "平均評価",
+    "ratingsCount": "{count}件の評価",
+    "rateThis": "この作品を評価する",
+    "removeRating": "評価を削除",
+    "loginToRate": "評価するにはログインしてください",
+    "xpAwarded": "初回の評価で +{xp} XP 獲得"
   }
 }

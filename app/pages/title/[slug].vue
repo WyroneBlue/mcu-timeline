@@ -54,6 +54,9 @@
                     @mark-queued="handleMarkQueued"
                 />
 
+                <!-- Rating -->
+                <TitleRating :title-id="title.id" @xp="handleRatingXp" />
+
                 <!-- XP Toast -->
                 <Transition name="float">
                     <div v-if="showXpToast" class="fixed top-24 right-6 z-50 flex items-center gap-2 px-4 py-2 rounded-xl bg-green-500/20 border border-green-500/30 text-green-400 font-mono text-sm animate-float-up">
@@ -310,6 +313,12 @@ async function handleMarkWatched() {
             currentStatus.value = prevStatus
         }
     }
+}
+
+function handleRatingXp(amount: number) {
+    xpAmount.value = amount
+    showXpToast.value = true
+    setTimeout(() => { showXpToast.value = false }, 2000)
 }
 
 async function handleMarkSkipped() {

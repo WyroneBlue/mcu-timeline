@@ -375,5 +375,14 @@
     "sort": "排序方式",
     "view": "视图",
     "open": "查看选项"
+  },
+  "ratings": {
+    "yourRating": "你的评分",
+    "averageRating": "平均评分",
+    "ratingsCount": "{count} 个评分",
+    "rateThis": "为该作品评分",
+    "removeRating": "移除评分",
+    "loginToRate": "登录后即可评分",
+    "xpAwarded": "首次评分获得 +{xp} XP"
   }
 }

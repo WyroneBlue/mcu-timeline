@@ -375,5 +375,14 @@
     "sort": "ترتيب حسب",
     "view": "العرض",
     "open": "خيارات العرض"
+  },
+  "ratings": {
+    "yourRating": "تقييمك",
+    "averageRating": "متوسط التقييم",
+    "ratingsCount": "تقييم واحد | {count} تقييمات",
+    "rateThis": "قيّم هذا العنوان",
+    "removeRating": "إزالة التقييم",
+    "loginToRate": "سجّل الدخول لتقييم هذا العنوان",
+    "xpAwarded": "+{xp} XP لتقييمك الأول"
   }
 }

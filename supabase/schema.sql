@@ -155,6 +155,31 @@ create policy "progress update own" on progress for update using (auth.uid() = u
 create policy "progress delete own" on progress for delete using (auth.uid() = user_id);
 
 -- ============================================================
+-- RATINGS
+-- ============================================================
+
+create table if not exists ratings (
+    user_id uuid not null references profiles(id) on delete cascade,
+    title_id bigint not null references titles(id) on delete cascade,
+    rating int not null check (rating between 1 and 5),
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now(),
+    primary key (user_id, title_id)
+);
+
+create index idx_ratings_title on ratings(title_id);
+
+alter table ratings enable row level security;
+create policy "ratings public read" on ratings for select using (true);
+create policy "ratings insert own" on ratings for insert with check (auth.uid() = user_id);
+create policy "ratings update own" on ratings for update using (auth.uid() = user_id);
+create policy "ratings delete own" on ratings for delete using (auth.uid() = user_id);
+
+create or replace view title_rating_stats with (security_invoker = true) as
+select title_id, round(avg(rating)::numeric, 1) as avg_rating, count(*) as rating_count
+from ratings group by title_id;
+
+-- ============================================================
 -- GAMIFICATION: BADGES & XP
 -- ============================================================
 
@@ -187,7 +212,7 @@ create table if not exists xp_events (
     id bigserial primary key,
     user_id uuid not null references profiles(id) on delete cascade,
     title_id bigint references titles(id) on delete set null,
-    event_type text check (event_type in ('watch', 'review', 'quiz', 'badge', 'streak')) not null,
+    event_type text check (event_type in ('watch', 'review', 'quiz', 'badge', 'streak', 'rating')) not null,
     xp_delta int not null,
     created_at timestamptz default now(),
     metadata_json jsonb
@@ -368,6 +393,19 @@ begin
     update profiles set xp_total = total, level_int = new_level where id = uid;
 end;
 $$ language plpgsql security definer;
+
+-- Touch updated_at on row update
+create or replace function fn_touch_updated_at()
+returns trigger as $$
+begin
+    new.updated_at = now();
+    return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_ratings_touch_updated_at
+    before update on ratings
+    for each row execute function fn_touch_updated_at();
 
 -- Server-side function to create notifications (service role only)
 create or replace function fn_create_notification(
