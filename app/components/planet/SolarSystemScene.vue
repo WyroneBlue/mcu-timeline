@@ -110,12 +110,41 @@ const planetVertexShader = `
     varying vec3 vNormal;
     varying vec3 vViewDir;
     varying vec3 vPosition;
+    varying vec2 vUv;
     void main() {
         vNormal = normalize(normalMatrix * normal);
         vPosition = position;
+        vUv = uv;
         vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
         vViewDir = normalize(-mvPos.xyz);
         gl_Position = projectionMatrix * mvPos;
+    }
+`
+
+// Solid, film-themed surface for planets and realms: the procedural texture
+// carries the location's look (usePlanetSurface), the shader adds soft
+// lighting, an accent-coloured rim and the hover/selection/unwatched cues.
+const texturedPlanetFragmentShader = `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uTime;
+    uniform float uHover;
+    uniform float uSelected;
+    uniform float uHasUnwatched;
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    varying vec2 vUv;
+
+    void main() {
+        vec3 surf = texture2D(uMap, vUv).rgb;
+        float fresnel = pow(1.0 - abs(dot(vNormal, vViewDir)), 2.5);
+        float pulse = uHasUnwatched > 0.5 ? sin(uTime * 2.0) * 0.08 + 1.0 : 1.0;
+
+        float light = 0.72 + 0.28 * max(0.0, dot(vNormal, normalize(vec3(0.5, 0.45, 0.8))));
+        vec3 col = surf * light * (1.0 + uHover * 0.18 + uSelected * 0.28);
+        col += uColor * fresnel * (0.35 + uHover * 0.25 + uSelected * 0.35) * pulse;
+
+        gl_FragColor = vec4(col, 1.0);
     }
 `
 
@@ -421,21 +450,30 @@ function buildLocations() {
         const pos = layoutPositions[index] ?? new Vector3(loc.position_3d[0], loc.position_3d[1], loc.position_3d[2])
         const unwatched = hasUnwatchedTitles(loc.title_slugs)
 
-        // Main sphere
+        // Main sphere — planets and realms get a solid, film-themed surface;
+        // dimensions and constructs stay abstract energy forms.
+        const textured = loc.type === 'planet' || loc.type === 'realm'
         const sphereGeo = getGeometry(loc.type, baseRadius)
         disposables.push(sphereGeo)
 
+        const uniforms: Record<string, { value: unknown }> = {
+            uColor: { value: new Color(color) },
+            uTime: { value: 0 },
+            uHover: { value: 0 },
+            uSelected: { value: 0 },
+            uHasUnwatched: { value: unwatched ? 1.0 : 0.0 },
+        }
+        if (textured) {
+            const surfaceTex = createPlanetSurfaceTexture(loc.id, color)
+            disposables.push(surfaceTex)
+            uniforms.uMap = { value: surfaceTex }
+        }
+
         const sphereMat = new ShaderMaterial({
             vertexShader: planetVertexShader,
-            fragmentShader: getFragmentShader(loc.type),
-            uniforms: {
-                uColor: { value: new Color(color) },
-                uTime: { value: 0 },
-                uHover: { value: 0 },
-                uSelected: { value: 0 },
-                uHasUnwatched: { value: unwatched ? 1.0 : 0.0 },
-            },
-            transparent: true,
+            fragmentShader: textured ? texturedPlanetFragmentShader : getFragmentShader(loc.type),
+            uniforms,
+            transparent: !textured,
             depthWrite: true,
             side: FrontSide,
         })
@@ -924,10 +962,12 @@ onLoop(({ delta }) => {
             entry.label.position.z = entry.basePos.z + driftZ
         }
 
-        // Slow rotation for dimensions
+        // Slow rotation: dimensions tumble, textured planets/realms spin
         if (entry.type === 'dimension') {
             entry.sphere.rotation.y += delta * 0.15
             entry.sphere.rotation.x += delta * 0.05
+        } else if (entry.type === 'planet' || entry.type === 'realm') {
+            entry.sphere.rotation.y += delta * 0.05
         }
 
         // Scale
