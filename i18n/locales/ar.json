@@ -385,6 +385,25 @@
     "loginToRate": "سجّل الدخول لتقييم هذا العنوان",
     "xpAwarded": "+{xp} XP لتقييمك الأول"
   },
+  "reviews": {
+    "title": "المراجعات",
+    "writeReview": "اكتب مراجعة",
+    "placeholder": "ما رأيك في هذا العمل؟",
+    "submit": "نشر المراجعة",
+    "submitted": "تم نشر مراجعتك",
+    "heldForModeration": "مراجعتك قيد الإشراف",
+    "rejected": "تم رفض مراجعتك من قبل الإشراف",
+    "report": "إبلاغ",
+    "reported": "تم الإبلاغ",
+    "reportConfirm": "هل تريد الإبلاغ عن هذه المراجعة كمحتوى غير لائق؟",
+    "deleteMine": "حذف مراجعتي",
+    "charCount": "{count}/{max}",
+    "loginToReview": "سجّل الدخول لكتابة مراجعة",
+    "empty": "لا توجد مراجعات بعد. كن أول من يكتب!",
+    "pendingBadge": "قيد الإشراف",
+    "rateLimited": "مراجعات كثيرة جدًا، حاول مرة أخرى لاحقًا",
+    "edited": "(معدّلة)"
+  },
   "viewSettings": {
     "title": "إعدادات العرض",
     "layout": "التخطيط",

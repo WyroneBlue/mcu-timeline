@@ -151,6 +151,9 @@
                 <!-- Related titles -->
                 <TitleRelatedTitles :titles="relatedTitles" />
 
+                <!-- Reviews -->
+                <TitleReviews :title-id="title.id" />
+
                 <!-- Retcon notes -->
                 <div v-if="title.retcon_notes" class="text-xs text-white/30 italic">
                     {{ title.retcon_notes }}

@@ -385,6 +385,25 @@
     "loginToRate": "評価するにはログインしてください",
     "xpAwarded": "初回の評価で +{xp} XP 獲得"
   },
+  "reviews": {
+    "title": "レビュー",
+    "writeReview": "レビューを書く",
+    "placeholder": "この作品はいかがでしたか？",
+    "submit": "レビューを投稿",
+    "submitted": "レビューが公開されました",
+    "heldForModeration": "レビューは審査待ちです",
+    "rejected": "レビューは審査で却下されました",
+    "report": "報告",
+    "reported": "報告済み",
+    "reportConfirm": "このレビューを不適切として報告しますか？",
+    "deleteMine": "自分のレビューを削除",
+    "charCount": "{count}/{max}",
+    "loginToReview": "レビューを書くにはログインしてください",
+    "empty": "まだレビューはありません。最初のレビューを書きましょう！",
+    "pendingBadge": "審査待ち",
+    "rateLimited": "レビューの投稿が多すぎます。しばらくしてからお試しください",
+    "edited": "（編集済み）"
+  },
   "viewSettings": {
     "title": "表示設定",
     "layout": "レイアウト",

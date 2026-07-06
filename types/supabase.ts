@@ -122,6 +122,47 @@ export type Database = {
                 Update: Partial<Database['public']['Tables']['ratings']['Insert']>
                 Relationships: []
             }
+            reviews: {
+                Row: {
+                    id: number
+                    user_id: string
+                    title_id: number
+                    body: string
+                    locale: string
+                    status: 'pending' | 'approved' | 'rejected' | 'flagged'
+                    moderation: unknown
+                    report_count: number
+                    created_at: string
+                    updated_at: string
+                }
+                Insert: {
+                    user_id: string
+                    title_id: number
+                    body: string
+                    locale?: string
+                    status?: 'pending' | 'approved' | 'rejected' | 'flagged'
+                    moderation?: unknown
+                    report_count?: number
+                }
+                Update: Partial<Database['public']['Tables']['reviews']['Insert']>
+                Relationships: []
+            }
+            review_reports: {
+                Row: {
+                    id: number
+                    review_id: number
+                    user_id: string
+                    reason: string | null
+                    created_at: string
+                }
+                Insert: {
+                    review_id: number
+                    user_id: string
+                    reason?: string | null
+                }
+                Update: Partial<Database['public']['Tables']['review_reports']['Insert']>
+                Relationships: []
+            }
             friends: {
                 Row: { user_id: string; friend_id: string; status: 'pending' | 'accepted'; created_at: string | null }
                 Insert: { user_id: string; friend_id: string; status?: 'pending' | 'accepted' }

@@ -57,6 +57,7 @@ const nav = [
     { to: '/admin/badges', label: 'Badges' },
     { to: '/admin/providers', label: 'Providers' },
     { to: '/admin/summaries', label: 'Summaries' },
+    { to: '/admin/reviews', label: 'Reviews' },
     { to: '/admin/config', label: 'Config' },
 ]
 </script>

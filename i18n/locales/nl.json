@@ -385,6 +385,25 @@
     "loginToRate": "Log in om deze titel te beoordelen",
     "xpAwarded": "+{xp} XP voor je eerste beoordeling"
   },
+  "reviews": {
+    "title": "Reviews",
+    "writeReview": "Schrijf een review",
+    "placeholder": "Wat vond je van deze titel?",
+    "submit": "Review plaatsen",
+    "submitted": "Je review is geplaatst",
+    "heldForModeration": "Je review wacht op moderatie",
+    "rejected": "Je review is afgekeurd door moderatie",
+    "report": "Rapporteer",
+    "reported": "Gerapporteerd",
+    "reportConfirm": "Deze review rapporteren als ongepast?",
+    "deleteMine": "Verwijder mijn review",
+    "charCount": "{count}/{max}",
+    "loginToReview": "Log in om een review te schrijven",
+    "empty": "Nog geen reviews. Wees de eerste!",
+    "pendingBadge": "Wacht op moderatie",
+    "rateLimited": "Te veel reviews, probeer het later opnieuw",
+    "edited": "(bewerkt)"
+  },
   "viewSettings": {
     "title": "Weergave-instellingen",
     "layout": "Indeling",

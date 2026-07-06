@@ -385,6 +385,25 @@
     "loginToRate": "Inicia sesión para valorar este título",
     "xpAwarded": "+{xp} XP por tu primera valoración"
   },
+  "reviews": {
+    "title": "Reseñas",
+    "writeReview": "Escribe una reseña",
+    "placeholder": "¿Qué te pareció este título?",
+    "submit": "Publicar reseña",
+    "submitted": "Tu reseña se ha publicado",
+    "heldForModeration": "Tu reseña está pendiente de moderación",
+    "rejected": "Tu reseña fue rechazada por moderación",
+    "report": "Denunciar",
+    "reported": "Denunciada",
+    "reportConfirm": "¿Denunciar esta reseña como inapropiada?",
+    "deleteMine": "Eliminar mi reseña",
+    "charCount": "{count}/{max}",
+    "loginToReview": "Inicia sesión para escribir una reseña",
+    "empty": "Aún no hay reseñas. ¡Sé el primero!",
+    "pendingBadge": "Pendiente de moderación",
+    "rateLimited": "Demasiadas reseñas, inténtalo de nuevo más tarde",
+    "edited": "(editada)"
+  },
   "viewSettings": {
     "title": "Ajustes de vista",
     "layout": "Diseño",

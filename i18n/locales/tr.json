@@ -385,6 +385,25 @@
     "loginToRate": "Puan vermek için giriş yap",
     "xpAwarded": "İlk puanın için +{xp} XP"
   },
+  "reviews": {
+    "title": "İncelemeler",
+    "writeReview": "İnceleme yaz",
+    "placeholder": "Bu yapım hakkında ne düşünüyorsun?",
+    "submit": "İncelemeyi gönder",
+    "submitted": "İncelemen yayınlandı",
+    "heldForModeration": "İncelemen moderasyon bekliyor",
+    "rejected": "İncelemen moderasyon tarafından reddedildi",
+    "report": "Bildir",
+    "reported": "Bildirildi",
+    "reportConfirm": "Bu incelemeyi uygunsuz olarak bildirmek istiyor musun?",
+    "deleteMine": "İncelememi sil",
+    "charCount": "{count}/{max}",
+    "loginToReview": "İnceleme yazmak için giriş yap",
+    "empty": "Henüz inceleme yok. İlk sen ol!",
+    "pendingBadge": "Moderasyon bekliyor",
+    "rateLimited": "Çok fazla inceleme, daha sonra tekrar dene",
+    "edited": "(düzenlendi)"
+  },
   "viewSettings": {
     "title": "Görünüm ayarları",
     "layout": "Düzen",

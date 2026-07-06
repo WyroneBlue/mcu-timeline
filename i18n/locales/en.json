@@ -385,6 +385,25 @@
     "loginToRate": "Sign in to rate this title",
     "xpAwarded": "+{xp} XP for your first rating"
   },
+  "reviews": {
+    "title": "Reviews",
+    "writeReview": "Write a review",
+    "placeholder": "What did you think of this title?",
+    "submit": "Post review",
+    "submitted": "Your review has been published",
+    "heldForModeration": "Your review is awaiting moderation",
+    "rejected": "Your review was rejected by moderation",
+    "report": "Report",
+    "reported": "Reported",
+    "reportConfirm": "Report this review as inappropriate?",
+    "deleteMine": "Delete my review",
+    "charCount": "{count}/{max}",
+    "loginToReview": "Sign in to write a review",
+    "empty": "No reviews yet. Be the first!",
+    "pendingBadge": "Awaiting moderation",
+    "rateLimited": "Too many reviews, please try again later",
+    "edited": "(edited)"
+  },
   "viewSettings": {
     "title": "View settings",
     "layout": "Layout",

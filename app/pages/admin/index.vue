@@ -66,6 +66,7 @@ const cards = [
     { to: '/admin/badges', icon: '🏅', label: 'Badges', desc: 'Beheer achievements', key: 'badges' },
     { to: '/admin/providers', icon: '🎟️', label: 'Providers', desc: 'Ticketproviders', key: 'providers' },
     { to: '/admin/summaries', icon: '📖', label: 'Summaries', desc: 'Context samenvattingen', key: 'summaries' },
+    { to: '/admin/reviews', icon: '💬', label: 'Reviews', desc: 'Modereer user reviews', key: 'reviews' },
     { to: '/admin/config', icon: '⚙️', label: 'Config', desc: 'Themes, icons en flags', key: 'config' },
 ]
 
@@ -95,12 +96,13 @@ async function logout() {
 
 async function loadStats() {
     try {
-        const [titles, quizzes, badges, providers, summaries, config] = await Promise.all([
+        const [titles, quizzes, badges, providers, summaries, reviews, config] = await Promise.all([
             adminFetch<any[]>('/api/admin/titles'),
             adminFetch<any[]>('/api/admin/quizzes'),
             adminFetch<any[]>('/api/admin/badges'),
             adminFetch<any[]>('/api/admin/providers'),
             adminFetch<any[]>('/api/admin/summaries'),
+            adminFetch<unknown[]>('/api/admin/reviews'),
             adminFetch<any[]>('/api/admin/config'),
         ])
         stats.titles = titles.length
@@ -108,6 +110,7 @@ async function loadStats() {
         stats.badges = badges.length
         stats.providers = providers.length
         stats.summaries = summaries.length
+        stats.reviews = reviews.length
         stats.config = config.length
     } catch {
         // stats are optional

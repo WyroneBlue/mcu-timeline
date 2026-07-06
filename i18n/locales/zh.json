@@ -385,6 +385,25 @@
     "loginToRate": "登录后即可评分",
     "xpAwarded": "首次评分获得 +{xp} XP"
   },
+  "reviews": {
+    "title": "评论",
+    "writeReview": "写评论",
+    "placeholder": "你觉得这部作品怎么样？",
+    "submit": "发布评论",
+    "submitted": "你的评论已发布",
+    "heldForModeration": "你的评论正在等待审核",
+    "rejected": "你的评论未通过审核",
+    "report": "举报",
+    "reported": "已举报",
+    "reportConfirm": "确定要举报这条评论为不当内容吗？",
+    "deleteMine": "删除我的评论",
+    "charCount": "{count}/{max}",
+    "loginToReview": "登录后即可写评论",
+    "empty": "还没有评论，来写第一条吧！",
+    "pendingBadge": "待审核",
+    "rateLimited": "评论过于频繁，请稍后再试",
+    "edited": "（已编辑）"
+  },
   "viewSettings": {
     "title": "视图设置",
     "layout": "布局",
