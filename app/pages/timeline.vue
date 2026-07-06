@@ -59,11 +59,6 @@
             <p class="text-white/30 text-sm">{{ $t('timeline.noTitles') }}</p>
         </div>
 
-        <!-- Warp overlay for 3D view transitions -->
-        <Transition name="warp-flash">
-            <div v-if="isWarping" class="fixed inset-0 z-[60] pointer-events-none warp-overlay" />
-        </Transition>
-
         <Transition v-if="!loading && titles.length > 0" name="view-fade" mode="out-in">
         <!-- Universe 3D View -->
         <div v-if="viewMode === 'universe'" key="universe" class="relative">
@@ -231,16 +226,21 @@ watch(viewMode, (v) => {
     if (v === 'list') exitFocusMode()
 })
 
-const isWarping = ref(false)
+const { playTransition } = useTransitionEffects()
 
 function onViewModeChange(v: 'list' | 'universe' | 'planet') {
     const from = viewMode.value
-    const is3D = (from === 'universe' || from === 'planet') && (v === 'universe' || v === 'planet') && from !== v
-    if (is3D) {
-        isWarping.value = true
-        setTimeout(() => { isWarping.value = false }, 700)
+    if (from === v) return
+    const swap = () => { viewMode.value = v }
+
+    if (from === 'list') {
+        // Leaving the list: the cards crumble to dust (snap)
+        const cards = Array.from(document.querySelectorAll<HTMLElement>('.timeline-card-item'))
+        playTransition('snap-dissolve', { elements: cards, midpoint: swap })
+    } else {
+        // 3D <-> 3D and 3D -> list travel over the bifrost
+        playTransition('bifrost', { midpoint: swap })
     }
-    viewMode.value = v
 }
 const loading = ref(true)
 const allTitles = ref<Title[]>([])
@@ -521,20 +521,4 @@ async function handleMarkSkipped(titleId: number) {
     filter: blur(6px);
 }
 
-.warp-overlay {
-    background: radial-gradient(ellipse at center, rgba(140, 180, 255, 0.15) 0%, rgba(60, 100, 200, 0.08) 30%, transparent 70%);
-}
-
-.warp-flash-enter-active {
-    transition: opacity 0.2s ease-out;
-}
-.warp-flash-leave-active {
-    transition: opacity 0.5s ease-in;
-}
-.warp-flash-enter-from {
-    opacity: 0;
-}
-.warp-flash-leave-to {
-    opacity: 0;
-}
 </style>

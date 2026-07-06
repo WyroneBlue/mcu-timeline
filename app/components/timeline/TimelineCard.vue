@@ -1,6 +1,6 @@
 <template>
-    <div ref="cardEl" class="group relative">
-        <NuxtLink :to="`/title/${title.slug}`" class="block">
+    <div ref="cardEl" class="timeline-card-item group relative">
+        <NuxtLink :to="`/title/${title.slug}`" class="block" @click="onCardClick">
             <div class="glass-card overflow-hidden transition-all duration-300 hover:border-white/15">
                 <div class="relative flex flex-col sm:flex-row">
                     <!-- Poster -->
@@ -150,9 +150,22 @@ defineEmits<{
 }>()
 
 const { settings } = useSettings()
+const { playTransition } = useTransitionEffects()
 
 const cardEl = ref<HTMLElement | null>(null)
 const posterImg = ref<HTMLElement | null>(null)
+
+// Plain left-clicks open a sparking portal to the title page; modified
+// clicks (new tab etc.) and keyboard navigation fall through untouched.
+function onCardClick(e: MouseEvent) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+    if (e.detail === 0) return // keyboard-activated
+    e.preventDefault()
+    playTransition('portal', {
+        origin: { x: e.clientX, y: e.clientY },
+        midpoint: () => { navigateTo(`/title/${props.title.slug}`) },
+    })
+}
 
 const posterSizeClass = computed(() => {
     const map: Record<string, string> = {

@@ -15,6 +15,7 @@
 
         <EasterEggsSnapEffect v-if="settings.showEasterEggs" />
         <EasterEggsStanLeeCameo v-if="settings.showEasterEggs" />
+        <TransitionsTransitionOverlay />
     </div>
 </template>
 
