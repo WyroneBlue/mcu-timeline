@@ -13,11 +13,10 @@ import {
 import { gsap } from 'gsap'
 import { useRenderLoop, useTres } from '@tresjs/core'
 import type { Database } from '~/types/supabase'
+import type { UniverseLayout } from '~/types/universe'
 
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
-
-type UniverseLayout = 'phase' | 'spiral' | 'zigzag' | 'grid' | 'helix' | 'galaxy' | 'scatter' | 'wave' | 'ring' | 'sphere' | 'constellation' | 'funnel' | 'flower' | 'pyramid' | 'infinity' | 'cross' | 'hourglass' | 'tree' | 'diamond' | 'coil' | 'vortex' | 'dna' | 'staircase' | 'galaxy-ring' | 'web'
 
 const props = withDefaults(defineProps<{
     titles: Title[]
@@ -476,15 +475,17 @@ function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[
     if (count === 0) return []
 
     if (layoutType === 'spiral') {
-        const maxRadius = 35
-        const totalTurns = 4
-        const heightAmp = 5
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const angle = t * Math.PI * 2 * totalTurns
-            const r = 3 + t * (maxRadius - 3)
-            const y = Math.sin(t * Math.PI * 4) * heightAmp * t
-            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
+        // Constant arc-length stepping: equal gaps between neighbours from the
+        // centre out, instead of cramming the inner turns.
+        const spacing = 4.6
+        const startRadius = 5
+        const growthPerRadian = 1.1
+        let angle = 0
+        return titles.map(() => {
+            const r = startRadius + growthPerRadian * angle
+            const p = new Vector3(Math.cos(angle) * r, Math.sin(angle * 0.9) * 1.2, Math.sin(angle) * r)
+            angle += spacing / r
+            return p
         })
     }
 
@@ -522,63 +523,37 @@ function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[
     }
 
     if (layoutType === 'helix') {
-        const turns = 3
-        const heightRange = 35
-        const radius = 12
+        // Single continuous helix: chronology flows along one strand and the
+        // height stays within what the camera pitch clamp can actually see.
+        const turns = 2.5
+        const heightRange = 28
+        const radius = 13
         return titles.map((_, i) => {
             const t = i / (count - 1 || 1)
             const angle = t * Math.PI * 2 * turns
-            const strand = i % 2 === 0 ? 1 : -1
             return new Vector3(
-                Math.cos(angle) * radius * strand,
+                Math.cos(angle) * radius,
                 t * heightRange - heightRange / 2,
-                Math.sin(angle) * radius * strand,
+                Math.sin(angle) * radius,
             )
         })
     }
 
     if (layoutType === 'galaxy') {
+        // Contiguous chronological runs per arm (no i % arms interleaving, so
+        // the connecting path never zigzags through the core) and sqrt-radius
+        // for even density instead of a crammed centre.
         const arms = 3
-        const maxRadius = 38
+        const perArm = Math.ceil(count / arms)
         return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const arm = i % arms
+            const arm = Math.floor(i / perArm)
+            const k = i - arm * perArm
+            const t = k / (perArm - 1 || 1)
             const armOffset = (arm / arms) * Math.PI * 2
-            const angle = t * Math.PI * 3 + armOffset
-            const r = 2 + t * (maxRadius - 2)
-            const y = Math.sin(angle * 0.7) * 2.5 * t
+            const angle = armOffset + t * Math.PI * 1.7
+            const r = 6 + Math.sqrt(t) * 32
+            const y = Math.sin(i * 2.7) * 1.2 * (1 - t) + Math.sin(angle) * 1.5 * t
             return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
-        })
-    }
-
-    if (layoutType === 'scatter') {
-        let seed = 42
-        const random = () => {
-            seed = (seed * 16807 + 0) % 2147483647
-            return seed / 2147483647
-        }
-        const spread = 30
-        return titles.map(() => new Vector3(
-            (random() - 0.5) * spread * 2,
-            (random() - 0.5) * spread * 1.2,
-            (random() - 0.5) * spread * 2,
-        ))
-    }
-
-    if (layoutType === 'wave') {
-        const cols = Math.ceil(Math.sqrt(count * 1.5))
-        const spacingX = 5
-        const spacingZ = 6
-        const totalW = (cols - 1) * spacingX
-        const rows = Math.ceil(count / cols)
-        const totalD = (rows - 1) * spacingZ
-        return titles.map((_, i) => {
-            const col = i % cols
-            const row = Math.floor(i / cols)
-            const x = col * spacingX - totalW / 2
-            const z = row * spacingZ - totalD / 2
-            const y = Math.sin(col * 0.6 + row * 0.4) * 6 + Math.cos(col * 0.3 - row * 0.7) * 3.5
-            return new Vector3(x, y, z)
         })
     }
 
@@ -611,188 +586,6 @@ function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[
         })
     }
 
-    if (layoutType === 'constellation') {
-        let seed = 137
-        const random = () => {
-            seed = (seed * 16807 + 0) % 2147483647
-            return seed / 2147483647
-        }
-        const clusterCount = Math.max(3, Math.ceil(count / 6))
-        const clusterSpread = 28
-        const innerSpread = 7
-
-        const centers: Vector3[] = []
-        for (let c = 0; c < clusterCount; c++) {
-            centers.push(new Vector3(
-                (random() - 0.5) * clusterSpread * 2,
-                (random() - 0.5) * clusterSpread * 0.8,
-                (random() - 0.5) * clusterSpread * 2,
-            ))
-        }
-
-        return titles.map((_, i) => {
-            const center = centers[i % clusterCount]
-            const offsetAngle = random() * Math.PI * 2
-            const offsetR = random() * innerSpread
-            const offsetY = (random() - 0.5) * innerSpread * 0.6
-            return new Vector3(
-                center.x + Math.cos(offsetAngle) * offsetR,
-                center.y + offsetY,
-                center.z + Math.sin(offsetAngle) * offsetR,
-            )
-        })
-    }
-
-    if (layoutType === 'funnel') {
-        const height = 35
-        const maxRadius = 28
-        const turns = 4
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const y = t * height - height / 2
-            const r = maxRadius * (1 - t * 0.85)
-            const angle = t * Math.PI * 2 * turns
-            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
-        })
-    }
-
-    if (layoutType === 'flower') {
-        const petals = 6
-        const centerRadius = 3
-        const petalRadius = 18
-        return titles.map((_, i) => {
-            if (i === 0) return new Vector3(0, 0, 0)
-            const petal = (i - 1) % petals
-            const ring = Math.floor((i - 1) / petals)
-            const petalAngle = (petal / petals) * Math.PI * 2
-            const r = centerRadius + (ring + 1) * 4.5
-            const spread = (ring + 1) * 0.3
-            const offsetAngle = petalAngle + Math.sin(ring * 1.5) * spread
-            const y = Math.sin(ring * 0.8) * 2
-            return new Vector3(
-                Math.cos(offsetAngle) * Math.min(r, petalRadius + ring * 2),
-                y,
-                Math.sin(offsetAngle) * Math.min(r, petalRadius + ring * 2),
-            )
-        })
-    }
-
-    if (layoutType === 'pyramid') {
-        const positions: Vector3[] = []
-        const layerSpacing = 6
-        let placed = 0
-        let layer = 0
-        while (placed < count) {
-            const side = layer + 1
-            const layerSize = side * side
-            const y = -layer * layerSpacing
-            for (let j = 0; j < layerSize && placed < count; j++) {
-                const row = Math.floor(j / side)
-                const col = j % side
-                positions.push(new Vector3(
-                    col * 5.5 - (side - 1) * 2.75,
-                    y,
-                    row * 5.5 - (side - 1) * 2.75,
-                ))
-                placed++
-            }
-            layer++
-        }
-        return positions
-    }
-
-    if (layoutType === 'infinity') {
-        const scaleX = 22
-        const scaleZ = 12
-        return titles.map((_, i) => {
-            const t = (i / count) * Math.PI * 2
-            return new Vector3(
-                Math.sin(t) * scaleX,
-                Math.sin(t * 3) * 3,
-                Math.sin(t) * Math.cos(t) * scaleZ,
-            )
-        })
-    }
-
-    if (layoutType === 'cross') {
-        const spacing = 4.5
-        return titles.map((_, i) => {
-            const arm = i % 4
-            const dist = Math.floor(i / 4) * spacing + spacing
-            const y = Math.sin(dist * 0.3) * 1.5
-            switch (arm) {
-                case 0: return new Vector3(dist, y, 0)
-                case 1: return new Vector3(-dist, y, 0)
-                case 2: return new Vector3(0, y, dist)
-                default: return new Vector3(0, y, -dist)
-            }
-        })
-    }
-
-    if (layoutType === 'hourglass') {
-        const height = 35
-        const maxRadius = 22
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const y = t * height - height / 2
-            const pinch = Math.abs(t - 0.5) * 2
-            const r = 2 + pinch * maxRadius
-            const angle = t * Math.PI * 2 * 5
-            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
-        })
-    }
-
-    if (layoutType === 'tree') {
-        const positions: Vector3[] = []
-        const trunkCount = Math.max(1, Math.floor(count * 0.15))
-        const crownCount = count - trunkCount
-        const trunkHeight = 12
-
-        for (let i = 0; i < trunkCount; i++) {
-            const t = i / (trunkCount - 1 || 1)
-            positions.push(new Vector3(Math.sin(t * 2) * 0.6, -18 + t * trunkHeight, Math.cos(t * 2) * 0.6))
-        }
-
-        const goldenAngle = Math.PI * (3 - Math.sqrt(5))
-        for (let i = 0; i < crownCount; i++) {
-            const t = i / (crownCount - 1 || 1)
-            const y = 1 - t * 1.4
-            const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y))
-            const theta = goldenAngle * i
-            positions.push(new Vector3(
-                Math.cos(theta) * radiusAtY * 20,
-                -6 + trunkHeight + (1 - t) * 16,
-                Math.sin(theta) * radiusAtY * 20,
-            ))
-        }
-        return positions
-    }
-
-    if (layoutType === 'diamond') {
-        const height = 35
-        const maxRadius = 20
-        const turns = 6
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const y = t * height - height / 2
-            const diamond = 1 - Math.abs(t - 0.5) * 2
-            const r = diamond * maxRadius + 1.5
-            const angle = t * Math.PI * 2 * turns
-            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
-        })
-    }
-
-    if (layoutType === 'coil') {
-        const radius = 12
-        const height = 40
-        const turns = 8
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const angle = t * Math.PI * 2 * turns
-            return new Vector3(Math.cos(angle) * radius, t * height - height / 2, Math.sin(angle) * radius)
-        })
-    }
-
     if (layoutType === 'vortex') {
         const maxRadius = 28
         const height = 30
@@ -804,73 +597,6 @@ function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[
             const y = t * height - height / 2
             const wobble = Math.sin(t * Math.PI * 8) * 1.5 * (1 - t)
             return new Vector3(Math.cos(angle) * (r + wobble), y, Math.sin(angle) * (r + wobble))
-        })
-    }
-
-    if (layoutType === 'dna') {
-        const radius = 10
-        const height = 40
-        const turns = 4
-        return titles.map((_, i) => {
-            const t = i / (count - 1 || 1)
-            const angle = t * Math.PI * 2 * turns
-            const y = t * height - height / 2
-            const strand = i % 3
-            if (strand === 2) {
-                const midAngle = angle + Math.PI * 0.5
-                return new Vector3(Math.cos(midAngle) * radius * 0.3, y, Math.sin(midAngle) * radius * 0.3)
-            }
-            const offset = strand === 0 ? 0 : Math.PI
-            return new Vector3(Math.cos(angle + offset) * radius, y, Math.sin(angle + offset) * radius)
-        })
-    }
-
-    if (layoutType === 'staircase') {
-        const stepWidth = 5.5
-        const stepHeight = 2.5
-        const stepsPerFlight = 6
-        const flightDepth = 8
-        return titles.map((_, i) => {
-            const flight = Math.floor(i / stepsPerFlight)
-            const step = i % stepsPerFlight
-            const direction = flight % 2 === 0 ? 1 : -1
-            const x = step * stepWidth * direction - (stepsPerFlight * stepWidth * direction) / 2
-            const y = i * stepHeight - (count * stepHeight) / 2
-            const z = flight * flightDepth - (Math.floor(count / stepsPerFlight) * flightDepth) / 2
-            return new Vector3(x, y, z)
-        })
-    }
-
-    if (layoutType === 'galaxy-ring') {
-        const rings = 3
-        const baseRadius = 10
-        return titles.map((_, i) => {
-            const ringIdx = i % rings
-            const posInRing = Math.floor(i / rings)
-            const ringCount = Math.ceil(count / rings)
-            const angle = (posInRing / ringCount) * Math.PI * 2
-            const r = baseRadius + ringIdx * 8
-            const tilt = ringIdx * 0.3
-            const y = Math.sin(angle) * r * Math.sin(tilt) + Math.sin(angle * 3) * 1.5
-            return new Vector3(
-                Math.cos(angle) * r * Math.cos(tilt),
-                y,
-                Math.sin(angle) * r,
-            )
-        })
-    }
-
-    if (layoutType === 'web') {
-        const spokes = 8
-        const maxRadius = 28
-        return titles.map((_, i) => {
-            if (i === 0) return new Vector3(0, 0, 0)
-            const spoke = (i - 1) % spokes
-            const ringNum = Math.floor((i - 1) / spokes) + 1
-            const angle = (spoke / spokes) * Math.PI * 2 + (ringNum % 2) * (Math.PI / spokes)
-            const r = ringNum * (maxRadius / Math.ceil(count / spokes))
-            const y = Math.sin(ringNum * 0.8 + spoke * 0.5) * 2
-            return new Vector3(Math.cos(angle) * r, y, Math.sin(angle) * r)
         })
     }
 

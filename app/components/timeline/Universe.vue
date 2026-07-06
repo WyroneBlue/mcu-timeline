@@ -16,7 +16,7 @@
                 :clear-color="currentTheme.bgColor"
                 class="!absolute inset-0 !z-0"
             >
-                <TresPerspectiveCamera ref="cameraRef" :position="[0, 5, 18]" :fov="55" :near="0.1" :far="500" />
+                <TresPerspectiveCamera :position="[0, 5, 18]" :fov="55" :near="0.1" :far="500" />
                 <component
                     :is="UniverseScene"
                     :titles="titles"
@@ -114,7 +114,7 @@
                     </button>
                     <Transition name="section">
                         <div v-if="sectionOpen.layout" class="px-2 pb-2">
-                            <div class="grid grid-cols-5 gap-1 max-h-[200px] overflow-y-auto scrollbar-thin pr-0.5">
+                            <div class="grid grid-cols-5 gap-1">
                                 <button
                                     v-for="l in layoutOptions"
                                     :key="l.value"
@@ -479,6 +479,7 @@
 
 <script setup lang="ts">
 import type { Database } from '~/types/supabase'
+import type { UniverseLayout } from '~/types/universe'
 import UniverseScene from './UniverseScene.vue'
 import LayoutIcon from './LayoutIcon.vue'
 import TheWatcherSprite from '../easter-eggs/TheWatcherSprite.vue'
@@ -492,12 +493,12 @@ const props = defineProps<{
     activePhase: number | null
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
     markWatched: [id: number]
     markSkipped: [id: number]
 }>()
 
-export type UniverseLayout = 'phase' | 'spiral' | 'zigzag' | 'grid' | 'helix' | 'galaxy' | 'scatter' | 'wave' | 'ring' | 'sphere' | 'constellation' | 'funnel' | 'flower' | 'pyramid' | 'infinity' | 'cross' | 'hourglass' | 'tree' | 'diamond' | 'coil' | 'vortex' | 'dna' | 'staircase' | 'galaxy-ring' | 'web'
+export type { UniverseLayout } from '~/types/universe'
 
 const { focusMode, toggleFocusMode } = useFocusMode()
 const { discoverEasterEgg } = useEasterEggs()
@@ -524,30 +525,14 @@ const controlsOpen = ref(false)
 const sectionOpen = reactive({ layout: true, navigation: false, visuals: false })
 const layoutOptions: { value: UniverseLayout; label: string }[] = [
     { value: 'phase', label: 'Phase Clusters' },
-    { value: 'spiral', label: 'Spiral' },
-    { value: 'zigzag', label: 'Zigzag' },
-    { value: 'grid', label: 'Grid' },
-    { value: 'helix', label: 'Helix' },
     { value: 'galaxy', label: 'Galaxy' },
-    { value: 'scatter', label: 'Scatter' },
-    { value: 'wave', label: 'Wave' },
-    { value: 'ring', label: 'Ring' },
+    { value: 'spiral', label: 'Spiral' },
+    { value: 'helix', label: 'Helix' },
+    { value: 'grid', label: 'Grid' },
     { value: 'sphere', label: 'Sphere' },
-    { value: 'constellation', label: 'Constellation' },
-    { value: 'funnel', label: 'Funnel' },
-    { value: 'flower', label: 'Flower' },
-    { value: 'pyramid', label: 'Pyramid' },
-    { value: 'infinity', label: 'Infinity' },
-    { value: 'cross', label: 'Cross' },
-    { value: 'hourglass', label: 'Hourglass' },
-    { value: 'tree', label: 'Tree' },
-    { value: 'diamond', label: 'Diamond' },
-    { value: 'coil', label: 'Coil' },
+    { value: 'ring', label: 'Ring' },
+    { value: 'zigzag', label: 'Zigzag' },
     { value: 'vortex', label: 'Vortex' },
-    { value: 'dna', label: 'DNA' },
-    { value: 'staircase', label: 'Staircase' },
-    { value: 'galaxy-ring', label: 'Galaxy Ring' },
-    { value: 'web', label: 'Web' },
 ]
 
 const watcherPosition = ref<[number, number, number] | null>(null)
@@ -572,7 +557,6 @@ watch(() => settings.showEasterEggs, (enabled) => {
 }, { immediate: true })
 
 const containerEl = ref<HTMLElement | null>(null)
-const cameraRef = ref<any>(null)
 const hoveredId = ref<number | null>(null)
 const selectedId = ref<number | null>(null)
 const focusedIndex = ref(0)
