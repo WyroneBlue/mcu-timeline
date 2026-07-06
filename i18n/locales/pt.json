@@ -431,5 +431,10 @@
     "cameraAutoReset": "Reinício automático da câmara",
     "particles": "Partículas",
     "layoutDrift": "Deriva da disposição"
+  },
+  "easterEggs": {
+    "watcherName": "O Vigia",
+    "watcherQuote": "Eu sou o Vigia. Observo tudo o que acontece aqui.",
+    "discovered": "Easter egg descoberto"
   }
 }

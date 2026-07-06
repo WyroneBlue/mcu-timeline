@@ -431,5 +431,10 @@
     "cameraAutoReset": "Camera auto-reset",
     "particles": "Particles",
     "layoutDrift": "Layout drift"
+  },
+  "easterEggs": {
+    "watcherName": "The Watcher",
+    "watcherQuote": "I am The Watcher. I observe all that transpires here.",
+    "discovered": "Easter egg discovered"
   }
 }

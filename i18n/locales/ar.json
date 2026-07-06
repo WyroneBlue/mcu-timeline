@@ -431,5 +431,10 @@
     "cameraAutoReset": "إعادة ضبط الكاميرا تلقائيًا",
     "particles": "الجسيمات",
     "layoutDrift": "انجراف التخطيط"
+  },
+  "easterEggs": {
+    "watcherName": "الرقيب",
+    "watcherQuote": "أنا الرقيب. أراقب كل ما يحدث هنا.",
+    "discovered": "تم اكتشاف مفاجأة مخفية"
   }
 }

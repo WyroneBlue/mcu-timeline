@@ -207,6 +207,19 @@
                     </button>
                 </div>
 
+                <!-- Watcher style -->
+                <div v-if="settings.showEasterEggs" class="flex items-center justify-between">
+                    <p class="text-sm text-white/80">{{ $t('settings.watcherStyle') }}</p>
+                    <div class="flex items-center gap-1 p-0.5 rounded-lg bg-white/5 border border-white/5">
+                        <button
+                            v-for="opt in [{ v: 'sprite', l: $t('settings.watcherSprite') }, { v: '3d', l: $t('settings.watcher3d') }]"
+                            :key="opt.v"
+                            :class="['px-2.5 py-1 rounded-md text-xs transition-all', settings.watcherStyle === opt.v ? 'bg-white/10 text-white' : 'text-white/40']"
+                            @click="setSetting('watcherStyle', opt.v as 'sprite' | '3d')"
+                        >{{ opt.l }}</button>
+                    </div>
+                </div>
+
             </div>
         </section>
 

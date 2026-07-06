@@ -62,11 +62,15 @@
                 />
                 <component
                     v-if="settings.showEasterEggs && watcherPosition"
-                    :is="TheWatcherSprite"
+                    :is="TheWatcher"
                     :position="watcherPosition"
+                    @found="onWatcherFound"
                 />
             </TresCanvas>
         </ClientOnly>
+
+        <!-- Watcher discovery moment -->
+        <EasterEggsWatcherDiscovery :show="watcherDiscoveryVisible" />
 
         <!-- Bottom navigation -->
         <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 w-[300px] sm:w-[340px]">
@@ -135,14 +139,15 @@
 <script setup lang="ts">
 import type { LocationJson } from '~/types/multiverse'
 import PlanetSceneComponent from '~/components/planet/PlanetScene.vue'
-import TheWatcherSprite from '~/components/easter-eggs/TheWatcherSprite.vue'
+import TheWatcher from '~/components/easter-eggs/TheWatcher.vue'
 import locationsJson from '../../data/locations.json'
 
 definePageMeta({ ssr: false })
 
 const { t } = useI18n()
 const { settings, currentTheme } = useSettings()
-const { discoverEasterEgg } = useEasterEggs()
+const { discoverEasterEgg, isDiscovered } = useEasterEggs()
+const { awardBadge } = useBadges()
 
 const hoveredCode = ref<string | null>(null)
 const selectedCode = ref<string | null>(null)
@@ -150,26 +155,21 @@ const focusedIndex = ref(0)
 const filterType = ref<string | null>(null)
 const showDragHint = ref(true)
 
-const watcherPosition = ref<[number, number, number] | null>(null)
+const { watcherPosition } = useWatcherSpawn('planet')
+const watcherDiscoveryVisible = ref(false)
+let watcherDiscoveryTimeout: ReturnType<typeof setTimeout> | null = null
 
-function pickWatcherPosition(): [number, number, number] {
-    const spots: [number, number, number][] = [
-        [-25, 12, -15],
-        [22, 18, -25],
-        [-15, 20, -35],
-        [30, 14, -12],
-        [0, 22, -40],
-        [-30, 10, 8],
-    ]
-    return spots[Math.floor(Math.random() * spots.length)]
+function onWatcherFound() {
+    if (isDiscovered('the-watcher')) return
+    discoverEasterEgg('the-watcher')
+    watcherDiscoveryVisible.value = true
+    watcherDiscoveryTimeout = setTimeout(() => { watcherDiscoveryVisible.value = false }, 3500)
+    awardBadge('watcher_found').catch(() => {})
 }
 
-watch(() => settings.showEasterEggs, (enabled) => {
-    if (enabled && !watcherPosition.value) {
-        watcherPosition.value = pickWatcherPosition()
-        discoverEasterEgg('the-watcher')
-    }
-}, { immediate: true })
+onUnmounted(() => {
+    if (watcherDiscoveryTimeout) clearTimeout(watcherDiscoveryTimeout)
+})
 
 const typeOptions = computed(() => [
     { value: 'planet', label: t('location.type_planets') },

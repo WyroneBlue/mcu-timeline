@@ -431,5 +431,10 @@
     "cameraAutoReset": "Reinicio automático de cámara",
     "particles": "Partículas",
     "layoutDrift": "Deriva del diseño"
+  },
+  "easterEggs": {
+    "watcherName": "El Vigilante",
+    "watcherQuote": "Soy el Vigilante. Observo todo lo que ocurre aquí.",
+    "discovered": "Easter egg descubierto"
   }
 }

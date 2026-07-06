@@ -431,5 +431,10 @@
     "cameraAutoReset": "カメラ自動リセット",
     "particles": "パーティクル",
     "layoutDrift": "レイアウトドリフト"
+  },
+  "easterEggs": {
+    "watcherName": "ウォッチャー",
+    "watcherQuote": "私はウォッチャー。ここで起こるすべてを見届ける者だ。",
+    "discovered": "イースターエッグを発見"
   }
 }

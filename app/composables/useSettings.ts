@@ -40,6 +40,7 @@ export interface AppSettings {
     autoplayTrailers: AutoplayTrailers
     particleDensity: 'low' | 'medium' | 'high'
     showEasterEggs: boolean
+    watcherStyle: 'sprite' | '3d'
     language: AppLocale
     layoutDrift: boolean
     cameraAutoReset: boolean
@@ -58,6 +59,7 @@ const defaults: AppSettings = {
     autoplayTrailers: 'off',
     particleDensity: 'medium',
     showEasterEggs: true,
+    watcherStyle: 'sprite',
     language: 'en',
     layoutDrift: false,
     cameraAutoReset: true,

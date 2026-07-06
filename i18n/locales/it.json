@@ -431,5 +431,10 @@
     "cameraAutoReset": "Reset automatico camera",
     "particles": "Particelle",
     "layoutDrift": "Deriva del layout"
+  },
+  "easterEggs": {
+    "watcherName": "L'Osservatore",
+    "watcherQuote": "Io sono l'Osservatore. Osservo tutto ciò che accade qui.",
+    "discovered": "Easter egg scoperto"
   }
 }

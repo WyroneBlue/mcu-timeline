@@ -511,7 +511,8 @@ insert into badges (code, name, description, icon) values
     ('streak_7', 'Week Warrior', '7 dagen op rij gekeken', '⚡'),
     ('half_way', 'Halfway There', '50% van je gekozen mode voltooid', '🌗'),
     ('completionist', 'Completionist', 'Alle titels in je mode bekeken', '🏆'),
-    ('lore_master', 'Lore Master', 'Alle context-samenvattingen gelezen', '📚')
+    ('lore_master', 'Lore Master', 'Alle context-samenvattingen gelezen', '📚'),
+    ('watcher_found', 'The Watcher', 'You noticed the one who watches', '👁️')
 on conflict (code) do nothing;
 
 -- ============================================================

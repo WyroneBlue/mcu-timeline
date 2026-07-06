@@ -431,5 +431,10 @@
     "cameraAutoReset": "相机自动复位",
     "particles": "粒子",
     "layoutDrift": "布局漂移"
+  },
+  "easterEggs": {
+    "watcherName": "观察者",
+    "watcherQuote": "我是观察者。我注视着这里发生的一切。",
+    "discovered": "发现彩蛋"
   }
 }

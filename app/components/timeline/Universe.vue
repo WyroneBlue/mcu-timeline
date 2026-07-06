@@ -32,8 +32,9 @@
                 />
                 <component
                     v-if="settings.showEasterEggs && watcherPosition"
-                    :is="TheWatcherSprite"
+                    :is="TheWatcher"
                     :position="watcherPosition"
+                    @found="onWatcherFound"
                 />
             </TresCanvas>
 
@@ -338,6 +339,9 @@
         <!-- Dev-only render stats (toggle: F key or ?fps=1) -->
         <DevFpsOverlay v-if="showFps" />
 
+        <!-- Watcher discovery moment -->
+        <EasterEggsWatcherDiscovery :show="watcherDiscoveryVisible" />
+
         <!-- Hover tooltip -->
         <Transition name="fade">
             <div
@@ -358,7 +362,7 @@
 import type { Database } from '~/types/supabase'
 import type { UniverseLayout } from '~/types/universe'
 import UniverseScene from './UniverseScene.vue'
-import TheWatcherSprite from '../easter-eggs/TheWatcherSprite.vue'
+import TheWatcher from '../easter-eggs/TheWatcher.vue'
 
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
@@ -410,26 +414,23 @@ const layoutOptions: { value: UniverseLayout; label: string }[] = [
     { value: 'vortex', label: 'Vortex' },
 ]
 
-const watcherPosition = ref<[number, number, number] | null>(null)
+const { watcherPosition } = useWatcherSpawn('universe')
+const { isDiscovered } = useEasterEggs()
+const { awardBadge } = useBadges()
+const watcherDiscoveryVisible = ref(false)
+let watcherDiscoveryTimeout: ReturnType<typeof setTimeout> | null = null
 
-function pickWatcherPosition(): [number, number, number] {
-    const spots: [number, number, number][] = [
-        [-18, 14, -10],
-        [35, 16, -20],
-        [-10, 12, -30],
-        [55, 10, -8],
-        [20, 18, -38],
-        [-40, 11, 5],
-    ]
-    return spots[Math.floor(Math.random() * spots.length)]
+function onWatcherFound() {
+    if (isDiscovered('the-watcher')) return
+    discoverEasterEgg('the-watcher')
+    watcherDiscoveryVisible.value = true
+    watcherDiscoveryTimeout = setTimeout(() => { watcherDiscoveryVisible.value = false }, 3500)
+    awardBadge('watcher_found').catch(() => {})
 }
 
-watch(() => settings.showEasterEggs, (enabled) => {
-    if (enabled && !watcherPosition.value) {
-        watcherPosition.value = pickWatcherPosition()
-        discoverEasterEgg('the-watcher')
-    }
-}, { immediate: true })
+onUnmounted(() => {
+    if (watcherDiscoveryTimeout) clearTimeout(watcherDiscoveryTimeout)
+})
 
 const containerEl = ref<HTMLElement | null>(null)
 const hoveredId = ref<number | null>(null)

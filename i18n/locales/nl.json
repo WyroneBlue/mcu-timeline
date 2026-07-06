@@ -431,5 +431,10 @@
     "cameraAutoReset": "Camera automatisch resetten",
     "particles": "Deeltjes",
     "layoutDrift": "Zwevende indeling"
+  },
+  "easterEggs": {
+    "watcherName": "The Watcher",
+    "watcherQuote": "Ik ben The Watcher. Ik aanschouw alles wat hier geschiedt.",
+    "discovered": "Easter egg ontdekt"
   }
 }

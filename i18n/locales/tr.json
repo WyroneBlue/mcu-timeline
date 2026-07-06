@@ -431,5 +431,10 @@
     "cameraAutoReset": "Kamera otomatik sıfırlama",
     "particles": "Parçacıklar",
     "layoutDrift": "Düzen kayması"
+  },
+  "easterEggs": {
+    "watcherName": "Gözcü",
+    "watcherQuote": "Ben Gözcü'yüm. Burada olup biten her şeyi izlerim.",
+    "discovered": "Easter egg bulundu"
   }
 }
