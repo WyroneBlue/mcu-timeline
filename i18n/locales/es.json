@@ -260,7 +260,16 @@
     "generationFailed": "No se pudo generar el resumen",
     "cachedNote": "Resumen generado anteriormente",
     "spoilerHidden": "Spoilers ocultos",
-    "reveal": "Mostrar"
+    "reveal": "Mostrar",
+    "levelDetailed": "Todo",
+    "levelForMe": "Para mí",
+    "levelMissed": "Solo lo perdido",
+    "missedOf": "{missed} de {total} títulos previos sin ver",
+    "caughtUp": "Estás al día",
+    "caughtUpLong": "Has visto todos los títulos previos — nada que recuperar. Elige \"Todo\" para un repaso completo.",
+    "loginToRecap": "Inicia sesión para un resumen personal",
+    "retry": "Reintentar",
+    "curatedNote": "Resúmenes seleccionados (resumen IA no disponible)"
   },
   "settings": {
     "navigation": "Navegación",

@@ -260,7 +260,16 @@
     "generationFailed": "あらすじを生成できませんでした",
     "cachedNote": "以前に生成されたあらすじ",
     "spoilerHidden": "ネタバレは非表示",
-    "reveal": "表示"
+    "reveal": "表示",
+    "levelDetailed": "すべて",
+    "levelForMe": "自分向け",
+    "levelMissed": "見逃しのみ",
+    "missedOf": "前提作品{total}本のうち{missed}本が未視聴",
+    "caughtUp": "すべて視聴済みです",
+    "caughtUpLong": "前提作品はすべて視聴済み——追いつく必要はありません。「すべて」を選ぶと完全な振り返りが見られます。",
+    "loginToRecap": "パーソナル振り返りにはログイン",
+    "retry": "再試行",
+    "curatedNote": "厳選された要約（AI振り返りは利用不可）"
   },
   "settings": {
     "navigation": "ナビゲーション",

@@ -260,7 +260,16 @@
     "generationFailed": "无法生成回顾",
     "cachedNote": "此前生成的回顾",
     "spoilerHidden": "剧透已隐藏",
-    "reveal": "显示"
+    "reveal": "显示",
+    "levelDetailed": "全部",
+    "levelForMe": "为我定制",
+    "levelMissed": "仅错过的",
+    "missedOf": "{total} 部前置作品中有 {missed} 部未观看",
+    "caughtUp": "你已全部看过",
+    "caughtUpLong": "你已看过所有前置作品——无需补课。选择\"全部\"可获得完整回顾。",
+    "loginToRecap": "登录以获取个人回顾",
+    "retry": "重试",
+    "curatedNote": "精选摘要（AI 回顾不可用）"
   },
   "settings": {
     "navigation": "导航",

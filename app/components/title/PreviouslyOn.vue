@@ -1,62 +1,85 @@
 <template>
-    <div v-if="summaries.length > 0" class="space-y-4">
-        <h3 class="font-display text-xl tracking-wider text-white flex items-center gap-2">
-            <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-            </svg>
-            {{ $t('previouslyOn.heading') }}
-        </h3>
-        <p class="text-white/30 text-xs">{{ $t('previouslyOn.skippedIntro') }}</p>
+    <div v-if="prerequisites.length > 0" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="font-display text-xl tracking-wider text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                </svg>
+                {{ $t('previouslyOn.heading') }}
+            </h3>
+            <span class="text-xs text-white/30">
+                {{ missedCount > 0 ? $t('previouslyOn.missedOf', { missed: missedCount, total: prerequisites.length }) : $t('previouslyOn.caughtUp') }}
+            </span>
+        </div>
 
-        <div v-for="item in summaries" :key="item.titleId" ref="cardRefs" class="glass-card p-5 space-y-3">
-            <div class="flex items-center justify-between">
-                <NuxtLink
-                    :to="`/title/${item.slug}`"
-                    class="font-display text-lg tracking-wider text-white/80 hover:text-white transition-colors"
-                >
-                    {{ item.title }}
-                </NuxtLink>
-                <span class="text-[10px] uppercase tracking-wider text-white/20 bg-white/5 px-2 py-0.5 rounded-full">{{ $t('beforeYouWatch.skippedLabel') }}</span>
-            </div>
-
-            <div :class="[isHidden(item) && 'spoiler-blur']">
-                <p class="text-sm text-white/50 leading-relaxed">{{ item.summary.summary_text }}</p>
-
-                <div v-if="item.summary.key_characters.length > 0" class="mt-3">
-                    <span class="text-[10px] uppercase tracking-wider text-white/25 block mb-1.5">{{ $t('previouslyOn.characters') }}</span>
-                    <div class="flex flex-wrap gap-1.5">
-                        <span
-                            v-for="char in item.summary.key_characters"
-                            :key="char"
-                            class="text-xs text-white/40 bg-white/5 px-2 py-0.5 rounded-full"
-                        >
-                            {{ char }}
-                        </span>
-                    </div>
-                </div>
-
-                <div v-if="item.summary.key_events.length > 0" class="mt-3">
-                    <span class="text-[10px] uppercase tracking-wider text-white/25 block mb-1.5">{{ $t('previouslyOn.keyEvents') }}</span>
-                    <ul class="space-y-1">
-                        <li
-                            v-for="event in item.summary.key_events"
-                            :key="event"
-                            class="text-xs text-white/40 flex items-start gap-2"
-                        >
-                            <span class="text-white/15 mt-0.5">›</span>
-                            <span>{{ event }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
+        <!-- Scope tabs -->
+        <div class="flex gap-1 p-0.5 rounded-lg bg-white/5 border border-white/5 w-fit">
             <button
-                v-if="isHidden(item)"
-                class="text-xs text-white/30 hover:text-white/50 transition-colors"
-                @click="reveal(item.titleId)"
+                v-for="s in scopes"
+                :key="s.value"
+                :disabled="s.disabled"
+                :class="[
+                    'px-3 py-1.5 rounded-md text-xs transition-all',
+                    activeScope === s.value ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white/60',
+                    s.disabled && 'opacity-30 pointer-events-none',
+                ]"
+                @click="selectScope(s.value)"
             >
-                {{ $t('previouslyOn.spoilerHidden') }} — {{ $t('previouslyOn.reveal') }}
+                {{ s.label }}
             </button>
+        </div>
+
+        <!-- Recap content -->
+        <div class="glass-card p-5">
+            <div v-if="!user" class="text-sm text-white/40">
+                <NuxtLink to="/login" class="underline underline-offset-2 hover:text-white transition-colors">
+                    {{ $t('previouslyOn.loginToRecap') }}
+                </NuxtLink>
+            </div>
+
+            <div v-else-if="state.loading" class="flex items-center gap-3 text-sm text-white/40">
+                <div class="w-4 h-4 border-2 border-white/10 border-t-white/50 rounded-full animate-spin" />
+                {{ $t('previouslyOn.generating') }}
+            </div>
+
+            <div v-else-if="state.error" class="text-sm text-white/40">
+                {{ state.error }}
+                <button class="ml-2 underline underline-offset-2 hover:text-white transition-colors" @click="load(activeScope, true)">
+                    {{ $t('previouslyOn.retry') }}
+                </button>
+            </div>
+
+            <div v-else-if="state.caughtUp" class="text-sm text-white/50">
+                {{ $t('previouslyOn.caughtUpLong') }}
+            </div>
+
+            <template v-else-if="state.story">
+                <div :class="[spoilerHidden && 'spoiler-blur']">
+                    <p class="text-sm text-white/60 leading-relaxed whitespace-pre-line">{{ state.story }}</p>
+                </div>
+                <button
+                    v-if="spoilerHidden"
+                    class="mt-3 text-xs text-white/30 hover:text-white/50 transition-colors"
+                    @click="revealed = true"
+                >
+                    {{ $t('previouslyOn.spoilerHidden') }} — {{ $t('previouslyOn.reveal') }}
+                </button>
+                <p v-if="state.fallback" class="mt-3 text-[10px] uppercase tracking-wider text-white/20">
+                    {{ $t('previouslyOn.curatedNote') }}
+                </p>
+            </template>
+        </div>
+
+        <!-- Missed titles as compact chips -->
+        <div v-if="missedEntries.length > 0" class="flex flex-wrap gap-1.5">
+            <NuxtLink
+                v-for="item in missedEntries"
+                :key="item.titleId"
+                :to="`/title/${item.slug}`"
+                class="text-xs text-white/40 hover:text-white/70 bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-full transition-colors"
+            >
+                {{ item.title }}
+            </NuxtLink>
         </div>
     </div>
 </template>
@@ -64,55 +87,118 @@
 <script setup lang="ts">
 import type { SkippedPrerequisite } from '~/composables/useContextSummaries'
 
+type Scope = 'detailed' | 'for-me' | 'missed-only'
+
+interface ScopeState {
+    loading: boolean
+    error: string | null
+    story: string
+    caughtUp: boolean
+    fallback: boolean
+    loaded: boolean
+}
+
 const props = defineProps<{
     currentTitleId: number
-    skippedIds: Set<number>
+    watchedIds: Set<number>
 }>()
 
-const { getSkippedPrerequisites } = useContextSummaries()
+const { t, locale } = useI18n()
+const user = useSupabaseUser()
+const client = useSupabaseClient()
+const { getPrerequisites } = useContextSummaries()
 const { spoilerMode } = useSpoilerGuard()
 
-const summaries = ref<SkippedPrerequisite[]>([])
-const revealedIds = ref<Set<number>>(new Set())
+const prerequisites = ref<SkippedPrerequisite[]>([])
+const activeScope = ref<Scope>('for-me')
+const revealed = ref(false)
 
-function isHidden(item: SkippedPrerequisite): boolean {
-    if (spoilerMode.value === 'reveal_all') return false
-    if (item.summary.spoiler_level === 'safe') return false
-    return !revealedIds.value.has(item.titleId)
+const emptyState = (): ScopeState => ({ loading: false, error: null, story: '', caughtUp: false, fallback: false, loaded: false })
+const scopeStates = reactive<Record<Scope, ScopeState>>({
+    'detailed': emptyState(),
+    'for-me': emptyState(),
+    'missed-only': emptyState(),
+})
+
+const state = computed(() => scopeStates[activeScope.value])
+
+const missedEntries = computed(() => prerequisites.value.filter(p => !props.watchedIds.has(p.titleId)))
+const missedCount = computed(() => missedEntries.value.length)
+
+const scopes = computed(() => [
+    { value: 'detailed' as Scope, label: t('previouslyOn.levelDetailed'), disabled: false },
+    { value: 'for-me' as Scope, label: t('previouslyOn.levelForMe'), disabled: false },
+    { value: 'missed-only' as Scope, label: t('previouslyOn.levelMissed'), disabled: missedCount.value === 0 },
+])
+
+// Hide heavier-than-safe content behind a blur in smart spoiler mode
+const spoilerHidden = computed(() => {
+    if (revealed.value || spoilerMode.value === 'reveal_all') return false
+    return missedEntries.value.some(p => p.summary.spoiler_level !== 'safe')
+})
+
+function selectScope(scope: Scope) {
+    activeScope.value = scope
+    if (!scopeStates[scope].loaded && !scopeStates[scope].loading) load(scope)
 }
 
-function reveal(titleId: number) {
-    const next = new Set(revealedIds.value)
-    next.add(titleId)
-    revealedIds.value = next
+async function load(scope: Scope, force = false) {
+    if (!user.value) return
+    const s = scopeStates[scope]
+    if (s.loading || (s.loaded && !force)) return
+    s.loading = true
+    s.error = null
+
+    try {
+        const { data: { session } } = await client.auth.getSession()
+        if (!session) throw new Error('Not authenticated')
+
+        const result = await $fetch<{ story?: string, caughtUp?: boolean, fallback?: boolean }>('/api/summary/generate', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}` },
+            body: {
+                title_id: props.currentTitleId,
+                mode: 'flowing-story',
+                scope,
+                locale: locale.value,
+            },
+        })
+
+        s.story = result.story ?? ''
+        s.caughtUp = !!result.caughtUp || (!result.story && !result.fallback)
+        s.fallback = !!result.fallback
+        s.loaded = true
+    }
+    catch {
+        s.error = t('previouslyOn.generationFailed')
+    }
+    finally {
+        s.loading = false
+    }
 }
 
-async function load() {
+async function init() {
     if (!props.currentTitleId) {
-        summaries.value = []
+        prerequisites.value = []
         return
     }
     try {
-        summaries.value = await getSkippedPrerequisites(props.currentTitleId, props.skippedIds)
+        prerequisites.value = await getPrerequisites(props.currentTitleId)
     } catch {
-        summaries.value = []
+        prerequisites.value = []
     }
+    if (prerequisites.value.length === 0) return
+
+    for (const key of Object.keys(scopeStates) as Scope[]) scopeStates[key] = emptyState()
+    revealed.value = false
+    activeScope.value = missedCount.value > 0 ? 'for-me' : 'detailed'
+    if (user.value) load(activeScope.value)
 }
 
-watch(() => [props.currentTitleId, props.skippedIds] as const, () => load())
-
-const cardRefs = ref<HTMLElement[]>([])
-const { useStagger } = useScrollAnimation()
-const containerRef = ref<HTMLElement | null>(null)
-
-onMounted(async () => {
-    await load()
-    await nextTick()
-    if (cardRefs.value.length > 0) {
-        containerRef.value = cardRefs.value[0]?.parentElement ?? null
-        if (containerRef.value) {
-            useStagger(containerRef, '.glass-card', { y: 20, stagger: 0.15 })
-        }
-    }
+watch(() => props.currentTitleId, () => init())
+watch(user, (u) => {
+    if (u && prerequisites.value.length > 0 && !state.value.loaded) load(activeScope.value)
 })
+
+onMounted(() => init())
 </script>

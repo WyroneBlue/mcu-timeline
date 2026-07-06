@@ -260,7 +260,16 @@
     "generationFailed": "تعذّر إنشاء الملخص",
     "cachedNote": "ملخص تم إنشاؤه سابقًا",
     "spoilerHidden": "تم إخفاء الحرق",
-    "reveal": "إظهار"
+    "reveal": "إظهار",
+    "levelDetailed": "كل شيء",
+    "levelForMe": "من أجلي",
+    "levelMissed": "الفائت فقط",
+    "missedOf": "{missed} من {total} عناوين تمهيدية لم تُشاهد",
+    "caughtUp": "أنت مواكب تمامًا",
+    "caughtUpLong": "لقد شاهدت كل العناوين التمهيدية — لا شيء لتعويضه. اختر \"كل شيء\" لمراجعة كاملة.",
+    "loginToRecap": "سجّل الدخول للحصول على ملخص شخصي",
+    "retry": "أعد المحاولة",
+    "curatedNote": "ملخصات منسقة (ملخص الذكاء الاصطناعي غير متاح)"
   },
   "settings": {
     "navigation": "التنقل",

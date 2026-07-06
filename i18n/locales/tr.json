@@ -260,7 +260,16 @@
     "generationFailed": "Özet oluşturulamadı",
     "cachedNote": "Daha önce oluşturulmuş özet",
     "spoilerHidden": "Spoiler gizlendi",
-    "reveal": "Göster"
+    "reveal": "Göster",
+    "levelDetailed": "Hepsi",
+    "levelForMe": "Bana özel",
+    "levelMissed": "Sadece kaçırılan",
+    "missedOf": "{total} ön başlıktan {missed} tanesi izlenmedi",
+    "caughtUp": "Tamamen güncelsin",
+    "caughtUpLong": "Tüm ön başlıkları izledin — yetişecek bir şey yok. Tam bir hatırlatma için \"Hepsi\"ni seç.",
+    "loginToRecap": "Kişisel özet için giriş yap",
+    "retry": "Tekrar dene",
+    "curatedNote": "Derlenmiş özetler (YZ özeti kullanılamıyor)"
   },
   "settings": {
     "navigation": "Gezinme",

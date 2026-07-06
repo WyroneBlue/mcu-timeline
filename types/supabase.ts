@@ -188,8 +188,8 @@ export type Database = {
                 Relationships: []
             }
             generated_recaps: {
-                Row: { id: number; title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level: 'safe' | 'mild' | 'heavy'; content: unknown; model: string | null; created_at: string }
-                Insert: { title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level?: 'safe' | 'mild' | 'heavy'; content: unknown; model?: string | null }
+                Row: { id: number; title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level: 'safe' | 'mild' | 'heavy'; scope: 'detailed' | 'for-me' | 'missed-only'; content: unknown; model: string | null; created_at: string }
+                Insert: { title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level?: 'safe' | 'mild' | 'heavy'; scope?: 'detailed' | 'for-me' | 'missed-only'; content: unknown; model?: string | null }
                 Update: Partial<Database['public']['Tables']['generated_recaps']['Insert']>
                 Relationships: []
             }

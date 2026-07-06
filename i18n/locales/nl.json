@@ -260,7 +260,16 @@
     "generationFailed": "Kon de recap niet genereren",
     "cachedNote": "Eerder gegenereerde recap",
     "spoilerHidden": "Spoilers verborgen",
-    "reveal": "Toon"
+    "reveal": "Toon",
+    "levelDetailed": "Alles",
+    "levelForMe": "Voor mij",
+    "levelMissed": "Alleen gemist",
+    "missedOf": "{missed} van {total} voorafgaande titels niet gezien",
+    "caughtUp": "Je bent helemaal bij",
+    "caughtUpLong": "Je hebt alle voorafgaande titels gezien — niets in te halen. Kies \"Alles\" voor een volledige opfrisser.",
+    "loginToRecap": "Log in voor een persoonlijke recap",
+    "retry": "Opnieuw proberen",
+    "curatedNote": "Samengestelde samenvattingen (AI-recap niet beschikbaar)"
   },
   "settings": {
     "navigation": "Navigatie",

@@ -260,7 +260,16 @@
     "generationFailed": "Impossibile generare il riepilogo",
     "cachedNote": "Riepilogo generato in precedenza",
     "spoilerHidden": "Spoiler nascosti",
-    "reveal": "Mostra"
+    "reveal": "Mostra",
+    "levelDetailed": "Tutto",
+    "levelForMe": "Per me",
+    "levelMissed": "Solo il perso",
+    "missedOf": "{missed} di {total} titoli precedenti non visti",
+    "caughtUp": "Sei in pari",
+    "caughtUpLong": "Hai visto tutti i titoli precedenti — niente da recuperare. Scegli \"Tutto\" per un ripasso completo.",
+    "loginToRecap": "Accedi per un riepilogo personale",
+    "retry": "Riprova",
+    "curatedNote": "Riassunti curati (riepilogo IA non disponibile)"
   },
   "settings": {
     "navigation": "Navigazione",

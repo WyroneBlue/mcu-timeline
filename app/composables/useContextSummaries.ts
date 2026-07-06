@@ -50,25 +50,18 @@ export function useContextSummaries() {
         return normalize(data)
     }
 
-    async function getSkippedPrerequisites(
-        currentTitleId: number,
-        skippedIds: Set<number>,
-    ): Promise<SkippedPrerequisite[]> {
-        const current = await getSummaryForTitle(currentTitleId)
-        if (!current) return []
-
-        const gap = current.prerequisite_title_ids.filter(id => skippedIds.has(id))
-        if (gap.length === 0) return []
+    async function loadEntries(ids: number[]): Promise<SkippedPrerequisite[]> {
+        if (ids.length === 0) return []
 
         const [{ data: rows }, { data: titles }] = await Promise.all([
             client
                 .from('context_summaries')
                 .select('*')
-                .in('title_id', gap),
+                .in('title_id', ids),
             client
                 .from('titles')
                 .select('id, title, slug, chronology_index')
-                .in('id', gap)
+                .in('id', ids)
                 .order('chronology_index', { ascending: true }),
         ])
 
@@ -86,8 +79,25 @@ export function useContextSummaries() {
         return results
     }
 
+    // Every prerequisite of a title, in chronological order
+    async function getPrerequisites(currentTitleId: number): Promise<SkippedPrerequisite[]> {
+        const current = await getSummaryForTitle(currentTitleId)
+        if (!current) return []
+        return loadEntries(current.prerequisite_title_ids)
+    }
+
+    async function getSkippedPrerequisites(
+        currentTitleId: number,
+        skippedIds: Set<number>,
+    ): Promise<SkippedPrerequisite[]> {
+        const current = await getSummaryForTitle(currentTitleId)
+        if (!current) return []
+        return loadEntries(current.prerequisite_title_ids.filter(id => skippedIds.has(id)))
+    }
+
     return {
         getSummaryForTitle,
+        getPrerequisites,
         getSkippedPrerequisites,
     }
 }

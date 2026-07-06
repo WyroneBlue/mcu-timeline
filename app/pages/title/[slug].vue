@@ -64,18 +64,10 @@
                     </div>
                 </Transition>
 
-                <!-- Before You Watch -->
-                <TitleBeforeYouWatch
-                    v-if="skippedIds.size > 0"
-                    :title-id="title.id"
-                    :skipped-ids="skippedIds"
-                />
-
-                <!-- Previously On (curated summaries of skipped prerequisites) -->
+                <!-- Previously On: personalized recap of the lead-up titles -->
                 <TitlePreviouslyOn
-                    v-if="skippedIds.size > 0"
                     :current-title-id="title.id"
-                    :skipped-ids="skippedIds"
+                    :watched-ids="watchedIds"
                 />
 
                 <!-- Retcon info -->
@@ -205,6 +197,7 @@ const relatedTitles = ref<any[]>([])
 const showXpToast = ref(false)
 const xpAmount = ref(0)
 const skippedIds = ref<Set<number>>(new Set())
+const watchedIds = ref<Set<number>>(new Set())
 
 const releaseYear = computed(() => {
     if (!title.value?.release_date) return ''
@@ -268,6 +261,9 @@ async function loadTitle() {
                 skippedIds.value = new Set(
                     progress.filter(p => p.status === 'skipped').map(p => p.title_id)
                 )
+                watchedIds.value = new Set(
+                    progress.filter(p => p.status === 'watched').map(p => p.title_id)
+                )
             } catch { /* no auth */ }
         }
 
@@ -313,6 +309,7 @@ async function handleMarkWatched() {
                 next.delete(title.value.id)
                 skippedIds.value = next
             }
+            watchedIds.value = new Set([...watchedIds.value, title.value.id])
             await awardWatchXP(title.value.id, title.value.type as 'movie' | 'series')
             xpAmount.value = title.value.type === 'series' ? 150 : 100
             showXpToast.value = true
@@ -338,6 +335,11 @@ async function handleMarkSkipped() {
         try {
             await setStatus(title.value.id, 'skipped')
             skippedIds.value = new Set([...skippedIds.value, title.value.id])
+            if (watchedIds.value.has(title.value.id)) {
+                const next = new Set(watchedIds.value)
+                next.delete(title.value.id)
+                watchedIds.value = next
+            }
         } catch {
             currentStatus.value = prevStatus
         }

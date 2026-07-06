@@ -260,7 +260,16 @@
     "generationFailed": "Could not generate the recap",
     "cachedNote": "Previously generated recap",
     "spoilerHidden": "Spoilers hidden",
-    "reveal": "Reveal"
+    "reveal": "Reveal",
+    "levelDetailed": "Everything",
+    "levelForMe": "For me",
+    "levelMissed": "Missed only",
+    "missedOf": "{missed} of {total} lead-up titles not seen",
+    "caughtUp": "You're all caught up",
+    "caughtUpLong": "You've seen every lead-up title — nothing to catch up on. Pick \"Everything\" for a full refresher.",
+    "loginToRecap": "Sign in for a personal recap",
+    "retry": "Try again",
+    "curatedNote": "Curated summaries (AI recap unavailable)"
   },
   "settings": {
     "navigation": "Navigation",

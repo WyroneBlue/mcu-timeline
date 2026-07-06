@@ -297,10 +297,11 @@ create table if not exists generated_recaps (
     locale text not null,
     mode text not null check (mode in ('per-title','flowing-story')),
     spoiler_level text not null default 'safe' check (spoiler_level in ('safe','mild','heavy')),
+    scope text not null default 'missed-only' check (scope in ('detailed','for-me','missed-only')),
     content jsonb not null,
     model text,
     created_at timestamptz not null default now(),
-    unique (title_id, gap_hash, locale, mode, spoiler_level)
+    unique (title_id, gap_hash, locale, mode, spoiler_level, scope)
 );
 
 alter table generated_recaps enable row level security;

@@ -260,7 +260,16 @@
     "generationFailed": "Não foi possível gerar a recapitulação",
     "cachedNote": "Recapitulação gerada anteriormente",
     "spoilerHidden": "Spoilers ocultos",
-    "reveal": "Mostrar"
+    "reveal": "Mostrar",
+    "levelDetailed": "Tudo",
+    "levelForMe": "Para mim",
+    "levelMissed": "Só o perdido",
+    "missedOf": "{missed} de {total} títulos anteriores por ver",
+    "caughtUp": "Estás em dia",
+    "caughtUpLong": "Viste todos os títulos anteriores — nada a recuperar. Escolhe \"Tudo\" para uma revisão completa.",
+    "loginToRecap": "Inicia sessão para um resumo pessoal",
+    "retry": "Tentar novamente",
+    "curatedNote": "Resumos selecionados (resumo IA indisponível)"
   },
   "settings": {
     "navigation": "Navegação",
