@@ -4,7 +4,7 @@ import locationsJson from '../../data/locations.json'
 
 type Title = Database['public']['Tables']['titles']['Row']
 
-export type PlanetViewState = 'solar-system' | 'traveling' | 'planet-surface' | 'earth-detail'
+export type PlanetViewState = 'solar-system' | 'traveling' | 'earth-detail'
 
 export function usePlanetMode(titles: Ref<Title[]>) {
     const viewState = ref<PlanetViewState>('solar-system')
@@ -43,6 +43,19 @@ export function usePlanetMode(titles: Ref<Title[]>) {
         viewState.value = 'earth-detail'
         selectedLocationCode.value = null
         selectedTitleSlug.value = null
+    }
+
+    // Cinematic dive: the solar-system scene stays mounted during
+    // 'traveling' while the camera flies toward earth; completeTravel()
+    // swaps to the earth-detail scene at the visual peak.
+    function beginTravel() {
+        viewState.value = 'traveling'
+        selectedLocationCode.value = null
+        selectedTitleSlug.value = null
+    }
+
+    function completeTravel() {
+        if (viewState.value === 'traveling') enterEarth()
     }
 
     function exitEarth() {
@@ -97,6 +110,8 @@ export function usePlanetMode(titles: Ref<Title[]>) {
         selectLocation,
         selectTitle,
         enterEarth,
+        beginTravel,
+        completeTravel,
         exitEarth,
         nextTitle,
         prevTitle,

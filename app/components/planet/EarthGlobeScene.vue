@@ -3,25 +3,28 @@
 </template>
 
 <script setup lang="ts">
+import type { CanvasTexture} from 'three';
 import {
     Group, Mesh, SphereGeometry, PlaneGeometry, BufferGeometry,
     Float32BufferAttribute, Points, ShaderMaterial, MeshBasicMaterial,
     AdditiveBlending, Color, Vector3, Raycaster, Vector2,
-    CylinderGeometry, DoubleSide, CanvasTexture, FrontSide
+    CylinderGeometry, DoubleSide, FrontSide, BackSide,
+    RingGeometry
 } from 'three'
 import { useRenderLoop, useTres } from '@tresjs/core'
 import gsap from 'gsap'
 import type { LocationJson } from '~/types/multiverse'
 import {
-    latLngToVector3, createEarthTexture,
+    latLngToVector3, createEarthTexture, loadEarthTextures,
     createPinGlowTexture, createPinLabelTexture
 } from '~/composables/useEarthGlobe'
 import locationsJson from '../../../data/locations.json'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     hoveredCode: string | null
     selectedCode: string | null
-}>()
+    entryDive?: boolean
+}>(), { entryDive: false })
 
 const emit = defineEmits<{
     hover: [code: string | null]
@@ -30,6 +33,7 @@ const emit = defineEmits<{
 
 const GLOBE_RADIUS = 5
 const PIN_SPHERE_RADIUS = 0.12
+const PIN_HIT_RADIUS = 0.34
 const PIN_STEM_HEIGHT = 0.4
 
 const earthLocations = computed(() =>
@@ -40,35 +44,44 @@ const globeVertexShader = `
     varying vec2 vUv;
     varying vec3 vNormal;
     varying vec3 vViewDir;
+    varying vec3 vWorldNormal;
     void main() {
         vUv = uv;
         vNormal = normalize(normalMatrix * normal);
+        vWorldNormal = normalize(mat3(modelMatrix) * normal);
         vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
         vViewDir = normalize(-mvPos.xyz);
         gl_Position = projectionMatrix * mvPos;
     }
 `
 
+// Day/night terminator with fresnel rim. uTexMix crossfades from the flat
+// procedural placeholder (0) to the day/night composite (1) once the real
+// textures have loaded.
 const globeFragmentShader = `
-    uniform sampler2D uEarthMap;
-    uniform float uTime;
+    uniform sampler2D uDayMap;
+    uniform sampler2D uNightMap;
+    uniform vec3 uSunDir;
+    uniform float uTexMix;
     varying vec2 vUv;
     varying vec3 vNormal;
     varying vec3 vViewDir;
+    varying vec3 vWorldNormal;
 
     void main() {
-        vec4 mapColor = texture2D(uEarthMap, vUv);
+        vec3 day = texture2D(uDayMap, vUv).rgb;
+        vec3 night = texture2D(uNightMap, vUv).rgb;
+
+        float sun = dot(normalize(vWorldNormal), normalize(uSunDir));
+        float dayAmt = smoothstep(-0.15, 0.25, sun);
+        vec3 composite = mix(night * vec3(1.4, 1.25, 1.0) + day * 0.03, day, dayAmt);
+        vec3 baseColor = mix(day, composite, uTexMix);
+
         float fresnel = pow(1.0 - abs(dot(vNormal, vViewDir)), 3.0);
-
-        vec3 baseColor = mapColor.rgb;
         vec3 rimColor = vec3(0.263, 0.6, 0.882);
-        vec3 col = baseColor + rimColor * fresnel * 0.6;
+        vec3 col = baseColor + rimColor * fresnel * (0.35 + 0.25 * dayAmt);
 
-        float scanline = sin(vUv.y * 300.0 + uTime * 0.5) * 0.02 + 1.0;
-        col *= scanline;
-
-        float alpha = 0.92 + fresnel * 0.08;
-        gl_FragColor = vec4(col, alpha);
+        gl_FragColor = vec4(col, 1.0);
     }
 `
 
@@ -97,14 +110,26 @@ const atmosphereFragmentShader = `
     }
 `
 
+// Classic limb halo: back-facing shell so the glow only shows past the edge.
+const haloFragmentShader = `
+    varying vec3 vNormal;
+    varying vec3 vViewDir;
+    void main() {
+        float intensity = pow(max(0.0, 0.72 - dot(vNormal, vViewDir)), 2.2);
+        gl_FragColor = vec4(0.263, 0.6, 0.882, 1.0) * intensity;
+    }
+`
+
 const scene = new Group()
 const raycaster = new Raycaster()
 const pointer = new Vector2()
 
 interface PinEntry {
     sphere: Mesh
+    hit: Mesh
     stem: Mesh
     glow: Mesh
+    ring: Mesh
     label: Mesh
     code: string
     surfacePos: Vector3
@@ -119,20 +144,25 @@ const disposables: { dispose: () => void }[] = []
 const pins: PinEntry[] = []
 let globe: Mesh | null = null
 let atmosphere: Mesh | null = null
+let clouds: Mesh | null = null
 let starField: Points | null = null
 let earthTexture: CanvasTexture | null = null
 let globeMaterial: ShaderMaterial | null = null
 let atmosphereMaterial: ShaderMaterial | null = null
+const sunDir = new Vector3(1, 0.25, 0.4).normalize()
+let sunAngle = Math.atan2(sunDir.z, sunDir.x)
 
 const _tmpVec = new Vector3()
 const _tmpVec2 = new Vector3()
 const cameraAngle = { x: 0.3, y: 0 }
 const cameraGoal = { x: 0.3, y: 0 }
-const cameraDistance = ref(14)
-const cameraDistanceGoal = ref(14)
+const START_DISTANCE = 14
+const cameraDistance = ref(props.entryDive ? 26 : START_DISTANCE)
+const cameraDistanceGoal = ref(props.entryDive ? 26 : START_DISTANCE)
 let isDragging = false
 let dragStart = { x: 0, y: 0 }
 let pointerStart = { x: 0, y: 0 }
+let pointerDirty = false
 let idleTime = 0
 const { camera, renderer } = useTres()
 
@@ -189,25 +219,53 @@ function buildScene() {
     scene.add(starField)
     disposables.push(starGeo, starMat)
 
-    // Globe
+    // Globe — starts on the procedural placeholder, crossfades to the real
+    // day/night textures once they load.
     earthTexture = createEarthTexture(1024, 512)
     disposables.push(earthTexture)
     const globeGeo = new SphereGeometry(GLOBE_RADIUS, 64, 64)
     globeMaterial = new ShaderMaterial({
         uniforms: {
-            uEarthMap: { value: earthTexture },
-            uTime: { value: 0 },
+            uDayMap: { value: earthTexture },
+            uNightMap: { value: earthTexture },
+            uSunDir: { value: sunDir },
+            uTexMix: { value: 0 },
         },
         vertexShader: globeVertexShader,
         fragmentShader: globeFragmentShader,
-        transparent: true,
     })
     globe = new Mesh(globeGeo, globeMaterial)
     globe.renderOrder = 1
     scene.add(globe)
     disposables.push(globeGeo, globeMaterial)
 
-    // Atmosphere
+    const mat = globeMaterial
+    loadEarthTextures().then(({ day, night, clouds: cloudsTex }) => {
+        if (mat !== globeMaterial || !globeMaterial) return
+        globeMaterial.uniforms.uDayMap.value = day
+        globeMaterial.uniforms.uNightMap.value = night
+        gsap.to(globeMaterial.uniforms.uTexMix, { value: 1, duration: 1.2, ease: 'power2.out' })
+        if (clouds) {
+            const cloudsMat = clouds.material as MeshBasicMaterial
+            cloudsMat.map = cloudsTex
+            cloudsMat.needsUpdate = true
+            gsap.to(cloudsMat, { opacity: 0.5, duration: 1.2, ease: 'power2.out' })
+        }
+    }).catch(() => {})
+
+    // Cloud layer (texture arrives async; invisible until then)
+    const cloudsGeo = new SphereGeometry(GLOBE_RADIUS * 1.015, 48, 48)
+    const cloudsMat = new MeshBasicMaterial({
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+    })
+    clouds = new Mesh(cloudsGeo, cloudsMat)
+    clouds.renderOrder = 2
+    scene.add(clouds)
+    disposables.push(cloudsGeo, cloudsMat)
+
+    // Atmosphere rim (front) + limb halo (back-facing shell)
     const atmosGeo = new SphereGeometry(GLOBE_RADIUS * 1.04, 64, 64)
     atmosphereMaterial = new ShaderMaterial({
         uniforms: { uTime: { value: 0 } },
@@ -218,9 +276,23 @@ function buildScene() {
         depthWrite: false,
     })
     atmosphere = new Mesh(atmosGeo, atmosphereMaterial)
-    atmosphere.renderOrder = 2
+    atmosphere.renderOrder = 3
     scene.add(atmosphere)
     disposables.push(atmosGeo, atmosphereMaterial)
+
+    const haloGeo = new SphereGeometry(GLOBE_RADIUS * 1.14, 48, 48)
+    const haloMat = new ShaderMaterial({
+        vertexShader: atmosphereVertexShader,
+        fragmentShader: haloFragmentShader,
+        transparent: true,
+        side: BackSide,
+        depthWrite: false,
+        blending: AdditiveBlending,
+    })
+    const halo = new Mesh(haloGeo, haloMat)
+    halo.renderOrder = 0
+    scene.add(halo)
+    disposables.push(haloGeo, haloMat)
 
     // Pins
     const locs = earthLocations.value
@@ -243,6 +315,31 @@ function buildScene() {
         sphere.renderOrder = 4
         scene.add(sphere)
         disposables.push(sphereGeo, sphereMat)
+
+        // Invisible, larger hit target so hover/click is forgiving
+        const hitGeo = new SphereGeometry(PIN_HIT_RADIUS, 8, 8)
+        const hitMat = new MeshBasicMaterial({ visible: false })
+        const hit = new Mesh(hitGeo, hitMat)
+        hit.position.copy(pinTop)
+        scene.add(hit)
+        disposables.push(hitGeo, hitMat)
+
+        // Surface halo ring, scales up on hover/selection
+        const ringGeo = new RingGeometry(0.18, 0.26, 32)
+        const ringMat = new MeshBasicMaterial({
+            color: new Color(color),
+            transparent: true,
+            opacity: 0,
+            side: DoubleSide,
+            depthWrite: false,
+            blending: AdditiveBlending,
+        })
+        const ring = new Mesh(ringGeo, ringMat)
+        ring.position.copy(surfacePos.clone().add(surfaceNormal.clone().multiplyScalar(0.02)))
+        ring.lookAt(surfacePos.clone().add(surfaceNormal))
+        ring.renderOrder = 3
+        scene.add(ring)
+        disposables.push(ringGeo, ringMat)
 
         // Pin stem
         const stemGeo = new CylinderGeometry(0.02, 0.02, PIN_STEM_HEIGHT, 4)
@@ -295,8 +392,10 @@ function buildScene() {
 
         pins.push({
             sphere,
+            hit,
             stem,
             glow: glowMesh,
+            ring,
             label: labelMesh,
             code: loc.id,
             surfacePos,
@@ -311,6 +410,11 @@ function buildScene() {
 onMounted(() => {
     buildScene()
 
+    // Finish the dive that started in the solar-system scene
+    if (props.entryDive) {
+        gsap.to(cameraDistanceGoal, { value: START_DISTANCE, duration: 0.6, ease: 'power3.out' })
+    }
+
     const el = renderer.value?.domElement
     if (!el) return
 
@@ -324,6 +428,10 @@ onMounted(() => {
         el.removeEventListener('pointermove', onPointerMove)
         el.removeEventListener('pointerup', onPointerUp)
         el.removeEventListener('wheel', onWheel)
+        gsap.killTweensOf(cameraDistanceGoal)
+        gsap.killTweensOf(cameraGoal)
+        if (globeMaterial) gsap.killTweensOf(globeMaterial.uniforms.uTexMix)
+        if (clouds) gsap.killTweensOf(clouds.material)
         disposeScene()
     })
 })
@@ -344,6 +452,7 @@ function onPointerMove(e: PointerEvent) {
     const rect = el.getBoundingClientRect()
     pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
     pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
+    pointerDirty = true
 
     if (isDragging) {
         const dx = e.clientX - pointerStart.x
@@ -364,10 +473,10 @@ function onPointerUp(e: PointerEvent) {
     if (wasClick && camera.value) {
         raycaster.setFromCamera(pointer, camera.value)
 
-        const pinSpheres = pins.map(p => p.sphere)
-        const hits = raycaster.intersectObjects(pinSpheres)
+        const pinTargets = pins.map(p => p.hit)
+        const hits = raycaster.intersectObjects(pinTargets)
         if (hits.length > 0) {
-            const pin = pins.find(p => p.sphere === hits[0].object)
+            const pin = pins.find(p => p.hit === hits[0].object)
             if (pin) {
                 emit('select', pin.code)
                 flyToPin(pin)
@@ -413,9 +522,13 @@ onLoop(({ delta }) => {
     const t = performance.now() * 0.001
 
     // Update shader time uniforms
-    if (globeMaterial) globeMaterial.uniforms.uTime.value = t
     if (atmosphereMaterial) atmosphereMaterial.uniforms.uTime.value = t
     if (starField) (starField.material as ShaderMaterial).uniforms.uTime.value = t
+
+    // Slowly orbiting sun for the day/night terminator + drifting clouds
+    sunAngle += delta * 0.01
+    sunDir.set(Math.cos(sunAngle), 0.25, Math.sin(sunAngle)).normalize()
+    if (clouds) clouds.rotation.y += delta * 0.006
 
     // Idle auto-rotation
     idleTime += delta
@@ -436,12 +549,13 @@ onLoop(({ delta }) => {
     camera.value.position.set(cx, cy, cz)
     camera.value.lookAt(0, 0, 0)
 
-    // Raycasting for hover
-    if (camera.value && !isDragging) {
+    // Hover raycast against the enlarged hit spheres, only when the pointer moved
+    if (pointerDirty && camera.value && !isDragging) {
+        pointerDirty = false
         raycaster.setFromCamera(pointer, camera.value)
-        const pinSpheres = pins.map(p => p.sphere)
-        const hits = raycaster.intersectObjects(pinSpheres)
-        const hoveredPin = hits.length > 0 ? pins.find(p => p.sphere === hits[0].object) : null
+        const pinTargets = pins.map(p => p.hit)
+        const hits = raycaster.intersectObjects(pinTargets)
+        const hoveredPin = hits.length > 0 ? pins.find(p => p.hit === hits[0].object) : null
         const newCode = hoveredPin?.code ?? null
         if (newCode !== props.hoveredCode) {
             emit('hover', newCode)
@@ -462,13 +576,24 @@ onLoop(({ delta }) => {
         _tmpVec.copy(pin.surfaceNormal).multiplyScalar(PIN_STEM_HEIGHT + bob)
         _tmpVec.add(pin.surfacePos)
         pin.sphere.position.copy(_tmpVec)
+        pin.hit.position.copy(_tmpVec)
         pin.glow.position.copy(_tmpVec)
         _tmpVec2.copy(pin.surfaceNormal).multiplyScalar(0.35).add(_tmpVec)
         pin.label.position.copy(_tmpVec2)
 
-        // Glow pulse
+        // Glow pulse + stem brightening
         const glowPulse = 0.4 + Math.sin(t * 2 + pin.index * 2.3) * 0.2
         ;(pin.glow.material as MeshBasicMaterial).opacity = isHovered || isSelected ? 0.9 : glowPulse
+        const stemMat = pin.stem.material as MeshBasicMaterial
+        const stemTarget = isHovered || isSelected ? 0.8 : 0.4
+        stemMat.opacity += (stemTarget - stemMat.opacity) * 0.15
+
+        // Surface ring: grows and pulses while hovered/selected
+        const ringMat = pin.ring.material as MeshBasicMaterial
+        const ringTarget = isSelected ? 0.7 : isHovered ? 0.5 : 0
+        ringMat.opacity += (ringTarget - ringMat.opacity) * 0.12
+        const ringScale = 1 + (isSelected || isHovered ? Math.sin(t * 3.5 + pin.index) * 0.15 + 0.35 : 0)
+        pin.ring.scale.setScalar(pin.ring.scale.x + (ringScale - pin.ring.scale.x) * 0.12)
 
         // Billboard glow + label
         if (camera.value) {

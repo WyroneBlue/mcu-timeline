@@ -1,4 +1,34 @@
-import { Vector3, CanvasTexture, LinearFilter } from 'three'
+import { Vector3, CanvasTexture, LinearFilter, TextureLoader, SRGBColorSpace } from 'three'
+import type { Texture } from 'three'
+
+export interface EarthTextures {
+    day: Texture
+    night: Texture
+    clouds: Texture
+}
+
+let earthTexturesPromise: Promise<EarthTextures> | null = null
+
+// NASA-derived textures bundled under public/textures/earth (public domain,
+// via the three.js example planet set). Loaded lazily on first earth view;
+// the procedural createEarthTexture stays as instant placeholder + fallback.
+export function loadEarthTextures(): Promise<EarthTextures> {
+    if (earthTexturesPromise) return earthTexturesPromise
+    const loader = new TextureLoader()
+    const load = (url: string, srgb: boolean) => new Promise<Texture>((resolve, reject) => {
+        loader.load(url, (tex) => {
+            if (srgb) tex.colorSpace = SRGBColorSpace
+            resolve(tex)
+        }, undefined, reject)
+    })
+    earthTexturesPromise = Promise.all([
+        load('/textures/earth/earth-day-2k.jpg', true),
+        load('/textures/earth/earth-night-2k.png', true),
+        load('/textures/earth/earth-clouds.png', false),
+    ]).then(([day, night, clouds]) => ({ day, night, clouds }))
+    earthTexturesPromise.catch(() => { earthTexturesPromise = null })
+    return earthTexturesPromise
+}
 
 export function latLngToVector3(lat: number, lng: number, radius: number): Vector3 {
     const phi = (90 - lat) * (Math.PI / 180)

@@ -17,6 +17,7 @@
                 <component
                     v-if="planetMode.viewState.value !== 'earth-detail'"
                     :is="SolarSystemScene"
+                    ref="solarRef"
                     :titles="titles"
                     :progress-map="progressMap"
                     :hovered-code="hoveredCode"
@@ -32,6 +33,7 @@
                     :is="EarthGlobeScene"
                     :hovered-code="earthHoveredCode"
                     :selected-code="planetMode.selectedLocationCode.value"
+                    :entry-dive="cameFromDive"
                     @hover="earthHoveredCode = $event"
                     @select="onEarthPinSelect"
                 />
@@ -46,6 +48,18 @@
                 </div>
             </template>
         </ClientOnly>
+
+        <!-- Dive skip layer: any tap/click during the travel jumps to earth -->
+        <div
+            v-if="planetMode.viewState.value === 'traveling'"
+            class="absolute inset-0 z-30 cursor-pointer"
+            @pointerdown="skipDive"
+        />
+
+        <!-- Dive flash at the swap peak -->
+        <Transition name="dive-flash">
+            <div v-if="diveFlash" class="dive-flash absolute inset-0 z-40 pointer-events-none" />
+        </Transition>
 
         <!-- Earth back button -->
         <Transition name="fade">
@@ -348,7 +362,7 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
-const { currentTheme } = useSettings()
+const { settings, currentTheme } = useSettings()
 const titlesRef = computed(() => props.titles)
 const planetMode = usePlanetMode(titlesRef)
 const { layout, layouts } = usePlanetLayout()
@@ -356,6 +370,10 @@ const { layout, layouts } = usePlanetLayout()
 const controlsOpen = ref(false)
 
 const containerEl = ref<HTMLElement | null>(null)
+const solarRef = ref<{ diveToEarth: (onPeak: () => void) => void; cancelDive: () => void } | null>(null)
+const cameFromDive = ref(false)
+const diveFlash = ref(false)
+let diveFlashTimeout: ReturnType<typeof setTimeout> | null = null
 const hoveredCode = ref<string | null>(null)
 const earthHoveredCode = ref<string | null>(null)
 const focusedIndex = ref(0)
@@ -409,6 +427,15 @@ const containerHeight = computed(() => {
 onMounted(() => {
     prefersReducedMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     setTimeout(() => { showDragHint.value = false }, 5000)
+
+    const onKeydown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') skipDive()
+    }
+    window.addEventListener('keydown', onKeydown)
+    onUnmounted(() => {
+        window.removeEventListener('keydown', onKeydown)
+        if (diveFlashTimeout) clearTimeout(diveFlashTimeout)
+    })
 })
 
 onMounted(() => {
@@ -420,10 +447,24 @@ onMounted(() => {
     })
 })
 
+function flashAndSwap() {
+    diveFlash.value = true
+    planetMode.completeTravel()
+    if (diveFlashTimeout) clearTimeout(diveFlashTimeout)
+    diveFlashTimeout = setTimeout(() => { diveFlash.value = false }, 280)
+}
+
 function onSelect(code: string | null) {
     if (code === 'earth') {
-        planetMode.enterEarth()
         showDragHint.value = false
+        if (prefersReducedMotion.value || settings.reducedMotion || !solarRef.value) {
+            cameFromDive.value = false
+            planetMode.enterEarth()
+            return
+        }
+        cameFromDive.value = true
+        planetMode.beginTravel()
+        solarRef.value.diveToEarth(flashAndSwap)
         return
     }
     planetMode.selectLocation(code)
@@ -434,11 +475,18 @@ function onSelect(code: string | null) {
     }
 }
 
+function skipDive() {
+    if (planetMode.viewState.value !== 'traveling') return
+    solarRef.value?.cancelDive()
+    flashAndSwap()
+}
+
 function onEarthPinSelect(code: string | null) {
     planetMode.selectLocation(code)
 }
 
 function onExitEarth() {
+    cameFromDive.value = false
     planetMode.exitEarth()
 }
 
@@ -518,6 +566,20 @@ function resetCamera() {
 }
 .fade-enter-from,
 .fade-leave-to {
+    opacity: 0;
+}
+
+.dive-flash {
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.95) 0%, rgba(66, 153, 225, 0.55) 40%, transparent 75%);
+}
+.dive-flash-enter-active {
+    transition: opacity 0.1s ease-out;
+}
+.dive-flash-leave-active {
+    transition: opacity 0.45s ease-in;
+}
+.dive-flash-enter-from,
+.dive-flash-leave-to {
     opacity: 0;
 }
 

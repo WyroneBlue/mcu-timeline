@@ -662,6 +662,47 @@ let isDragging = false
 let dragStart = { x: 0, y: 0 }
 let idleTime = 0
 
+// Cinematic dive toward earth: flies the camera into the planet and fires
+// onPeak at closest approach so the parent can swap to the earth scene there.
+// Writes only cameraGoal — never camera.position — so it can't fight the loop.
+let isDiving = false
+
+function diveToEarth(onPeak: () => void) {
+    const entry = locationMeshes.find(e => e.code === 'earth')
+    if (!entry) {
+        onPeak()
+        return
+    }
+    isDiving = true
+    gsap.killTweensOf(cameraGoal.target)
+    gsap.killTweensOf(cameraGoal)
+    gsap.to(cameraGoal.target, {
+        x: entry.basePos.x,
+        y: entry.basePos.y,
+        z: entry.basePos.z,
+        duration: 0.65,
+        ease: 'power2.in',
+    })
+    gsap.to(cameraGoal, {
+        distance: Math.max(1.2, entry.radius * 1.6),
+        duration: 0.65,
+        ease: 'power2.in',
+        onComplete: () => {
+            isDiving = false
+            onPeak()
+        },
+    })
+}
+
+function cancelDive() {
+    if (!isDiving) return
+    isDiving = false
+    gsap.killTweensOf(cameraGoal.target)
+    gsap.killTweensOf(cameraGoal)
+}
+
+defineExpose({ diveToEarth, cancelDive })
+
 function flyToLocation(index: number) {
     const entry = locationMeshes[index]
     if (!entry) return
@@ -748,7 +789,7 @@ function onPointerUp(e: PointerEvent) {
     const dy = Math.abs(e.clientY - dragStart.y)
     isDragging = false
 
-    if (dx < 5 && dy < 5 && camera.value) {
+    if (dx < 5 && dy < 5 && camera.value && !isDiving) {
         raycaster.setFromCamera(pointer, camera.value)
         const spheres = locationMeshes.map(e => e.sphere)
         const intersects = raycaster.intersectObjects(spheres, false)
@@ -807,9 +848,10 @@ onLoop(({ delta }) => {
         mat.opacity = 0.06 + Math.sin(elapsed * 0.3 + child.position.x) * 0.02
     })
 
-    // Smooth camera interpolation
+    // Smooth camera interpolation (faster while diving so the camera
+    // actually reaches the goal within the tween window)
     if (camera.value) {
-        const lerpSpeed = isDragging ? 0.12 : 0.06
+        const lerpSpeed = isDiving ? 0.22 : isDragging ? 0.12 : 0.06
         cameraState.angle.x += (cameraGoal.angle.x - cameraState.angle.x) * lerpSpeed
         cameraState.angle.y += (cameraGoal.angle.y - cameraState.angle.y) * lerpSpeed
         cameraState.distance += (cameraGoal.distance - cameraState.distance) * lerpSpeed
@@ -902,6 +944,9 @@ onUnmounted(() => {
     window.removeEventListener('pointerdown', onPointerDown)
     window.removeEventListener('pointermove', onPointerMove)
     window.removeEventListener('pointerup', onPointerUp)
+    gsap.killTweensOf(cameraGoal.target)
+    gsap.killTweensOf(cameraGoal)
+    gsap.killTweensOf(cameraGoal.angle)
     disposables.forEach(d => d.dispose())
     starGeo.dispose()
     starMat.dispose()
