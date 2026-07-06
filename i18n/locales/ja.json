@@ -232,6 +232,9 @@
     "statusWatching": "視聴中",
     "statusWatched": "視聴済み",
     "statusSkipped": "スキップ",
+    "markWatched": "視聴済みにする",
+    "skip": "スキップ",
+    "inQueue": "キューに追加",
     "notFound": "作品が見つかりません。",
     "backToTimelineShort": "タイムラインに戻る"
   },
@@ -244,6 +247,20 @@
     "generating": "まとめを生成中...",
     "skippedLabel": "スキップ",
     "storySoFar": "これまでのストーリー"
+  },
+  "previouslyOn": {
+    "heading": "これまでのあらすじ…",
+    "skippedIntro": "これらの作品をスキップしました。知っておくべき内容はこちらです。",
+    "characters": "登場人物",
+    "keyEvents": "重要な出来事",
+    "generateRecap": "あらすじを生成",
+    "generating": "あらすじを生成中…",
+    "perTitle": "作品ごと",
+    "flowingStory": "ひとつの物語",
+    "generationFailed": "あらすじを生成できませんでした",
+    "cachedNote": "以前に生成されたあらすじ",
+    "spoilerHidden": "ネタバレは非表示",
+    "reveal": "表示"
   },
   "settings": {
     "navigation": "ナビゲーション",

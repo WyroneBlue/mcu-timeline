@@ -232,6 +232,9 @@
     "statusWatching": "Viendo",
     "statusWatched": "Visto",
     "statusSkipped": "Omitido",
+    "markWatched": "Marcar como visto",
+    "skip": "Omitir",
+    "inQueue": "En cola",
     "notFound": "Título no encontrado.",
     "backToTimelineShort": "Volver a la línea temporal"
   },
@@ -244,6 +247,20 @@
     "generating": "Generando resumen...",
     "skippedLabel": "Omitido",
     "storySoFar": "La historia hasta ahora"
+  },
+  "previouslyOn": {
+    "heading": "ANTERIORMENTE EN...",
+    "skippedIntro": "Has omitido estos títulos. Esto es lo que necesitas saber.",
+    "characters": "Personajes",
+    "keyEvents": "Eventos clave",
+    "generateRecap": "Generar resumen",
+    "generating": "Generando resumen...",
+    "perTitle": "Por título",
+    "flowingStory": "Una historia",
+    "generationFailed": "No se pudo generar el resumen",
+    "cachedNote": "Resumen generado anteriormente",
+    "spoilerHidden": "Spoilers ocultos",
+    "reveal": "Mostrar"
   },
   "settings": {
     "navigation": "Navegación",

@@ -232,6 +232,9 @@
     "statusWatching": "In visione",
     "statusWatched": "Visto",
     "statusSkipped": "Saltato",
+    "markWatched": "Segna come visto",
+    "skip": "Salta",
+    "inQueue": "In coda",
     "notFound": "Titolo non trovato.",
     "backToTimelineShort": "Torna alla timeline"
   },
@@ -244,6 +247,20 @@
     "generating": "Generazione riassunto in corso...",
     "skippedLabel": "Saltato",
     "storySoFar": "La storia finora"
+  },
+  "previouslyOn": {
+    "heading": "NELLE PUNTATE PRECEDENTI...",
+    "skippedIntro": "Hai saltato questi titoli. Ecco cosa devi sapere.",
+    "characters": "Personaggi",
+    "keyEvents": "Eventi chiave",
+    "generateRecap": "Genera riepilogo",
+    "generating": "Generazione del riepilogo...",
+    "perTitle": "Per titolo",
+    "flowingStory": "Un'unica storia",
+    "generationFailed": "Impossibile generare il riepilogo",
+    "cachedNote": "Riepilogo generato in precedenza",
+    "spoilerHidden": "Spoiler nascosti",
+    "reveal": "Mostra"
   },
   "settings": {
     "navigation": "Navigazione",

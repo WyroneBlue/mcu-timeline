@@ -232,6 +232,9 @@
     "statusWatching": "观看中",
     "statusWatched": "已观看",
     "statusSkipped": "已跳过",
+    "markWatched": "标记为已看",
+    "skip": "跳过",
+    "inQueue": "加入队列",
     "notFound": "未找到该作品。",
     "backToTimelineShort": "返回时间线"
   },
@@ -244,6 +247,20 @@
     "generating": "正在生成摘要...",
     "skippedLabel": "已跳过",
     "storySoFar": "到目前为止的故事"
+  },
+  "previouslyOn": {
+    "heading": "前情提要…",
+    "skippedIntro": "你跳过了这些作品。以下是你需要了解的内容。",
+    "characters": "角色",
+    "keyEvents": "关键事件",
+    "generateRecap": "生成回顾",
+    "generating": "正在生成回顾…",
+    "perTitle": "按作品",
+    "flowingStory": "连贯故事",
+    "generationFailed": "无法生成回顾",
+    "cachedNote": "此前生成的回顾",
+    "spoilerHidden": "剧透已隐藏",
+    "reveal": "显示"
   },
   "settings": {
     "navigation": "导航",

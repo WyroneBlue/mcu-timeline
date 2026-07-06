@@ -232,6 +232,9 @@
     "statusWatching": "قيد المشاهدة",
     "statusWatched": "تمت المشاهدة",
     "statusSkipped": "تم التخطي",
+    "markWatched": "وضع علامة كمُشاهد",
+    "skip": "تخطي",
+    "inQueue": "في قائمة الانتظار",
     "notFound": "العمل غير موجود.",
     "backToTimelineShort": "العودة إلى الخط الزمني"
   },
@@ -244,6 +247,20 @@
     "generating": "جارٍ إنشاء الملخص...",
     "skippedLabel": "تم التخطي",
     "storySoFar": "القصة حتى الآن"
+  },
+  "previouslyOn": {
+    "heading": "في الحلقات السابقة...",
+    "skippedIntro": "لقد تخطيت هذه العناوين. إليك ما تحتاج إلى معرفته.",
+    "characters": "الشخصيات",
+    "keyEvents": "الأحداث الرئيسية",
+    "generateRecap": "إنشاء ملخص",
+    "generating": "جارٍ إنشاء الملخص...",
+    "perTitle": "لكل عنوان",
+    "flowingStory": "قصة واحدة",
+    "generationFailed": "تعذّر إنشاء الملخص",
+    "cachedNote": "ملخص تم إنشاؤه سابقًا",
+    "spoilerHidden": "تم إخفاء الحرق",
+    "reveal": "إظهار"
   },
   "settings": {
     "navigation": "التنقل",

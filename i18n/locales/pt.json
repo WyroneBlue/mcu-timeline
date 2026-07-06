@@ -232,6 +232,9 @@
     "statusWatching": "Assistindo",
     "statusWatched": "Assistido",
     "statusSkipped": "Pulado",
+    "markWatched": "Marcar como assistido",
+    "skip": "Pular",
+    "inQueue": "Na fila",
     "notFound": "Título não encontrado.",
     "backToTimelineShort": "Voltar à linha do tempo"
   },
@@ -244,6 +247,20 @@
     "generating": "Gerando resumo...",
     "skippedLabel": "Pulado",
     "storySoFar": "A história até agora"
+  },
+  "previouslyOn": {
+    "heading": "ANTERIORMENTE EM...",
+    "skippedIntro": "Você pulou estes títulos. Aqui está o que você precisa saber.",
+    "characters": "Personagens",
+    "keyEvents": "Eventos principais",
+    "generateRecap": "Gerar recapitulação",
+    "generating": "Gerando recapitulação...",
+    "perTitle": "Por título",
+    "flowingStory": "Uma história",
+    "generationFailed": "Não foi possível gerar a recapitulação",
+    "cachedNote": "Recapitulação gerada anteriormente",
+    "spoilerHidden": "Spoilers ocultos",
+    "reveal": "Mostrar"
   },
   "settings": {
     "navigation": "Navegação",

@@ -1,13 +1,4 @@
-import contextSummariesJson from '../../data/context-summaries.json'
-import mcuTitlesJson from '../../data/mcu-titles.json'
-
-interface ContextSummary {
-  title_slug: string
-  prerequisite_slugs: string[]
-  summary: string
-  key_characters: string[]
-  key_events: string[]
-}
+import type { Database } from '~/types/supabase'
 
 type DisplayMode = 'per-title' | 'flowing-story'
 
@@ -16,10 +7,19 @@ interface PerTitleResult {
   summary: string
 }
 
-const summaries = contextSummariesJson as ContextSummary[]
-const allTitles = mcuTitlesJson as { slug: string; title: string; chronology_index: number }[]
+interface GenerateResponse {
+  mode: DisplayMode
+  gap: number[]
+  summaries?: PerTitleResult[]
+  story?: string
+  cached: boolean
+  fallback?: boolean
+}
 
 export function useBeforeYouWatch() {
+  const client = useSupabaseClient<Database>()
+  const { t, locale } = useI18n()
+
   const mode = ref<DisplayMode>('per-title')
   const loading = ref(false)
   const error = ref<string | null>(null)
@@ -27,73 +27,54 @@ export function useBeforeYouWatch() {
   const perTitleSummaries = ref<PerTitleResult[]>([])
   const flowingStory = ref('')
   const hasGenerated = ref(false)
+  const cached = ref(false)
 
-  function getSkippedData(currentSlug: string, skippedSlugs: Set<string>) {
-    const current = allTitles.find(t => t.slug === currentSlug)
-    if (!current) return []
-
-    const preceding = allTitles
-      .filter(t => t.chronology_index < current.chronology_index)
-      .map(t => t.slug)
-
-    const skippedPreceding = preceding.filter(s => skippedSlugs.has(s))
-
-    return skippedPreceding
-      .map(slug => {
-        const summary = summaries.find(s => s.title_slug === slug)
-        const titleData = allTitles.find(t => t.slug === slug)
-        if (!summary || !titleData) return null
-        return {
-          slug: titleData.slug,
-          title: titleData.title,
-          summary: summary.summary,
-          key_characters: summary.key_characters,
-          key_events: summary.key_events,
-        }
-      })
-      .filter(Boolean) as { slug: string; title: string; summary: string; key_characters: string[]; key_events: string[] }[]
-  }
-
-  async function generate(currentSlug: string, skippedSlugs: Set<string>) {
-    const skippedData = getSkippedData(currentSlug, skippedSlugs)
-    if (skippedData.length === 0) return
-
-    const currentTitle = allTitles.find(t => t.slug === currentSlug)?.title || currentSlug
-
+  async function generate(titleId: number) {
     loading.value = true
     error.value = null
 
     try {
-      const result = await $fetch('/api/summary/generate', {
+      const { data: { session } } = await client.auth.getSession()
+      if (!session) {
+        throw new Error('Not authenticated')
+      }
+
+      const result = await $fetch<GenerateResponse>('/api/summary/generate', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: {
-          currentTitle,
-          skippedSummaries: skippedData,
+          title_id: titleId,
           mode: mode.value,
+          locale: locale.value,
         },
       })
 
+      cached.value = !!result.cached
+
       if (result.mode === 'per-title') {
-        perTitleSummaries.value = result.summaries as PerTitleResult[]
+        perTitleSummaries.value = result.summaries ?? []
         flowingStory.value = ''
-      } else {
-        flowingStory.value = result.story as string
+      }
+      else {
+        flowingStory.value = result.story ?? ''
         perTitleSummaries.value = []
       }
 
       hasGenerated.value = true
-    } catch (e: any) {
-      error.value = e?.data?.message || 'Kon samenvatting niet genereren'
-      perTitleSummaries.value = skippedData.map(s => ({ title: s.title, summary: s.summary }))
-      hasGenerated.value = true
-    } finally {
+    }
+    catch {
+      error.value = t('previouslyOn.generationFailed')
+    }
+    finally {
       loading.value = false
     }
   }
 
-  async function switchMode(newMode: DisplayMode, currentSlug: string, skippedSlugs: Set<string>) {
+  async function switchMode(newMode: DisplayMode, titleId: number) {
     mode.value = newMode
-    await generate(currentSlug, skippedSlugs)
+    await generate(titleId)
   }
 
   return {
@@ -103,7 +84,7 @@ export function useBeforeYouWatch() {
     perTitleSummaries,
     flowingStory,
     hasGenerated,
-    getSkippedData,
+    cached,
     generate,
     switchMode,
   }

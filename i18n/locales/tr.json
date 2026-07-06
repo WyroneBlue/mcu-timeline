@@ -232,6 +232,9 @@
     "statusWatching": "İzleniyor",
     "statusWatched": "İzlendi",
     "statusSkipped": "Atlandı",
+    "markWatched": "İzlendi olarak işaretle",
+    "skip": "Atla",
+    "inQueue": "Sırada",
     "notFound": "Yapım bulunamadı.",
     "backToTimelineShort": "Zaman çizelgesine dön"
   },
@@ -244,6 +247,20 @@
     "generating": "Özet oluşturuluyor...",
     "skippedLabel": "Atlandı",
     "storySoFar": "Şimdiye kadarki hikaye"
+  },
+  "previouslyOn": {
+    "heading": "ÖNCEKİ BÖLÜMLERDE...",
+    "skippedIntro": "Bu yapımları atladın. İşte bilmen gerekenler.",
+    "characters": "Karakterler",
+    "keyEvents": "Önemli olaylar",
+    "generateRecap": "Özet oluştur",
+    "generating": "Özet oluşturuluyor...",
+    "perTitle": "Yapım başına",
+    "flowingStory": "Tek hikâye",
+    "generationFailed": "Özet oluşturulamadı",
+    "cachedNote": "Daha önce oluşturulmuş özet",
+    "spoilerHidden": "Spoiler gizlendi",
+    "reveal": "Göster"
   },
   "settings": {
     "navigation": "Gezinme",

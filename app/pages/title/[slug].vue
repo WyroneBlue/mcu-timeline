@@ -66,9 +66,16 @@
 
                 <!-- Before You Watch -->
                 <TitleBeforeYouWatch
-                    v-if="skippedSlugs.size > 0"
-                    :current-slug="slug"
-                    :skipped-slugs="skippedSlugs"
+                    v-if="skippedIds.size > 0"
+                    :title-id="title.id"
+                    :skipped-ids="skippedIds"
+                />
+
+                <!-- Previously On (curated summaries of skipped prerequisites) -->
+                <TitlePreviouslyOn
+                    v-if="skippedIds.size > 0"
+                    :current-title-id="title.id"
+                    :skipped-ids="skippedIds"
                 />
 
                 <!-- Retcon info -->
@@ -197,7 +204,7 @@ const retcons = ref<{ causedBy: any[]; causes: any[] }>({ causedBy: [], causes: 
 const relatedTitles = ref<any[]>([])
 const showXpToast = ref(false)
 const xpAmount = ref(0)
-const skippedSlugs = ref<Set<string>>(new Set())
+const skippedIds = ref<Set<number>>(new Set())
 
 const releaseYear = computed(() => {
     if (!title.value?.release_date) return ''
@@ -258,15 +265,9 @@ async function loadTitle() {
                 const match = progress.find(p => p.title_id === title.value!.id)
                 currentStatus.value = (match?.status as any) ?? null
 
-                const allTitles = (await import('../../../data/mcu-titles.json')).default as { slug: string }[]
-                const skippedIds = new Set(
+                skippedIds.value = new Set(
                     progress.filter(p => p.status === 'skipped').map(p => p.title_id)
                 )
-                const slugSet = new Set<string>()
-                allTitles.forEach((t, i) => {
-                    if (skippedIds.has(i + 1)) slugSet.add(t.slug)
-                })
-                skippedSlugs.value = slugSet
             } catch { /* no auth */ }
         }
 
@@ -307,6 +308,11 @@ async function handleMarkWatched() {
     if (user.value) {
         try {
             await setStatus(title.value.id, 'watched')
+            if (skippedIds.value.has(title.value.id)) {
+                const next = new Set(skippedIds.value)
+                next.delete(title.value.id)
+                skippedIds.value = next
+            }
             await awardWatchXP(title.value.id, title.value.type as 'movie' | 'series')
             xpAmount.value = title.value.type === 'series' ? 150 : 100
             showXpToast.value = true
@@ -331,6 +337,7 @@ async function handleMarkSkipped() {
     if (user.value) {
         try {
             await setStatus(title.value.id, 'skipped')
+            skippedIds.value = new Set([...skippedIds.value, title.value.id])
         } catch {
             currentStatus.value = prevStatus
         }

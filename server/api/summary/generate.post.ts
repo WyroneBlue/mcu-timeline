@@ -1,77 +1,243 @@
+import { createHash } from 'node:crypto'
 import Anthropic from '@anthropic-ai/sdk'
 
-interface SummaryInput {
-  slug: string
-  title: string
-  summary: string
-  key_characters: string[]
-  key_events: string[]
+const MODEL = 'claude-sonnet-5'
+
+const LANGUAGE_NAMES: Record<string, string> = {
+    en: 'English',
+    nl: 'Dutch',
+    es: 'Spanish',
+    pt: 'Portuguese',
+    it: 'Italian',
+    tr: 'Turkish',
+    ar: 'Arabic',
+    zh: 'Simplified Chinese',
+    ja: 'Japanese',
+}
+
+const PER_TITLE_SCHEMA = {
+    type: 'object',
+    properties: {
+        summaries: {
+            type: 'array',
+            items: {
+                type: 'object',
+                properties: {
+                    title: { type: 'string' },
+                    summary: { type: 'string' },
+                },
+                required: ['title', 'summary'],
+                additionalProperties: false,
+            },
+        },
+    },
+    required: ['summaries'],
+    additionalProperties: false,
+}
+
+type Mode = 'per-title' | 'flowing-story'
+
+interface SummaryRow {
+    title_id: number
+    summary_text: string
+    key_characters: string[] | null
+    key_events: string[] | null
+    spoiler_level: 'safe' | 'mild' | 'heavy'
 }
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const apiKey = config.anthropicApiKey
+    const user = await requireUser(event)
+    const db = adminClient()
 
-  if (!apiKey) {
-    throw createError({ statusCode: 500, message: 'Anthropic API key not configured' })
-  }
+    const body = await readBody<{ title_id?: number, mode?: Mode, locale?: string }>(event)
 
-  const body = await readBody<{
-    currentTitle: string
-    skippedSummaries: SummaryInput[]
-    mode: 'per-title' | 'flowing-story'
-  }>(event)
+    const titleId = Number(body?.title_id)
+    const mode = body?.mode
+    const locale = typeof body?.locale === 'string' && LANGUAGE_NAMES[body.locale] ? body.locale : 'en'
 
-  if (!body.skippedSummaries?.length) {
-    throw createError({ statusCode: 400, message: 'No summaries provided' })
-  }
-
-  const anthropic = new Anthropic({ apiKey })
-
-  const summaryBlock = body.skippedSummaries
-    .map(s => `### ${s.title}\n${s.summary}\nPersonages: ${s.key_characters.join(', ')}\nEvents: ${s.key_events.join('; ')}`)
-    .join('\n\n')
-
-  const systemPrompt = `Je bent een MCU-expert die samenvattingen schrijft voor kijkers die bepaalde titels hebben geskipt. Schrijf in het Nederlands, informeel maar informatief. Vermijd spoilers van de titel die de gebruiker nu gaat kijken. Wees beknopt maar volledig.`
-
-  let userPrompt: string
-
-  if (body.mode === 'per-title') {
-    userPrompt = `De gebruiker gaat "${body.currentTitle}" kijken en heeft de volgende titels geskipt. Schrijf voor elke geskipte titel een korte, eigen samenvatting (2-3 zinnen) die precies vertelt wat de kijker moet weten. Gebruik geen opsommingen, schrijf het als vloeiende tekst.
-
-Geskipte titels:
-${summaryBlock}
-
-Antwoord in JSON-formaat:
-[{"title": "...", "summary": "..."}]
-
-Geef ALLEEN de JSON array terug, geen andere tekst.`
-  } else {
-    userPrompt = `De gebruiker gaat "${body.currentTitle}" kijken en heeft de volgende titels geskipt. Schrijf één doorlopend, vloeiend verhaal dat alle belangrijke events en personages samenweeft tot een coherent narratief. De lezer hoeft niet te weten welke films dit waren — het gaat om het verhaal. Schrijf het als een episch verhaal in 2e persoon ("Tot nu toe in het MCU..."). Maximaal 300 woorden.
-
-Geskipte titels:
-${summaryBlock}
-
-Geef ALLEEN het verhaaltekst terug als plain text, geen JSON of markdown headers.`
-  }
-
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  })
-
-  const text = response.content[0].type === 'text' ? response.content[0].text : ''
-
-  if (body.mode === 'per-title') {
-    try {
-      const parsed = JSON.parse(text)
-      return { mode: 'per-title', summaries: parsed }
-    } catch {
-      return { mode: 'per-title', summaries: body.skippedSummaries.map(s => ({ title: s.title, summary: s.summary })) }
+    if (!Number.isInteger(titleId) || titleId <= 0) {
+        throw createError({ statusCode: 400, message: 'Invalid title_id' })
     }
-  }
+    if (mode !== 'per-title' && mode !== 'flowing-story') {
+        throw createError({ statusCode: 400, message: 'Invalid mode' })
+    }
 
-  return { mode: 'flowing-story', story: text.trim() }
+    // Target title + its prerequisite list (from context_summaries)
+    const { data: targetTitle, error: titleError } = await db
+        .from('titles')
+        .select('id, title')
+        .eq('id', titleId)
+        .single()
+    if (titleError || !targetTitle) {
+        throw createError({ statusCode: 404, message: 'Title not found' })
+    }
+
+    const { data: targetSummary } = await db
+        .from('context_summaries')
+        .select('prerequisite_title_ids')
+        .eq('title_id', titleId)
+        .maybeSingle()
+
+    const prerequisiteIds: number[] = Array.isArray(targetSummary?.prerequisite_title_ids)
+        ? (targetSummary!.prerequisite_title_ids as unknown[]).map(Number).filter(n => Number.isInteger(n))
+        : []
+
+    // User progress → watched ids; gap = prerequisites NOT watched
+    const { data: progress } = await db
+        .from('progress')
+        .select('title_id, status')
+        .eq('user_id', user.id)
+
+    const watchedIds = new Set((progress ?? []).filter(p => p.status === 'watched').map(p => p.title_id))
+    const gap = prerequisiteIds.filter(id => !watchedIds.has(id)).sort((a, b) => a - b)
+
+    if (gap.length === 0) {
+        return { mode, gap: [], summaries: [], story: '', cached: false }
+    }
+
+    // Spoiler filter: reveal_all → all levels; otherwise only 'safe'
+    const { data: profile } = await db
+        .from('profiles')
+        .select('spoiler_mode')
+        .eq('id', user.id)
+        .maybeSingle()
+    const spoilerBucket: 'safe' | 'heavy' = profile?.spoiler_mode === 'reveal_all' ? 'heavy' : 'safe'
+
+    const gapHash = createHash('sha256').update(gap.join(',')).digest('hex')
+
+    // Cache lookup
+    const { data: cachedRecap } = await db
+        .from('generated_recaps')
+        .select('content')
+        .eq('title_id', titleId)
+        .eq('gap_hash', gapHash)
+        .eq('locale', locale)
+        .eq('mode', mode)
+        .eq('spoiler_level', spoilerBucket)
+        .maybeSingle()
+
+    if (cachedRecap?.content) {
+        const content = cachedRecap.content as { summaries?: { title: string, summary: string }[], story?: string }
+        return { mode, gap, ...content, cached: true }
+    }
+
+    // Load context summaries for the gap (spoiler-filtered) + title names for ordering
+    let summariesQuery = db
+        .from('context_summaries')
+        .select('title_id, summary_text, key_characters, key_events, spoiler_level')
+        .in('title_id', gap)
+    if (spoilerBucket === 'safe') {
+        summariesQuery = summariesQuery.eq('spoiler_level', 'safe')
+    }
+    const { data: gapSummaries } = await summariesQuery
+
+    const { data: gapTitles } = await db
+        .from('titles')
+        .select('id, title, chronology_index')
+        .in('id', gap)
+        .order('chronology_index', { ascending: true })
+
+    const orderedSummaries: (SummaryRow & { title: string })[] = (gapTitles ?? [])
+        .map((t) => {
+            const row = (gapSummaries ?? []).find(s => s.title_id === t.id) as SummaryRow | undefined
+            return row ? { ...row, title: t.title as string } : null
+        })
+        .filter((r): r is SummaryRow & { title: string } => r !== null)
+
+    if (orderedSummaries.length === 0) {
+        return { mode, gap, summaries: [], story: '', cached: false }
+    }
+
+    const fallbackSummaries = orderedSummaries.map(s => ({ title: s.title, summary: s.summary_text }))
+
+    const config = useRuntimeConfig()
+    const apiKey = config.anthropicApiKey
+    if (!apiKey) {
+        // No key configured: fall back to the raw curated summaries
+        return buildFallback(mode, gap, fallbackSummaries)
+    }
+
+    const languageName = LANGUAGE_NAMES[locale]
+
+    const summaryBlock = orderedSummaries
+        .map(s => `### ${s.title}\n${s.summary_text}\nCharacters: ${(s.key_characters ?? []).join(', ')}\nEvents: ${(s.key_events ?? []).join('; ')}`)
+        .join('\n\n')
+
+    const systemPrompt = `You are an MCU expert who writes recaps for viewers who skipped certain titles. Write entirely in ${languageName}. Keep the tone informal but informative. Avoid spoilers for the title the user is about to watch. Be concise but complete.`
+
+    let userPrompt: string
+    if (mode === 'per-title') {
+        userPrompt = `The user is about to watch "${targetTitle.title}" and has skipped the following titles. For each skipped title, write a short standalone summary (2-3 sentences) that tells the viewer exactly what they need to know. Do not use bullet points; write it as flowing prose.
+
+Skipped titles:
+${summaryBlock}
+
+Return one summary object per skipped title, in the same order.`
+    }
+    else {
+        userPrompt = `The user is about to watch "${targetTitle.title}" and has skipped the following titles. Write one continuous, flowing story that weaves all the important events and characters together into a coherent narrative. The reader does not need to know which films these were — it is about the story. Write it as an epic recap in the second person ("So far in the MCU..."). Maximum 300 words.
+
+Skipped titles:
+${summaryBlock}
+
+Return ONLY the story text as plain text, no JSON and no markdown headers.`
+    }
+
+    const anthropic = new Anthropic({ apiKey })
+
+    try {
+        let content: { summaries?: { title: string, summary: string }[], story?: string }
+
+        if (mode === 'per-title') {
+            const response = await anthropic.messages.create({
+                model: MODEL,
+                max_tokens: 1500,
+                thinking: { type: 'disabled' },
+                system: systemPrompt,
+                messages: [{ role: 'user', content: userPrompt }],
+                output_config: {
+                    format: { type: 'json_schema', schema: PER_TITLE_SCHEMA },
+                },
+            })
+            const text = response.content.find(b => b.type === 'text')?.text ?? ''
+            const parsed = JSON.parse(text) as { summaries: { title: string, summary: string }[] }
+            content = { summaries: parsed.summaries }
+        }
+        else {
+            const response = await anthropic.messages.create({
+                model: MODEL,
+                max_tokens: 1500,
+                thinking: { type: 'disabled' },
+                system: systemPrompt,
+                messages: [{ role: 'user', content: userPrompt }],
+            })
+            const text = response.content.find(b => b.type === 'text')?.text ?? ''
+            content = { story: text.trim() }
+        }
+
+        await db
+            .from('generated_recaps')
+            .upsert({
+                title_id: titleId,
+                gap_hash: gapHash,
+                locale,
+                mode,
+                spoiler_level: spoilerBucket,
+                content,
+                model: MODEL,
+            }, { onConflict: 'title_id,gap_hash,locale,mode,spoiler_level' })
+
+        return { mode, gap, ...content, cached: false }
+    }
+    catch (e) {
+        console.error('Recap generation failed, returning curated summaries:', e)
+        return buildFallback(mode, gap, fallbackSummaries)
+    }
 })
+
+function buildFallback(mode: Mode, gap: number[], summaries: { title: string, summary: string }[]) {
+    if (mode === 'flowing-story') {
+        return { mode, gap, story: summaries.map(s => s.summary).join('\n\n'), cached: false, fallback: true }
+    }
+    return { mode, gap, summaries, cached: false, fallback: true }
+}

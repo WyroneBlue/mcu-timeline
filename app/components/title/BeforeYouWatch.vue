@@ -88,14 +88,23 @@
       </div>
       <p class="text-sm text-white/60 leading-relaxed whitespace-pre-line">{{ flowingStory }}</p>
     </div>
+
+    <!-- Cached note -->
+    <p v-if="hasGenerated && !loading && cached" class="text-[10px] text-white/20 text-right">
+      {{ $t('previouslyOn.cachedNote') }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { SkippedPrerequisite } from '~/composables/useContextSummaries'
+
 const props = defineProps<{
-  currentSlug: string
-  skippedSlugs: Set<string>
+  titleId: number
+  skippedIds: Set<number>
 }>()
+
+const { getSkippedPrerequisites } = useContextSummaries()
 
 const {
   mode,
@@ -104,19 +113,34 @@ const {
   perTitleSummaries,
   flowingStory,
   hasGenerated,
-  getSkippedData,
+  cached,
   generate,
   switchMode,
 } = useBeforeYouWatch()
 
-const skippedData = computed(() => getSkippedData(props.currentSlug, props.skippedSlugs))
+const skippedData = ref<SkippedPrerequisite[]>([])
+
+async function loadSkippedData() {
+  if (!props.titleId) {
+    skippedData.value = []
+    return
+  }
+  try {
+    skippedData.value = await getSkippedPrerequisites(props.titleId, props.skippedIds)
+  } catch {
+    skippedData.value = []
+  }
+}
+
+onMounted(() => loadSkippedData())
+watch(() => [props.titleId, props.skippedIds] as const, () => loadSkippedData())
 
 async function handleGenerate() {
-  await generate(props.currentSlug, props.skippedSlugs)
+  await generate(props.titleId)
 }
 
 async function handleSwitchMode(newMode: 'per-title' | 'flowing-story') {
   if (newMode === mode.value) return
-  await switchMode(newMode, props.currentSlug, props.skippedSlugs)
+  await switchMode(newMode, props.titleId)
 }
 </script>

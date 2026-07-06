@@ -232,6 +232,9 @@
     "statusWatching": "Aan het kijken",
     "statusWatched": "Gezien",
     "statusSkipped": "Overgeslagen",
+    "markWatched": "Markeer als gezien",
+    "skip": "Skip",
+    "inQueue": "In wachtrij",
     "notFound": "Titel niet gevonden.",
     "backToTimelineShort": "Terug naar tijdlijn"
   },
@@ -244,6 +247,20 @@
     "generating": "Samenvatting wordt gegenereerd...",
     "skippedLabel": "Overgeslagen",
     "storySoFar": "Het verhaal tot nu toe"
+  },
+  "previouslyOn": {
+    "heading": "WAT VOORAF GING...",
+    "skippedIntro": "Je hebt deze titels geskipt. Hier is wat je moet weten.",
+    "characters": "Personages",
+    "keyEvents": "Belangrijke events",
+    "generateRecap": "Genereer recap",
+    "generating": "Recap wordt gegenereerd...",
+    "perTitle": "Per titel",
+    "flowingStory": "Eén verhaal",
+    "generationFailed": "Kon de recap niet genereren",
+    "cachedNote": "Eerder gegenereerde recap",
+    "spoilerHidden": "Spoilers verborgen",
+    "reveal": "Toon"
   },
   "settings": {
     "navigation": "Navigatie",

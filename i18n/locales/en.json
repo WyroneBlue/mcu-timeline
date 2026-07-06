@@ -232,6 +232,9 @@
     "statusWatching": "Watching",
     "statusWatched": "Watched",
     "statusSkipped": "Skipped",
+    "markWatched": "Mark as watched",
+    "skip": "Skip",
+    "inQueue": "In queue",
     "notFound": "Title not found.",
     "backToTimelineShort": "Back to Timeline"
   },
@@ -244,6 +247,20 @@
     "generating": "Summary is being generated...",
     "skippedLabel": "Skipped",
     "storySoFar": "The story so far"
+  },
+  "previouslyOn": {
+    "heading": "PREVIOUSLY ON...",
+    "skippedIntro": "You've skipped these titles. Here's what you need to know.",
+    "characters": "Characters",
+    "keyEvents": "Key events",
+    "generateRecap": "Generate recap",
+    "generating": "Generating recap...",
+    "perTitle": "Per title",
+    "flowingStory": "One story",
+    "generationFailed": "Could not generate the recap",
+    "cachedNote": "Previously generated recap",
+    "spoilerHidden": "Spoilers hidden",
+    "reveal": "Reveal"
   },
   "settings": {
     "navigation": "Navigation",

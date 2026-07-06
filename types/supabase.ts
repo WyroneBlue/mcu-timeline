@@ -187,6 +187,12 @@ export type Database = {
                 Update: Partial<Database['public']['Tables']['context_summaries']['Insert']>
                 Relationships: []
             }
+            generated_recaps: {
+                Row: { id: number; title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level: 'safe' | 'mild' | 'heavy'; content: unknown; model: string | null; created_at: string }
+                Insert: { title_id: number; gap_hash: string; locale: string; mode: 'per-title' | 'flowing-story'; spoiler_level?: 'safe' | 'mild' | 'heavy'; content: unknown; model?: string | null }
+                Update: Partial<Database['public']['Tables']['generated_recaps']['Insert']>
+                Relationships: []
+            }
             quiz_questions: {
                 Row: { id: number; franchise_id: number; title_id: number | null; question: string; options: unknown; correct_index: number; difficulty: 'easy' | 'medium' | 'hard' }
                 Insert: { franchise_id: number; question: string; options: unknown; correct_index: number; title_id?: number | null; difficulty?: 'easy' | 'medium' | 'hard' }
