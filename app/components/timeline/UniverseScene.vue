@@ -10,6 +10,7 @@ import {
     TubeGeometry, DoubleSide, CanvasTexture, SRGBColorSpace,
     LinearFilter, FrontSide
 } from 'three'
+import { gsap } from 'gsap'
 import { useRenderLoop, useTres } from '@tresjs/core'
 import type { Database } from '~/types/supabase'
 
@@ -33,6 +34,9 @@ const emit = defineEmits<{
     select: [id: number | null]
     'update:focusedIndex': [index: number]
 }>()
+
+const { settings } = useSettings()
+const { showFps, sample } = useRenderStats()
 
 const phaseColors: Record<number, { primary: string; accent: string; bg: string; dark: string }> = {
     1: { primary: '#EF4444', accent: '#FCA5A5', bg: '#3a1218', dark: '#1e0a0e' },
@@ -92,7 +96,6 @@ function createPosterTexture(title: Title, status: ProgressStatus | undefined, p
     canvas.height = h
     const ctx = canvas.getContext('2d')!
     const colors = getPhaseColors(title.phase)
-    const phaseNum = getPhaseNumber(title.phase)
     const rgb = hexToRgb(colors.primary)
 
     if (posterImg) {
@@ -282,18 +285,33 @@ function createPosterTexture(title: Title, status: ProgressStatus | undefined, p
     return tex
 }
 
-function createGlowTexture(color: string): CanvasTexture {
+// Poster textures are cached per (title, watched-state, has-image); only the
+// watched badge changes the drawing, so other statuses share one texture.
+const posterTexCache = new Map<string, CanvasTexture>()
+
+function getPosterTexture(title: Title, status: ProgressStatus | undefined, img?: HTMLImageElement): CanvasTexture {
+    const key = `${title.id}:${status === 'watched' ? 'w' : 'o'}:${img ? 'img' : 'flat'}`
+    let tex = posterTexCache.get(key)
+    if (!tex) {
+        tex = createPosterTexture(title, status, img)
+        posterTexCache.set(key, tex)
+    }
+    return tex
+}
+
+// One white radial-gradient texture shared by every halo and nebula; the
+// per-mesh tint comes from MeshBasicMaterial.color (multiplies the map).
+function createWhiteGlowTexture(): CanvasTexture {
     const size = 256
     const canvas = document.createElement('canvas')
     canvas.width = size
     canvas.height = size
     const ctx = canvas.getContext('2d')!
-    const { r, g, b } = hexToRgb(color)
     const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
-    grad.addColorStop(0, `rgba(${r},${g},${b},0.6)`)
-    grad.addColorStop(0.2, `rgba(${r},${g},${b},0.25)`)
-    grad.addColorStop(0.5, `rgba(${r},${g},${b},0.06)`)
-    grad.addColorStop(0.8, `rgba(${r},${g},${b},0.01)`)
+    grad.addColorStop(0, 'rgba(255,255,255,0.6)')
+    grad.addColorStop(0.2, 'rgba(255,255,255,0.25)')
+    grad.addColorStop(0.5, 'rgba(255,255,255,0.06)')
+    grad.addColorStop(0.8, 'rgba(255,255,255,0.01)')
     grad.addColorStop(1, 'rgba(0,0,0,0)')
     ctx.fillStyle = grad
     ctx.fillRect(0, 0, size, size)
@@ -333,8 +351,7 @@ const pointer = new Vector2()
 
 interface CardEntry {
     card: Mesh
-    glow: Mesh
-    bg: Mesh
+    halo: Mesh
     titleId: number
     basePos: Vector3
     phaseNum: number
@@ -342,7 +359,17 @@ interface CardEntry {
 }
 
 const cardMeshes: CardEntry[] = []
+let clickTargets: Mesh[] = []
 let sortedTitles: Title[] = []
+
+// Shared GPU resources (created once, disposed on unmount)
+const CARD_W = 2.2
+const CARD_H = 3.15
+const FOV = 55
+const cardGeo = new PlaneGeometry(CARD_W, CARD_H)
+const haloGeo = new PlaneGeometry(CARD_W * 3, CARD_H * 2.8)
+const nebulaGeo = new PlaneGeometry(1, 1)
+const sharedGlowTex = createWhiteGlowTexture()
 
 // Stars
 const starCount = 3000
@@ -406,15 +433,17 @@ scene.add(stars)
 const nebulaGroup = new Group()
 scene.add(nebulaGroup)
 
+const staticDisposables: { dispose: () => void }[] = [starGeo, starMat, sharedGlowTex, cardGeo, haloGeo, nebulaGeo]
+
 function addNebula(x: number, y: number, z: number, color: string, size: number) {
-    const tex = createGlowTexture(color)
-    const geo = new PlaneGeometry(size, size)
     const mat = new MeshBasicMaterial({
-        map: tex, transparent: true, opacity: 0.12,
+        map: sharedGlowTex, color, transparent: true, opacity: 0.12,
         blending: AdditiveBlending, depthWrite: false, side: DoubleSide,
     })
-    const m = new Mesh(geo, mat)
+    staticDisposables.push(mat)
+    const m = new Mesh(nebulaGeo, mat)
     m.position.set(x, y, z)
+    m.scale.set(size, size, 1)
     m.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0)
     nebulaGroup.add(m)
 }
@@ -437,9 +466,10 @@ scene.add(pathGroup)
 const cardGroup = new Group()
 scene.add(cardGroup)
 
-let currentTitleCount = 0
 let currentLayout: UniverseLayout | null = null
-const disposables: { dispose: () => void }[] = []
+const cardDisposables: { dispose: () => void }[] = []
+const pathDisposables: { dispose: () => void }[] = []
+const pathOpacity = { value: 1 }
 
 function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[] {
     const count = titles.length
@@ -868,181 +898,222 @@ function computePositions(titles: Title[], layoutType: UniverseLayout): Vector3[
     return positions
 }
 
+function buildPath(positions: Vector3[]) {
+    while (pathGroup.children.length > 0) pathGroup.remove(pathGroup.children[0])
+    pathDisposables.forEach(d => d.dispose())
+    pathDisposables.length = 0
+
+    if (positions.length < 2) return
+
+    const curve = new CatmullRomCurve3(positions.map(p => p.clone()), false, 'catmullrom', 0.3)
+    const tubeGeo = new TubeGeometry(curve, positions.length * 12, 0.015, 6, false)
+    pathDisposables.push(tubeGeo)
+    const tubeMat = new ShaderMaterial({
+        vertexShader: `
+            varying vec2 vUv;
+            void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+        `,
+        fragmentShader: `
+            uniform float uTime;
+            uniform float uOpacity;
+            varying vec2 vUv;
+            void main() {
+                float energy = sin(vUv.x * 50.0 - uTime * 3.5) * 0.5 + 0.5;
+                float alpha = 0.05 + energy * 0.18;
+                vec3 c1 = vec3(0.93, 0.26, 0.26);
+                vec3 c2 = vec3(0.55, 0.36, 0.96);
+                vec3 c3 = vec3(0.08, 0.72, 0.65);
+                vec3 color = vUv.x < 0.5 ? mix(c1, c2, vUv.x * 2.0) : mix(c2, c3, (vUv.x - 0.5) * 2.0);
+                gl_FragColor = vec4(color, alpha * uOpacity);
+            }
+        `,
+        uniforms: { uTime: { value: 0 }, uOpacity: { value: pathOpacity.value } },
+        transparent: true, blending: AdditiveBlending, depthWrite: false,
+    })
+    pathDisposables.push(tubeMat)
+    pathGroup.add(new Mesh(tubeGeo, tubeMat))
+
+    const dotCount = positions.length * 5
+    const dotGeo = new BufferGeometry()
+    const dPos = new Float32Array(dotCount * 3)
+    const dSizes = new Float32Array(dotCount)
+    const dProgress = new Float32Array(dotCount)
+    for (let i = 0; i < dotCount; i++) {
+        const t = i / dotCount
+        const p = curve.getPoint(t)
+        dPos[i * 3] = p.x; dPos[i * 3 + 1] = p.y; dPos[i * 3 + 2] = p.z
+        dSizes[i] = 1.0 + Math.random() * 1.5
+        dProgress[i] = t
+    }
+    dotGeo.setAttribute('position', new Float32BufferAttribute(dPos, 3))
+    dotGeo.setAttribute('aSize', new Float32BufferAttribute(dSizes, 1))
+    dotGeo.setAttribute('aProgress', new Float32BufferAttribute(dProgress, 1))
+    pathDisposables.push(dotGeo)
+
+    const dotMat = new ShaderMaterial({
+        vertexShader: `
+            attribute float aSize;
+            attribute float aProgress;
+            uniform float uTime;
+            varying float vAlpha;
+            varying vec3 vColor;
+            void main() {
+                float wave = sin(aProgress * 70.0 - uTime * 4.5) * 0.5 + 0.5;
+                vAlpha = 0.15 + wave * 0.5;
+                vec3 c1 = vec3(0.93, 0.26, 0.26);
+                vec3 c2 = vec3(0.55, 0.36, 0.96);
+                vec3 c3 = vec3(0.08, 0.72, 0.65);
+                vColor = aProgress < 0.5 ? mix(c1, c2, aProgress * 2.0) : mix(c2, c3, (aProgress - 0.5) * 2.0);
+                vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+                gl_PointSize = aSize * wave * (25.0 / -mvPos.z);
+                gl_Position = projectionMatrix * mvPos;
+            }
+        `,
+        fragmentShader: `
+            uniform float uOpacity;
+            varying float vAlpha;
+            varying vec3 vColor;
+            void main() {
+                float d = length(gl_PointCoord - vec2(0.5));
+                if (d > 0.5) discard;
+                float glow = 1.0 - smoothstep(0.0, 0.5, d);
+                gl_FragColor = vec4(vColor, glow * vAlpha * uOpacity);
+            }
+        `,
+        uniforms: { uTime: { value: 0 }, uOpacity: { value: pathOpacity.value } },
+        transparent: true, blending: AdditiveBlending, depthWrite: false,
+    })
+    pathDisposables.push(dotMat)
+    pathGroup.add(new Points(dotGeo, dotMat))
+}
+
+// Reposition existing meshes for the active layout. Rebuilding meshes on a
+// layout switch is never needed — only the target positions change.
+function applyLayout(animated: boolean) {
+    const positions = computePositions(sortedTitles, props.layout)
+
+    cardMeshes.forEach((entry) => {
+        const target = positions[entry.index]
+        if (!target) return
+        gsap.killTweensOf(entry.basePos)
+        if (animated) {
+            gsap.to(entry.basePos, {
+                x: target.x, y: target.y, z: target.z,
+                duration: 1.2, ease: 'power3.inOut', delay: entry.index * 0.006,
+            })
+        } else {
+            entry.basePos.copy(target)
+        }
+    })
+
+    if (animated) {
+        // The tube can't morph, so fade it out, rebuild at the destination and
+        // fade back in once the cards have (mostly) arrived.
+        gsap.killTweensOf(pathOpacity)
+        gsap.to(pathOpacity, {
+            value: 0, duration: 0.3, ease: 'power1.out',
+            onComplete: () => {
+                buildPath(positions)
+                gsap.to(pathOpacity, { value: 1, duration: 0.6, ease: 'power1.in', delay: 0.9 })
+            },
+        })
+    } else {
+        buildPath(positions)
+    }
+
+    return positions
+}
+
+let lastStatusById = new Map<number, ProgressStatus | undefined>()
+
 function buildCards() {
     while (cardGroup.children.length > 0) cardGroup.remove(cardGroup.children[0])
-    while (pathGroup.children.length > 0) pathGroup.remove(pathGroup.children[0])
     cardMeshes.length = 0
-    disposables.forEach(d => d.dispose())
-    disposables.length = 0
+    cardDisposables.forEach(d => d.dispose())
+    cardDisposables.length = 0
 
     sortedTitles = [...props.titles]
     const positions = computePositions(sortedTitles, props.layout)
 
     sortedTitles.forEach((title, globalIdx) => {
-            const pos = positions[globalIdx]
+        const pos = positions[globalIdx]
+        const status = props.progressMap.get(title.id)
+        const colors = getPhaseColors(title.phase)
 
-            const status = props.progressMap.get(title.id)
-            const colors = getPhaseColors(title.phase)
+        const cardMat = new MeshBasicMaterial({
+            map: getPosterTexture(title, status), transparent: true,
+            opacity: status === 'skipped' ? 0.3 : 0.95,
+            side: FrontSide,
+            depthWrite: false,
+        })
+        cardDisposables.push(cardMat)
+        const card = new Mesh(cardGeo, cardMat)
+        card.renderOrder = 2
+        card.position.copy(pos)
+        card.userData.titleId = title.id
+        cardGroup.add(card)
 
-            const cardW = 2.2
-            const cardH = 3.15
-            const cardGeo = new PlaneGeometry(cardW, cardH)
-            disposables.push(cardGeo)
-            const texture = createPosterTexture(title, status)
-            disposables.push(texture)
-            const cardMat = new MeshBasicMaterial({
-                map: texture, transparent: true,
-                opacity: status === 'skipped' ? 0.3 : 0.95,
-                side: FrontSide,
-                depthWrite: false,
-            })
-            disposables.push(cardMat)
-            const card = new Mesh(cardGeo, cardMat)
-            card.renderOrder = 2
-            card.position.copy(pos)
-            card.userData.titleId = title.id
-            cardGroup.add(card)
+        if (title.poster_url) {
+            loadPosterImage(title.poster_url).then(img => {
+                const currentStatus = props.progressMap.get(title.id)
+                cardMat.map = getPosterTexture(title, currentStatus, img)
+                cardMat.needsUpdate = true
+            }).catch(() => {})
+        }
 
-            if (title.poster_url) {
-                loadPosterImage(title.poster_url).then(img => {
-                    const newTex = createPosterTexture(title, status, img)
-                    disposables.push(newTex)
-                    cardMat.map = newTex
-                    cardMat.needsUpdate = true
-                }).catch(() => {})
-            }
+        const haloMat = new MeshBasicMaterial({
+            map: sharedGlowTex, color: colors.primary, transparent: true,
+            opacity: status === 'watched' ? 0.2 : 0.08,
+            blending: AdditiveBlending, depthWrite: false, side: DoubleSide,
+        })
+        cardDisposables.push(haloMat)
+        const halo = new Mesh(haloGeo, haloMat)
+        halo.renderOrder = 1
+        halo.position.copy(pos)
+        halo.position.z -= 0.15
+        cardGroup.add(halo)
 
-            const glowTex = createGlowTexture(colors.primary)
-            disposables.push(glowTex)
-            const glowGeo = new PlaneGeometry(cardW * 2.5, cardH * 2.5)
-            disposables.push(glowGeo)
-            const glowMat = new MeshBasicMaterial({
-                map: glowTex, transparent: true,
-                opacity: status === 'watched' ? 0.2 : 0.06,
-                blending: AdditiveBlending, depthWrite: false, side: DoubleSide,
-            })
-            disposables.push(glowMat)
-            const glow = new Mesh(glowGeo, glowMat)
-            glow.renderOrder = 1
-            glow.position.copy(pos)
-            glow.position.z -= 0.1
-            cardGroup.add(glow)
-
-            const bgGeo = new PlaneGeometry(cardW * 3.5, cardH * 3)
-            disposables.push(bgGeo)
-            const bgGlowTex = createGlowTexture(colors.dark)
-            disposables.push(bgGlowTex)
-            const bgMat = new MeshBasicMaterial({
-                map: bgGlowTex, transparent: true,
-                opacity: 0.06,
-                blending: AdditiveBlending, depthWrite: false, side: DoubleSide,
-            })
-            disposables.push(bgMat)
-            const bgMesh = new Mesh(bgGeo, bgMat)
-            bgMesh.renderOrder = 0
-            bgMesh.position.copy(pos)
-            bgMesh.position.z -= 0.2
-            cardGroup.add(bgMesh)
-
-            cardMeshes.push({ card, glow, bg: bgMesh, titleId: title.id, basePos: pos.clone(), phaseNum: getPhaseNumber(title.phase), index: globalIdx })
+        cardMeshes.push({ card, halo, titleId: title.id, basePos: pos.clone(), phaseNum: getPhaseNumber(title.phase), index: globalIdx })
     })
 
-    // Sort path points by global index for the connecting line
-    const sortedCards = [...cardMeshes].sort((a, b) => a.index - b.index)
-    const pathPoints = sortedCards.map(c => c.basePos.clone())
-
-    if (pathPoints.length >= 2) {
-        const curve = new CatmullRomCurve3(pathPoints, false, 'catmullrom', 0.3)
-        const tubeGeo = new TubeGeometry(curve, pathPoints.length * 12, 0.015, 6, false)
-        disposables.push(tubeGeo)
-        const tubeMat = new ShaderMaterial({
-            vertexShader: `
-                varying vec2 vUv;
-                void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-            `,
-            fragmentShader: `
-                uniform float uTime;
-                varying vec2 vUv;
-                void main() {
-                    float energy = sin(vUv.x * 50.0 - uTime * 3.5) * 0.5 + 0.5;
-                    float alpha = 0.05 + energy * 0.18;
-                    vec3 c1 = vec3(0.93, 0.26, 0.26);
-                    vec3 c2 = vec3(0.55, 0.36, 0.96);
-                    vec3 c3 = vec3(0.08, 0.72, 0.65);
-                    vec3 color = vUv.x < 0.5 ? mix(c1, c2, vUv.x * 2.0) : mix(c2, c3, (vUv.x - 0.5) * 2.0);
-                    gl_FragColor = vec4(color, alpha);
-                }
-            `,
-            uniforms: { uTime: { value: 0 } },
-            transparent: true, blending: AdditiveBlending, depthWrite: false,
-        })
-        disposables.push(tubeMat)
-        pathGroup.add(new Mesh(tubeGeo, tubeMat))
-
-        const dotCount = pathPoints.length * 5
-        const dotGeo = new BufferGeometry()
-        const dPos = new Float32Array(dotCount * 3)
-        const dSizes = new Float32Array(dotCount)
-        const dProgress = new Float32Array(dotCount)
-        for (let i = 0; i < dotCount; i++) {
-            const t = i / dotCount
-            const p = curve.getPoint(t)
-            dPos[i * 3] = p.x; dPos[i * 3 + 1] = p.y; dPos[i * 3 + 2] = p.z
-            dSizes[i] = 1.0 + Math.random() * 1.5
-            dProgress[i] = t
-        }
-        dotGeo.setAttribute('position', new Float32BufferAttribute(dPos, 3))
-        dotGeo.setAttribute('aSize', new Float32BufferAttribute(dSizes, 1))
-        dotGeo.setAttribute('aProgress', new Float32BufferAttribute(dProgress, 1))
-        disposables.push(dotGeo)
-
-        const dotMat = new ShaderMaterial({
-            vertexShader: `
-                attribute float aSize;
-                attribute float aProgress;
-                uniform float uTime;
-                varying float vAlpha;
-                varying vec3 vColor;
-                void main() {
-                    float wave = sin(aProgress * 70.0 - uTime * 4.5) * 0.5 + 0.5;
-                    vAlpha = 0.15 + wave * 0.5;
-                    vec3 c1 = vec3(0.93, 0.26, 0.26);
-                    vec3 c2 = vec3(0.55, 0.36, 0.96);
-                    vec3 c3 = vec3(0.08, 0.72, 0.65);
-                    vColor = aProgress < 0.5 ? mix(c1, c2, aProgress * 2.0) : mix(c2, c3, (aProgress - 0.5) * 2.0);
-                    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
-                    gl_PointSize = aSize * wave * (25.0 / -mvPos.z);
-                    gl_Position = projectionMatrix * mvPos;
-                }
-            `,
-            fragmentShader: `
-                varying float vAlpha;
-                varying vec3 vColor;
-                void main() {
-                    float d = length(gl_PointCoord - vec2(0.5));
-                    if (d > 0.5) discard;
-                    float glow = 1.0 - smoothstep(0.0, 0.5, d);
-                    gl_FragColor = vec4(vColor, glow * vAlpha);
-                }
-            `,
-            uniforms: { uTime: { value: 0 } },
-            transparent: true, blending: AdditiveBlending, depthWrite: false,
-        })
-        disposables.push(dotMat)
-        pathGroup.add(new Points(dotGeo, dotMat))
-    }
-
-    currentTitleCount = sortedTitles.length
+    clickTargets = cardMeshes.map(c => c.card)
+    lastStatusById = new Map(props.progressMap)
+    buildPath(positions)
     currentLayout = props.layout
 }
 
-watch(() => props.titles, () => {
+const titleIdsSignature = (ts: Title[]) => ts.map(t => t.id).join(',')
+
+watch(() => props.titles, (newTitles, oldTitles) => {
+    if (titleIdsSignature(newTitles) === titleIdsSignature(oldTitles ?? [])) return
     buildCards()
     if (settings.cameraAutoReset) flyToCard(props.focusedIndex)
 })
+
 watch(() => props.layout, (newLayout) => {
-    if (newLayout !== currentLayout) buildCards()
+    if (newLayout === currentLayout) return
+    currentLayout = newLayout
+    const positions = applyLayout(true)
+    if (positions) flyToOverview(positions)
 })
+
+// Status changes only swap the affected card's texture — no rebuild, no
+// full-canvas redraw hitch. (Also fixes the watched-badge never updating when
+// no status filter is active: the titles array identity doesn't change then.)
+watch(() => props.progressMap, (map) => {
+    for (const entry of cardMeshes) {
+        const status = map.get(entry.titleId)
+        if (status === lastStatusById.get(entry.titleId)) continue
+        const title = sortedTitles[entry.index]
+        if (!title) continue
+        const img = title.poster_url ? posterImageCache.get(posterProxyUrl(title.poster_url)) : undefined
+        const mat = entry.card.material as MeshBasicMaterial
+        mat.map = getPosterTexture(title, status, img)
+        mat.needsUpdate = true
+    }
+    lastStatusById = new Map(map)
+})
+
 buildCards()
 
 const { camera, renderer } = useTres()
@@ -1053,34 +1124,95 @@ applyBg()
 watch(renderer, () => applyBg())
 watch(() => props.themeBg, () => applyBg())
 
-// Camera system
+// Camera rig: cameraCenter + camState are the single source of truth composed
+// in onLoop. GSAP owns them while `cameraTweening`; the drag/wheel targets take
+// back over via syncTargetsAndRelease() so the two never fight.
 let isDragging = false
 let dragStart = { x: 0, y: 0 }
-let cameraAngle = { x: 0, y: 0.15 }
-let cameraDistance = 18
-let targetAngle = { x: 0, y: 0.15 }
+const camState = { distance: 18, angleX: 0, angleY: 0.15 }
+const targetAngle = { x: 0, y: 0.15 }
 let targetDistance = 18
-let cameraCenter = new Vector3(0, 0, 0)
-let targetCenter = new Vector3(0, 0, 0)
+const cameraCenter = new Vector3(0, 0, 0)
+const targetCenter = new Vector3(0, 0, 0)
 let lastHoveredId: number | null = null
 let autoRotate = true
-let flyingToTarget = false
-let flyProgress = 0
+let cameraTweening = false
+let camTl: gsap.core.Timeline | null = null
+let pointerDirty = false
+let lastPointerType = 'mouse'
+
+function shortestAngle(from: number, to: number) {
+    return from + ((((to - from + Math.PI) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) - Math.PI
+}
+
+function syncTargetsAndRelease() {
+    targetCenter.copy(cameraCenter)
+    targetDistance = camState.distance
+    targetAngle.x = camState.angleX
+    targetAngle.y = camState.angleY
+    cameraTweening = false
+}
+
+function killCameraTweens() {
+    if (camTl) {
+        camTl.kill()
+        camTl = null
+    }
+    if (cameraTweening) syncTargetsAndRelease()
+}
+
+function flyTo(opts: { center?: Vector3; distance?: number; angleX?: number; angleY?: number; duration?: number }) {
+    killCameraTweens()
+    autoRotate = false
+    cameraTweening = true
+    const duration = opts.duration ?? 1.1
+    camTl = gsap.timeline({
+        onComplete: () => {
+            camTl = null
+            syncTargetsAndRelease()
+        },
+    })
+    if (opts.center) {
+        camTl.to(cameraCenter, { x: opts.center.x, y: opts.center.y, z: opts.center.z, duration, ease: 'power3.inOut' }, 0)
+    }
+    const stateTarget: Record<string, number> = {}
+    if (opts.distance != null) stateTarget.distance = opts.distance
+    if (opts.angleY != null) stateTarget.angleY = opts.angleY
+    if (opts.angleX != null) stateTarget.angleX = shortestAngle(camState.angleX, opts.angleX)
+    if (Object.keys(stateTarget).length > 0) {
+        camTl.to(camState, { ...stateTarget, duration, ease: 'power3.inOut' }, 0)
+    }
+}
+
+// Distance that frames a card (plus margin) in the vertical fov.
+function fitDistance() {
+    return (CARD_H * 1.15 / 2) / Math.tan((FOV / 2) * Math.PI / 180) + 2
+}
 
 function flyToCard(index: number) {
     const entry = cardMeshes.find(c => c.index === index)
     if (!entry) return
+    const azimuth = Math.atan2(entry.basePos.x, entry.basePos.z)
+    flyTo({
+        center: new Vector3(entry.basePos.x, entry.basePos.y + 0.2, entry.basePos.z),
+        distance: fitDistance(),
+        angleX: azimuth,
+        angleY: 0.05,
+    })
+}
 
-    targetCenter = entry.basePos.clone()
-    targetDistance = 6.5
-    targetAngle.y = 0.05
-
-    const dir = new Vector3().subVectors(entry.basePos, new Vector3(0, 0, 0)).normalize()
-    targetAngle.x = Math.atan2(dir.x, dir.z)
-
-    flyingToTarget = true
-    flyProgress = 0
-    autoRotate = false
+// Frame the bounding sphere of a layout so every layout switch lands on a
+// well-composed establishing shot.
+function flyToOverview(positions: Vector3[]) {
+    if (positions.length === 0) return
+    const center = new Vector3()
+    positions.forEach(p => center.add(p))
+    center.divideScalar(positions.length)
+    let radius = 0
+    positions.forEach(p => { radius = Math.max(radius, center.distanceTo(p)) })
+    const fovRad = (FOV / 2) * Math.PI / 180
+    const distance = Math.min(60, Math.max(12, (radius / Math.sin(fovRad)) * 1.15))
+    flyTo({ center, distance, angleY: 0.28, duration: 1.3 })
 }
 
 // Watch focused index changes from parent (Next/Prev buttons)
@@ -1091,6 +1223,7 @@ watch(() => props.focusedIndex, (newIdx) => {
 function onPointerDown(e: PointerEvent) {
     isDragging = true
     autoRotate = false
+    killCameraTweens()
     dragStart = { x: e.clientX, y: e.clientY }
 }
 
@@ -1100,6 +1233,8 @@ function onPointerMove(e: PointerEvent) {
     const rect = canvas.getBoundingClientRect()
     pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
     pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
+    pointerDirty = true
+    lastPointerType = e.pointerType
     if (isDragging) {
         const dx = e.clientX - dragStart.x
         const dy = e.clientY - dragStart.y
@@ -1109,13 +1244,20 @@ function onPointerMove(e: PointerEvent) {
     }
 }
 
+function onPointerLeave() {
+    pointerDirty = false
+    if (lastHoveredId !== null) {
+        lastHoveredId = null
+        emit('hover', null)
+    }
+}
+
 function onPointerUp(e: PointerEvent) {
     const wasDrag = Math.abs(e.clientX - dragStart.x) > 5 || Math.abs(e.clientY - dragStart.y) > 5
     isDragging = false
     if (!wasDrag && camera.value) {
         raycaster.setFromCamera(pointer, camera.value)
-        const clickables = cardMeshes.map(c => c.card)
-        const intersects = raycaster.intersectObjects(clickables, false)
+        const intersects = raycaster.intersectObjects(clickTargets, false)
         const hit = intersects.find(i => i.object.userData.titleId != null)
         if (hit) {
             const id = hit.object.userData.titleId
@@ -1124,10 +1266,7 @@ function onPointerUp(e: PointerEvent) {
                 const deselecting = id === props.selectedId
                 if (deselecting) {
                     emit('select', null)
-                    targetDistance = 14
-                    targetAngle.y = 0.12
-                    flyingToTarget = true
-                    flyProgress = 0
+                    flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
                 } else {
                     emit('select', id)
                     emit('update:focusedIndex', entry.index)
@@ -1136,20 +1275,17 @@ function onPointerUp(e: PointerEvent) {
             }
         } else {
             emit('select', null)
-            targetDistance = 14
-            targetAngle.y = 0.12
+            flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
         }
     }
 }
 
-
-
 let scrollCooldown = false
-const { settings } = useSettings()
 
 function onWheel(e: WheelEvent) {
     e.preventDefault()
     autoRotate = false
+    killCameraTweens()
 
     // Ctrl/Cmd + scroll = zoom
     if (e.ctrlKey || e.metaKey) {
@@ -1183,6 +1319,7 @@ onMounted(() => {
     canvas.addEventListener('pointerdown', onPointerDown)
     canvas.addEventListener('pointermove', onPointerMove)
     canvas.addEventListener('pointerup', onPointerUp)
+    canvas.addEventListener('pointerleave', onPointerLeave)
     canvas.addEventListener('wheel', onWheel, { passive: false })
 })
 
@@ -1192,50 +1329,56 @@ onUnmounted(() => {
         canvas.removeEventListener('pointerdown', onPointerDown)
         canvas.removeEventListener('pointermove', onPointerMove)
         canvas.removeEventListener('pointerup', onPointerUp)
+        canvas.removeEventListener('pointerleave', onPointerLeave)
         canvas.removeEventListener('wheel', onWheel)
     }
-    disposables.forEach(d => d.dispose())
-    starGeo.dispose()
-    starMat.dispose()
+    if (camTl) camTl.kill()
+    gsap.killTweensOf(pathOpacity)
+    cardMeshes.forEach(entry => gsap.killTweensOf(entry.basePos))
+    cardDisposables.forEach(d => d.dispose())
+    cardDisposables.length = 0
+    pathDisposables.forEach(d => d.dispose())
+    pathDisposables.length = 0
+    staticDisposables.forEach(d => d.dispose())
+    posterTexCache.forEach(tex => tex.dispose())
+    posterTexCache.clear()
 })
 
 const { onLoop } = useRenderLoop()
 let elapsed = 0
+
+// Scratch objects: the loop must not allocate.
+const _billboardDir = new Vector3()
+const _toCard = new Vector3()
+const _toFocused = new Vector3()
+const _scaleTarget = new Vector3()
 
 onLoop(({ delta }) => {
     elapsed += delta
 
     starMat.uniforms.uTime.value = elapsed
     pathGroup.children.forEach(child => {
-        const m = child as any
-        if (m.material?.uniforms?.uTime) m.material.uniforms.uTime.value = elapsed
+        const m = child as Mesh
+        const mat = m.material as ShaderMaterial
+        if (mat?.uniforms?.uTime) mat.uniforms.uTime.value = elapsed
+        if (mat?.uniforms?.uOpacity) mat.uniforms.uOpacity.value = pathOpacity.value
     })
 
-    if (flyingToTarget) {
-        flyProgress = Math.min(1, flyProgress + delta * 2.4)
-        const ease = 1 - Math.pow(1 - flyProgress, 4)
-        const lerpSpeed = 0.06 + ease * 0.14
-        cameraCenter.lerp(targetCenter, lerpSpeed)
-        cameraDistance += (targetDistance - cameraDistance) * lerpSpeed
-        cameraAngle.x += (targetAngle.x - cameraAngle.x) * lerpSpeed
-        cameraAngle.y += (targetAngle.y - cameraAngle.y) * lerpSpeed
-        if (flyProgress >= 1) flyingToTarget = false
-    } else {
-        const lerpSpeed = 0.08
-        cameraAngle.x += (targetAngle.x - cameraAngle.x) * lerpSpeed
-        cameraAngle.y += (targetAngle.y - cameraAngle.y) * lerpSpeed
-        cameraDistance += (targetDistance - cameraDistance) * lerpSpeed
+    if (!cameraTweening) {
+        camState.angleX += (targetAngle.x - camState.angleX) * 0.08
+        camState.angleY += (targetAngle.y - camState.angleY) * 0.08
+        camState.distance += (targetDistance - camState.distance) * 0.08
         cameraCenter.lerp(targetCenter, 0.06)
     }
 
-    if (autoRotate && !props.selectedId) {
+    if (autoRotate && !props.selectedId && !cameraTweening) {
         targetAngle.x += delta * 0.04
     }
 
     if (camera.value) {
-        const cx = cameraCenter.x + Math.sin(cameraAngle.x) * Math.cos(cameraAngle.y) * cameraDistance
-        const cy = cameraCenter.y + Math.sin(cameraAngle.y) * cameraDistance
-        const cz = cameraCenter.z + Math.cos(cameraAngle.x) * Math.cos(cameraAngle.y) * cameraDistance
+        const cx = cameraCenter.x + Math.sin(camState.angleX) * Math.cos(camState.angleY) * camState.distance
+        const cy = cameraCenter.y + Math.sin(camState.angleY) * camState.distance
+        const cz = cameraCenter.z + Math.cos(camState.angleX) * Math.cos(camState.angleY) * camState.distance
         camera.value.position.set(cx, cy, cz)
         camera.value.lookAt(cameraCenter)
     }
@@ -1244,13 +1387,12 @@ onLoop(({ delta }) => {
     const hasFocus = !!(props.selectedId || focusedEntry)
 
     for (const entry of cardMeshes) {
-        const { card, glow, bg, titleId, basePos, index } = entry
+        const { card, halo, titleId, basePos, index } = entry
         const hover = titleId === props.hoveredId
         const selected = titleId === props.selectedId
         const focused = index === props.focusedIndex && !selected
         const cardMat = card.material as MeshBasicMaterial
-        const glowMat = glow.material as MeshBasicMaterial
-        const bgMat = bg.material as MeshBasicMaterial
+        const haloMat = halo.material as MeshBasicMaterial
         const status = props.progressMap.get(titleId)
 
         let driftX = 0, driftY = 0, driftZ = 0
@@ -1270,15 +1412,13 @@ onLoop(({ delta }) => {
         const py = basePos.y + bob + driftY
         const pz = basePos.z + driftZ
         card.position.set(px, py, pz)
-        glow.position.set(px, py, pz - 0.1)
-        bg.position.set(px, py, pz - 0.2)
+        halo.position.set(px, py, pz - 0.15)
 
         if (camera.value) {
-            const dir = new Vector3().subVectors(camera.value.position, card.position)
-            const angle = Math.atan2(dir.x, dir.z)
+            _billboardDir.subVectors(camera.value.position, card.position)
+            const angle = Math.atan2(_billboardDir.x, _billboardDir.z)
             card.rotation.y += (angle - card.rotation.y) * 0.15
-            glow.rotation.y = card.rotation.y
-            bg.rotation.y = card.rotation.y
+            halo.rotation.y = card.rotation.y
         }
 
         let occludeAmount = 0
@@ -1288,9 +1428,9 @@ onLoop(({ delta }) => {
             const distToFocused = camPos.distanceTo(focusedEntry.card.position)
 
             if (distToCard < distToFocused) {
-                const toCard = new Vector3().subVectors(card.position, camPos).normalize()
-                const toFocused = new Vector3().subVectors(focusedEntry.card.position, camPos).normalize()
-                const dot = toCard.dot(toFocused)
+                _toCard.subVectors(card.position, camPos).normalize()
+                _toFocused.subVectors(focusedEntry.card.position, camPos).normalize()
+                const dot = _toCard.dot(_toFocused)
                 if (dot > 0.55) {
                     occludeAmount = Math.min(1.0, (dot - 0.55) / 0.3)
                 }
@@ -1304,9 +1444,8 @@ onLoop(({ delta }) => {
 
         const targetScale = selected ? 1.3 : focused ? 1.15 : hover ? 1.08 : 1.0
         const scaleLerp = selected || focused ? 0.18 : 0.12
-        card.scale.lerp(new Vector3(targetScale, targetScale, 1), scaleLerp)
-        glow.scale.copy(card.scale)
-        bg.scale.copy(card.scale)
+        card.scale.lerp(_scaleTarget.set(targetScale, targetScale, 1), scaleLerp)
+        halo.scale.copy(card.scale)
 
         const baseCardOpacity = selected ? 1.0 : focused ? 1.0 : hover ? 1.0 : (status === 'skipped' ? 0.25 : 0.88)
         const targetCardOpacity = baseCardOpacity * (1.0 - occludeAmount * 0.97)
@@ -1314,23 +1453,19 @@ onLoop(({ delta }) => {
         cardMat.opacity = Math.abs(cardDiff) < 0.005 ? targetCardOpacity : cardMat.opacity + cardDiff * 0.18
 
         const glowPulse = selected || focused ? Math.sin(elapsed * 2.0) * 0.06 : 0
-        const baseGlowOpacity = selected ? 0.55 + glowPulse : focused ? 0.4 + glowPulse : hover ? 0.3 : (status === 'watched' ? 0.2 : 0.06)
-        const targetGlowOpacity = baseGlowOpacity * (1.0 - occludeAmount)
-        const glowDiff = targetGlowOpacity - glowMat.opacity
-        glowMat.opacity = Math.abs(glowDiff) < 0.005 ? targetGlowOpacity : glowMat.opacity + glowDiff * 0.14
-
-        const baseBgOpacity = selected ? 0.15 : focused ? 0.12 : hover ? 0.09 : 0.05
-        const targetBgOpacity = baseBgOpacity * (1.0 - occludeAmount)
-        const bgDiff = targetBgOpacity - bgMat.opacity
-        bgMat.opacity = Math.abs(bgDiff) < 0.005 ? targetBgOpacity : bgMat.opacity + bgDiff * 0.14
+        const baseHaloOpacity = selected ? 0.6 + glowPulse : focused ? 0.45 + glowPulse : hover ? 0.32 : (status === 'watched' ? 0.22 : 0.09)
+        const targetHaloOpacity = baseHaloOpacity * (1.0 - occludeAmount)
+        const haloDiff = targetHaloOpacity - haloMat.opacity
+        haloMat.opacity = Math.abs(haloDiff) < 0.005 ? targetHaloOpacity : haloMat.opacity + haloDiff * 0.14
     }
 
-    if (camera.value && !isDragging) {
+    // Hover raycast only when the pointer actually moved (never per-frame),
+    // and never for touch — tap selection runs its own raycast in onPointerUp.
+    if (pointerDirty && camera.value && !isDragging && lastPointerType !== 'touch') {
+        pointerDirty = false
         raycaster.setFromCamera(pointer, camera.value)
-        const clickables = cardMeshes.map(c => c.card)
-        const intersects = raycaster.intersectObjects(clickables, false)
-        const hit = intersects.find(i => i.object.userData.titleId != null)
-        const newId = hit ? hit.object.userData.titleId : null
+        const hit = raycaster.intersectObjects(clickTargets, false)[0]
+        const newId = (hit?.object.userData.titleId as number | undefined) ?? null
         if (newId !== lastHoveredId) {
             lastHoveredId = newId
             emit('hover', newId)
@@ -1345,5 +1480,7 @@ onLoop(({ delta }) => {
         const mat = (n as Mesh).material as MeshBasicMaterial
         mat.opacity = 0.12 + Math.sin(elapsed * 0.2 + i * 1.8) * 0.06
     })
+
+    if (import.meta.dev && showFps.value && renderer.value) sample(renderer.value, delta)
 })
 </script>

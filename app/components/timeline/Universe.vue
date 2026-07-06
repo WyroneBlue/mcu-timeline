@@ -458,6 +458,9 @@
             </div>
         </Transition>
 
+        <!-- Dev-only render stats (toggle: F key or ?fps=1) -->
+        <DevFpsOverlay v-if="showFps" />
+
         <!-- Hover tooltip -->
         <Transition name="fade">
             <div
@@ -499,6 +502,22 @@ export type UniverseLayout = 'phase' | 'spiral' | 'zigzag' | 'grid' | 'helix' | 
 const { focusMode, toggleFocusMode } = useFocusMode()
 const { discoverEasterEgg } = useEasterEggs()
 const { settings, currentTheme, getFavoriteCharacter } = useSettings()
+const { showFps } = useRenderStats()
+
+if (import.meta.dev) {
+    const route = useRoute()
+    if (route.query.fps === '1') showFps.value = true
+    onMounted(() => {
+        const onFpsKey = (e: KeyboardEvent) => {
+            if (e.key.toLowerCase() !== 'f' || e.metaKey || e.ctrlKey || e.altKey) return
+            const target = e.target as HTMLElement | null
+            if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
+            showFps.value = !showFps.value
+        }
+        window.addEventListener('keydown', onFpsKey)
+        onUnmounted(() => window.removeEventListener('keydown', onFpsKey))
+    })
+}
 
 const layout = ref<UniverseLayout>('phase')
 const controlsOpen = ref(false)
