@@ -430,7 +430,8 @@
     "prevNext": "上一个/下一个控件",
     "cameraAutoReset": "相机自动复位",
     "particles": "粒子",
-    "layoutDrift": "布局漂移"
+    "layoutDrift": "布局漂移",
+    "invertGlobeDrag": "地球拖动：轨道模式"
   },
   "easterEggs": {
     "watcherName": "观察者",

@@ -430,7 +430,8 @@
     "prevNext": "Controlos anterior/seguinte",
     "cameraAutoReset": "Reinício automático da câmara",
     "particles": "Partículas",
-    "layoutDrift": "Deriva da disposição"
+    "layoutDrift": "Deriva da disposição",
+    "invertGlobeDrag": "Arrastar o globo: estilo órbita"
   },
   "easterEggs": {
     "watcherName": "O Vigia",

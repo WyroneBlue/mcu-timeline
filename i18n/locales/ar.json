@@ -430,7 +430,8 @@
     "prevNext": "أزرار السابق/التالي",
     "cameraAutoReset": "إعادة ضبط الكاميرا تلقائيًا",
     "particles": "الجسيمات",
-    "layoutDrift": "انجراف التخطيط"
+    "layoutDrift": "انجراف التخطيط",
+    "invertGlobeDrag": "سحب الكرة الأرضية: نمط المدار"
   },
   "easterEggs": {
     "watcherName": "الرقيب",

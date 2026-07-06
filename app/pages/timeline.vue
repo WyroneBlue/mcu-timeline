@@ -504,21 +504,21 @@ async function handleMarkSkipped(titleId: number) {
 </script>
 
 <style scoped>
+/* Kept subtle on purpose: the transition overlay (bifrost/snap/portal)
+   already masks the swap at its peak, so the DOM fade only needs to be a
+   short settle instead of a second full animation on top. */
 .view-fade-enter-active {
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+    transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .view-fade-leave-active {
-    transition: opacity 0.4s cubic-bezier(0.4, 0, 1, 1), transform 0.4s cubic-bezier(0.4, 0, 1, 1), filter 0.4s ease;
+    transition: opacity 0.16s ease-in;
 }
 .view-fade-enter-from {
     opacity: 0;
-    transform: scale(0.92);
-    filter: blur(4px);
+    transform: scale(0.985);
 }
 .view-fade-leave-to {
     opacity: 0;
-    transform: scale(1.1);
-    filter: blur(6px);
 }
 
 </style>

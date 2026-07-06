@@ -430,7 +430,8 @@
     "prevNext": "Vorige/volgende-knoppen",
     "cameraAutoReset": "Camera automatisch resetten",
     "particles": "Deeltjes",
-    "layoutDrift": "Zwevende indeling"
+    "layoutDrift": "Zwevende indeling",
+    "invertGlobeDrag": "Wereldbol slepen: orbit-stijl"
   },
   "easterEggs": {
     "watcherName": "The Watcher",

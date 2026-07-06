@@ -430,7 +430,8 @@
     "prevNext": "Prev/next controls",
     "cameraAutoReset": "Camera auto-reset",
     "particles": "Particles",
-    "layoutDrift": "Layout drift"
+    "layoutDrift": "Layout drift",
+    "invertGlobeDrag": "Globe drag: orbit style"
   },
   "easterEggs": {
     "watcherName": "The Watcher",

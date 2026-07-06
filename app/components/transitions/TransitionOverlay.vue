@@ -47,8 +47,8 @@ function onSkip(e: Event) {
 function runBifrost(ctx: CanvasRenderingContext2D, done: () => void) {
     const w = window.innerWidth
     const h = window.innerHeight
-    const DURATION = 950
-    const MIDPOINT = 0.5
+    const DURATION = 800
+    const MIDPOINT = 0.45
     const streaks = Array.from({ length: 130 }, (_, i) => ({
         x: w / 2 + (Math.random() - 0.5) * w * 0.9,
         hue: (i * 51) % 360,
@@ -107,8 +107,8 @@ function runBifrost(ctx: CanvasRenderingContext2D, done: () => void) {
 function runSnapDissolve(ctx: CanvasRenderingContext2D, elements: HTMLElement[], done: () => void) {
     const w = window.innerWidth
     const h = window.innerHeight
-    const DURATION = 900
-    const MIDPOINT = 0.6
+    const DURATION = 800
+    const MIDPOINT = 0.55
     const particles: Particle[] = []
 
     const visible = elements.filter((el) => {

@@ -887,11 +887,12 @@ function killCameraTweens() {
     if (cameraTweening) syncTargetsAndRelease()
 }
 
-function flyTo(opts: { center?: Vector3; distance?: number; angleX?: number; angleY?: number; duration?: number }) {
+function flyTo(opts: { center?: Vector3; distance?: number; angleX?: number; angleY?: number; duration?: number; ease?: string }) {
     killCameraTweens()
     autoRotate = false
     cameraTweening = true
     const duration = opts.duration ?? 1.1
+    const ease = opts.ease ?? 'power3.inOut'
     camTl = gsap.timeline({
         onComplete: () => {
             camTl = null
@@ -899,14 +900,14 @@ function flyTo(opts: { center?: Vector3; distance?: number; angleX?: number; ang
         },
     })
     if (opts.center) {
-        camTl.to(cameraCenter, { x: opts.center.x, y: opts.center.y, z: opts.center.z, duration, ease: 'power3.inOut' }, 0)
+        camTl.to(cameraCenter, { x: opts.center.x, y: opts.center.y, z: opts.center.z, duration, ease }, 0)
     }
     const stateTarget: Record<string, number> = {}
     if (opts.distance != null) stateTarget.distance = opts.distance
     if (opts.angleY != null) stateTarget.angleY = opts.angleY
     if (opts.angleX != null) stateTarget.angleX = shortestAngle(camState.angleX, opts.angleX)
     if (Object.keys(stateTarget).length > 0) {
-        camTl.to(camState, { ...stateTarget, duration, ease: 'power3.inOut' }, 0)
+        camTl.to(camState, { ...stateTarget, duration, ease }, 0)
     }
 }
 
@@ -915,15 +916,25 @@ function fitDistance() {
     return (CARD_H * 1.15 / 2) / Math.tan((FOV / 2) * Math.PI / 180) + 2
 }
 
+// Rapid prev/next stepping shortens the flight and switches to a
+// decelerating ease, so the camera keeps pace instead of trailing the
+// focused card by several clicks.
+let lastFlyAt = 0
+
 function flyToCard(index: number) {
     const entry = cardMeshes.find(c => c.index === index)
     if (!entry) return
+    const now = performance.now()
+    const rapid = now - lastFlyAt < 700
+    lastFlyAt = now
     const azimuth = Math.atan2(entry.basePos.x, entry.basePos.z)
     flyTo({
         center: new Vector3(entry.basePos.x, entry.basePos.y + 0.2, entry.basePos.z),
         distance: fitDistance(),
         angleX: azimuth,
         angleY: 0.05,
+        duration: rapid ? 0.4 : 0.85,
+        ease: rapid ? 'power2.out' : 'power3.inOut',
     })
 }
 

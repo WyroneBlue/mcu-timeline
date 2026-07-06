@@ -41,6 +41,7 @@ export interface AppSettings {
     particleDensity: 'low' | 'medium' | 'high'
     showEasterEggs: boolean
     watcherStyle: 'sprite' | '3d'
+    invertGlobeDrag: boolean
     language: AppLocale
     layoutDrift: boolean
     cameraAutoReset: boolean
@@ -60,6 +61,7 @@ const defaults: AppSettings = {
     particleDensity: 'medium',
     showEasterEggs: true,
     watcherStyle: 'sprite',
+    invertGlobeDrag: false,
     language: 'en',
     layoutDrift: false,
     cameraAutoReset: true,

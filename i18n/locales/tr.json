@@ -430,7 +430,8 @@
     "prevNext": "Önceki/sonraki kontrolleri",
     "cameraAutoReset": "Kamera otomatik sıfırlama",
     "particles": "Parçacıklar",
-    "layoutDrift": "Düzen kayması"
+    "layoutDrift": "Düzen kayması",
+    "invertGlobeDrag": "Küre sürükleme: yörünge stili"
   },
   "easterEggs": {
     "watcherName": "Gözcü",

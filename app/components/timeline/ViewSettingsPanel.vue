@@ -67,6 +67,10 @@
                     <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">{{ $t('viewSettings.cameraAutoReset') }}</span>
                     <UiToggleSwitch v-model="settings.cameraAutoReset" />
                 </label>
+                <label class="flex items-center justify-between cursor-pointer group">
+                    <span class="text-[10px] text-white/30 group-hover:text-white/50 transition-colors">{{ $t('viewSettings.invertGlobeDrag') }}</span>
+                    <UiToggleSwitch v-model="settings.invertGlobeDrag" />
+                </label>
             </div>
         </Transition>
 

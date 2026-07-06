@@ -430,7 +430,8 @@
     "prevNext": "前へ/次へコントロール",
     "cameraAutoReset": "カメラ自動リセット",
     "particles": "パーティクル",
-    "layoutDrift": "レイアウトドリフト"
+    "layoutDrift": "レイアウトドリフト",
+    "invertGlobeDrag": "地球ドラッグ：オービット式"
   },
   "easterEggs": {
     "watcherName": "ウォッチャー",

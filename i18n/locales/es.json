@@ -430,7 +430,8 @@
     "prevNext": "Controles anterior/siguiente",
     "cameraAutoReset": "Reinicio automático de cámara",
     "particles": "Partículas",
-    "layoutDrift": "Deriva del diseño"
+    "layoutDrift": "Deriva del diseño",
+    "invertGlobeDrag": "Arrastre del globo: estilo órbita"
   },
   "easterEggs": {
     "watcherName": "El Vigilante",

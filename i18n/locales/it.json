@@ -430,7 +430,8 @@
     "prevNext": "Controlli precedente/successivo",
     "cameraAutoReset": "Reset automatico camera",
     "particles": "Particelle",
-    "layoutDrift": "Deriva del layout"
+    "layoutDrift": "Deriva del layout",
+    "invertGlobeDrag": "Trascina globo: stile orbita"
   },
   "easterEggs": {
     "watcherName": "L'Osservatore",

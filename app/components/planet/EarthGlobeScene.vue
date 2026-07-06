@@ -165,6 +165,7 @@ let pointerStart = { x: 0, y: 0 }
 let pointerDirty = false
 let idleTime = 0
 const { camera, renderer } = useTres()
+const { settings } = useSettings()
 
 function disposeScene() {
     disposables.forEach(d => d.dispose())
@@ -457,7 +458,10 @@ function onPointerMove(e: PointerEvent) {
     if (isDragging) {
         const dx = e.clientX - pointerStart.x
         const dy = e.clientY - pointerStart.y
-        cameraGoal.y = dragStart.y + dx * 0.005
+        // Default: the globe follows the pointer ("grab" feel); the setting
+        // flips it for people who prefer orbit-style dragging.
+        const dir = settings.invertGlobeDrag ? 1 : -1
+        cameraGoal.y = dragStart.y + dir * dx * 0.005
         cameraGoal.x = Math.max(-0.8, Math.min(0.8, dragStart.x + dy * 0.005))
         idleTime = 0
     }
