@@ -61,7 +61,10 @@
     "color": "#E53E3E",
     "is_sacred": false,
     "branch_from": null,
-    "title_slugs": []
+    "title_slugs": [
+      "venom-sony", "venom-let-there-be-carnage-sony", "venom-the-last-dance-sony",
+      "morbius-sony", "kraven-the-hunter", "madame-web-sony"
+    ]
   },
   {
     "id": "fox-verse",
@@ -72,7 +75,13 @@
     "color": "#F6E05E",
     "is_sacred": false,
     "branch_from": null,
-    "title_slugs": ["deadpool-and-wolverine"]
+    "title_slugs": [
+      "x-men", "x2-x-men-united", "x-men-the-last-stand",
+      "x-men-origins-wolverine", "x-men-first-class", "the-wolverine",
+      "x-men-days-of-future-past-fox", "deadpool-fox", "x-men-apocalypse",
+      "logan-fox", "deadpool-2-fox", "dark-phoenix", "the-new-mutants",
+      "deadpool-and-wolverine"
+    ]
   },
   {
     "id": "what-if-multiverse",
@@ -108,6 +117,45 @@
     "title_slugs": [
       "daredevil-netflix", "jessica-jones", "luke-cage",
       "iron-fist", "the-defenders", "the-punisher"
+    ]
+  },
+  {
+    "id": "blade-verse",
+    "code": "blade-verse",
+    "name": "Blade Universe",
+    "designation": "26320",
+    "description": "The original Blade film trilogy featuring the half-vampire Daywalker. A pre-MCU Marvel franchise that introduced audiences to the darker side of the Marvel universe.",
+    "color": "#991B1B",
+    "is_sacred": false,
+    "branch_from": null,
+    "title_slugs": ["blade-1998", "blade-ii", "blade-trinity"]
+  },
+  {
+    "id": "raimi-verse",
+    "code": "raimi-verse",
+    "name": "Earth-96283 (Raimi Spider-Man)",
+    "designation": "96283",
+    "description": "Sam Raimi's Spider-Man trilogy starring Tobey Maguire. This Peter Parker was pulled into the MCU through Doctor Strange's multiverse-shattering spell in No Way Home.",
+    "color": "#DC2626",
+    "is_sacred": false,
+    "branch_from": null,
+    "title_slugs": [
+      "spider-man-raimi", "spider-man-2-raimi", "spider-man-3-raimi",
+      "spider-man-no-way-home"
+    ]
+  },
+  {
+    "id": "webb-verse",
+    "code": "webb-verse",
+    "name": "Earth-120703 (Amazing Spider-Man)",
+    "designation": "120703",
+    "description": "Marc Webb's Amazing Spider-Man films starring Andrew Garfield. This Spider-Man crossed into the MCU alongside Tobey Maguire's variant during the events of No Way Home.",
+    "color": "#2563EB",
+    "is_sacred": false,
+    "branch_from": null,
+    "title_slugs": [
+      "the-amazing-spider-man", "the-amazing-spider-man-2",
+      "spider-man-no-way-home"
     ]
   }
 ]

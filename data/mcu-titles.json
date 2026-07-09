@@ -1,12 +1,210 @@
 [
   {
+    "tmdb_id": 36657,
+    "type": "movie",
+    "title": "X-Men",
+    "slug": "x-men-fox",
+    "release_date": "2000-07-14",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 104,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 3,
+    "retcon_notes": null,
+    "characters": [
+      "Logan / Wolverine",
+      "Charles Xavier / Professor X",
+      "Erik Lehnsherr / Magneto",
+      "Rogue",
+      "Jean Grey",
+      "Scott Summers / Cyclops",
+      "Storm"
+    ],
+    "teams": [
+      "X-Men",
+      "Brotherhood of Mutants"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hRLgrr0jOsQHGKEe10b7CwdQGtt.jpg",
+    "backdrop_url": null,
+    "overview": "In een wereld waar mutanten — mensen geboren met buitengewone krachten — bestaan en gediscrimineerd worden, verenigen twee facties zich: Professor X's X-Men die vrede nastreven, en Magneto's Broederschap die de mensheid wil domineren.",
+    "trailer_url": "https://www.youtube.com/watch?v=gbLmku5QACQ",
+    "story_year": "2000",
+    "story_order": 9,
+    "chronology_index": 1
+  },
+  {
+    "tmdb_id": 557,
+    "type": "movie",
+    "title": "Spider-Man",
+    "slug": "spider-man-raimi",
+    "release_date": "2002-05-03",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Raimi Spider-Man Universe",
+    "runtime_minutes": 121,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 5,
+    "retcon_notes": "Tobey Maguire's Spider-Man verschijnt in MCU via Spider-Man: No Way Home",
+    "characters": [
+      "Peter Parker / Spider-Man",
+      "Norman Osborn / Green Goblin",
+      "Mary Jane Watson",
+      "Harry Osborn",
+      "May Parker"
+    ],
+    "teams": [],
+    "franchise": "Spider-Man (Raimi)",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gh4cZbhZxyTbgxQPxD0dOudNPTn.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/sWvxBXNtCObisPjEHMHGbTMrSuL.jpg",
+    "overview": "Peter Parker is een verlegen tiener die wordt gebeten door een genetisch gemanipuleerde spin. Hij krijgt bovenmenselijke krachten en besluit deze te gebruiken om misdaad te bestrijden als Spider-Man. Maar wanneer de vader van zijn beste vriend verandert in de kwaadaardige Green Goblin, moet Peter alles op het spel zetten.",
+    "trailer_url": "https://www.youtube.com/watch?v=t06RUxPbp_c",
+    "story_year": "2002",
+    "story_order": 10,
+    "chronology_index": 2
+  },
+  {
+    "tmdb_id": 36658,
+    "type": "movie",
+    "title": "X2: X-Men United",
+    "slug": "x2-x-men-united-fox",
+    "release_date": "2003-05-02",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 134,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 3,
+    "retcon_notes": null,
+    "characters": [
+      "Logan / Wolverine",
+      "Charles Xavier / Professor X",
+      "Erik Lehnsherr / Magneto",
+      "Jean Grey",
+      "Storm",
+      "Nightcrawler",
+      "William Stryker"
+    ],
+    "teams": [
+      "X-Men"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rtTZQzEwuVvXgNjLqhIoNGmlXjL.jpg",
+    "backdrop_url": null,
+    "overview": "De X-Men moeten samenwerken met hun aartsrivaal Magneto wanneer een militaristische anti-mutant-operatie onder leiding van kolonel William Stryker dreigt alle mutanten uit te roeien.",
+    "trailer_url": "https://www.youtube.com/watch?v=GcJGF4GKazI",
+    "story_year": "2003",
+    "story_order": 11,
+    "chronology_index": 3
+  },
+  {
+    "tmdb_id": 558,
+    "type": "movie",
+    "title": "Spider-Man 2",
+    "slug": "spider-man-2-raimi",
+    "release_date": "2004-06-30",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Raimi Spider-Man Universe",
+    "runtime_minutes": 127,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 5,
+    "retcon_notes": "Doc Ock verschijnt in MCU via Spider-Man: No Way Home",
+    "characters": [
+      "Peter Parker / Spider-Man",
+      "Otto Octavius / Doc Ock",
+      "Mary Jane Watson",
+      "Harry Osborn"
+    ],
+    "teams": [],
+    "franchise": "Spider-Man (Raimi)",
+    "poster_url": "https://image.tmdb.org/t/p/w500/olxpyq9kJAZ2NU1siLshhhXEPR2.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jCmOcITT5kbMtNPDRayDBdkmch9.jpg",
+    "overview": "Peter Parker worstelt met zijn dubbelleven als Spider-Man. Zijn relaties, studie en werk lijden eronder. Wanneer de briljante wetenschapper Otto Octavius verandert in de gevaarlijke Doctor Octopus na een mislukt experiment, moet Spider-Man opnieuw in actie komen.",
+    "trailer_url": "https://www.youtube.com/watch?v=1s9Yln0YwGw",
+    "story_year": "2004",
+    "story_order": 13,
+    "chronology_index": 4
+  },
+  {
+    "tmdb_id": 36668,
+    "type": "movie",
+    "title": "X-Men: The Last Stand",
+    "slug": "x-men-the-last-stand-fox",
+    "release_date": "2006-05-26",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 104,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": "Gedeeltelijk geretconned door Days of Future Past",
+    "characters": [
+      "Logan / Wolverine",
+      "Charles Xavier / Professor X",
+      "Erik Lehnsherr / Magneto",
+      "Jean Grey / Phoenix",
+      "Storm",
+      "Beast"
+    ],
+    "teams": [
+      "X-Men",
+      "Brotherhood of Mutants"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qULSMCT1CEOv2ZIPS1U0cYdLlqH.jpg",
+    "backdrop_url": null,
+    "overview": "Wanneer een 'cure' voor mutaties wordt ontdekt, staan de X-Men voor een moreel dilemma. Ondertussen ontwaakt de duistere Phoenix-kracht in Jean Grey, met verwoestende gevolgen.",
+    "trailer_url": "https://www.youtube.com/watch?v=dliSn_F49qs",
+    "story_year": "2006",
+    "story_order": 14,
+    "chronology_index": 5
+  },
+  {
+    "tmdb_id": 559,
+    "type": "movie",
+    "title": "Spider-Man 3",
+    "slug": "spider-man-3-raimi",
+    "release_date": "2007-05-04",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Raimi Spider-Man Universe",
+    "runtime_minutes": 139,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Sandman verschijnt in MCU via Spider-Man: No Way Home",
+    "characters": [
+      "Peter Parker / Spider-Man",
+      "Sandman / Flint Marko",
+      "Eddie Brock / Venom",
+      "Harry Osborn / New Goblin",
+      "Mary Jane Watson"
+    ],
+    "teams": [],
+    "franchise": "Spider-Man (Raimi)",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qFmwhVUoUSXjkKRmca5yGDEXBIj.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/5miizMga4k3cDPySv5b0hSfKbkw.jpg",
+    "overview": "Peter Parker staat op het hoogtepunt van zijn leven: hij is populair als Spider-Man en zijn relatie met Mary Jane bloeit. Maar wanneer een buitenaards symbioot zijn pak infecteert en zijn donkere kant versterkt, en nieuwe vijanden als Sandman en Venom opduiken, dreigt alles uiteen te vallen.",
+    "trailer_url": "https://www.youtube.com/watch?v=_IiPRyQGO7k",
+    "story_year": "2007",
+    "story_order": 15,
+    "chronology_index": 6
+  },
+  {
     "tmdb_id": 1726,
     "type": "movie",
     "title": "Iron Man",
     "slug": "iron-man",
     "release_date": "2008-05-02",
     "release_status": "released",
-    "chronology_index": 1,
+    "chronology_index": 7,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 126,
@@ -29,7 +227,7 @@
     "overview": "Tony Stark is een multimiljardair, industrialist en bovenal een geniale uitvinder. Hij wordt ontvoerd en gedwongen om een verschrikkelijk wapen te bouwen. In plaats daarvan construeert hij een ingenieus ijzeren pak waarmee hij weet te ontsnappen. Als hij terugkeert in de V.S. ontdekt hij een complot dat de stabiliteit van de wereld in gevaar brengt. Onder zijn alias Iron Man probeert hij het tij te keren.",
     "trailer_url": "https://www.youtube.com/watch?v=8ugaeA-nMTc",
     "story_year": "2010",
-    "story_order": 3
+    "story_order": 16
   },
   {
     "tmdb_id": 1724,
@@ -38,7 +236,7 @@
     "slug": "the-incredible-hulk",
     "release_date": "2008-06-13",
     "release_status": "released",
-    "chronology_index": 2,
+    "chronology_index": 8,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 112,
@@ -59,7 +257,40 @@
     "overview": "Dr. Bruce Banner probeert te leven met zijn alter-ego The Hulk, een groen, groot en enorm sterk wezen dat verschijnt als hij kwaad begint te worden. Dit is absoluut niet eenvoudig aangezien er horden mensen achter hem aan zitten die misbruik willen maken van zijn bijzondere krachten. Maar dan ineens verschijnt The Abomination, een kwaadaardig en wild beest. Banner ziet zichzelf genoodzaakt zijn krachten te gebruiken om de stad te redden van dit afschuwelijke monster.",
     "trailer_url": "https://www.youtube.com/watch?v=dz6eBeW19Lg",
     "story_year": "2011",
-    "story_order": 5
+    "story_order": 18
+  },
+  {
+    "tmdb_id": 2080,
+    "type": "movie",
+    "title": "X-Men Origins: Wolverine",
+    "slug": "x-men-origins-wolverine-fox",
+    "release_date": "2009-05-01",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 107,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": "Deadpool-portrayal volledig geretconned",
+    "characters": [
+      "Logan / Wolverine",
+      "Victor Creed / Sabretooth",
+      "Wade Wilson",
+      "William Stryker",
+      "Gambit"
+    ],
+    "teams": [
+      "Team X"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yj8LbTju1MI1GaeCFEcFqLOUYJi.jpg",
+    "backdrop_url": null,
+    "overview": "Het verhaal van Logan's verleden onthult hoe hij van soldaat in de Burgeroorlog veranderde in het wapen Wolverine, met een adamantium-skelet en gewist geheugen.",
+    "trailer_url": "https://www.youtube.com/watch?v=A2o7e6xWVBU",
+    "story_year": "1845–1979",
+    "story_order": 1,
+    "chronology_index": 9
   },
   {
     "tmdb_id": 10138,
@@ -68,7 +299,7 @@
     "slug": "iron-man-2",
     "release_date": "2010-05-07",
     "release_status": "released",
-    "chronology_index": 3,
+    "chronology_index": 10,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 124,
@@ -92,7 +323,7 @@
     "overview": "Multimiljardair en geniale uitvinder Tony Stark, wordt zes maanden, nadat hij zijn identiteit als 'Iron Man' heeft onthuld, opnieuw gedwongen zijn krachten te bundelen. Nu de wereld bewust is van het feit dat Tony 'Iron Man' is, wordt hij door zowel de pers als de regering onder druk gezet om zijn uitvinding en technologie met het Amerikaanse leger te delen. Tony weigert informatie te onthullen, omdat hij bang is dat het in de verkeerde handen terecht zal komen. Met Pepper Potts en James \"Rhodey\" Rhodes aan zijn zijde, smeedt Tony nieuwe plannen en moet hij het opnemen tegen nieuwe, duistere en gevaarlijke machten. Het duurt dan ook niet lang voordat de uiterst gevaarlijke Rus Ivan Vanko a.k.a. 'Whiplash'  van zich laat horen...",
     "trailer_url": "https://www.youtube.com/watch?v=5fUQkLdJ2kE",
     "story_year": "2011",
-    "story_order": 4
+    "story_order": 17
   },
   {
     "tmdb_id": 10195,
@@ -101,7 +332,7 @@
     "slug": "thor",
     "release_date": "2011-05-06",
     "release_status": "released",
-    "chronology_index": 4,
+    "chronology_index": 11,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 115,
@@ -125,7 +356,41 @@
     "overview": "De machtige, maar arrogante krijger Thor wakkert met zijn roekeloze acties een eeuwenoude oorlog aan. Thor’s vader Odin verbant Thor naar de Aarde en hier wordt hij gedwongen tussen de normale bevolking te leven. Hij wordt verliefd op de jonge wetenschapper Jane. Terwijl zij een relatie ontwikkelen op Aarde beseft Thor wat het vergt om een echte held te zijn wanneer zijn aartsvijand duistere krachten van Asgard naar de Aarde stuurt.",
     "trailer_url": "https://www.youtube.com/watch?v=uHBnrJowBZE",
     "story_year": "2011",
-    "story_order": 6
+    "story_order": 19
+  },
+  {
+    "tmdb_id": 49538,
+    "type": "movie",
+    "title": "X-Men: First Class",
+    "slug": "x-men-first-class-fox",
+    "release_date": "2011-06-01",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 131,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 3,
+    "retcon_notes": null,
+    "characters": [
+      "Charles Xavier",
+      "Erik Lehnsherr",
+      "Raven / Mystique",
+      "Sebastian Shaw",
+      "Moira MacTaggert"
+    ],
+    "teams": [
+      "X-Men",
+      "Hellfire Club"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vkPtvRGJVYUO7dSaNvKuBHOeEhh.jpg",
+    "backdrop_url": null,
+    "overview": "In 1962, tijdens de Cubacrisis, ontmoeten de jonge Charles Xavier en Erik Lehnsherr elkaar en richten de eerste X-Men op — voordat hun ideologische breuk hen tot vijanden maakt.",
+    "trailer_url": "https://www.youtube.com/watch?v=UrbHSUvlhMU",
+    "story_year": "1962",
+    "story_order": 4,
+    "chronology_index": 12
   },
   {
     "tmdb_id": 1771,
@@ -134,7 +399,7 @@
     "slug": "captain-america-the-first-avenger",
     "release_date": "2011-07-22",
     "release_status": "released",
-    "chronology_index": 5,
+    "chronology_index": 13,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 124,
@@ -159,7 +424,7 @@
     "overview": "Een dappere, maar zachtaardige jonge soldaat genaamd Steve Rogers moet aan een aantal experimenten deelnemen voor het Amerikaanse leger, het zogenaamde Super Soldier programma. Maar wanneer het experiment wordt stopgezet besluiten ze Steve te gebruiken om het imago van het Amerikaanse leger te verbeteren.",
     "trailer_url": "https://www.youtube.com/watch?v=W4DlMggBPvc",
     "story_year": "1942-1945",
-    "story_order": 1
+    "story_order": 2
   },
   {
     "tmdb_id": 24428,
@@ -168,7 +433,7 @@
     "slug": "the-avengers",
     "release_date": "2012-05-04",
     "release_status": "released",
-    "chronology_index": 6,
+    "chronology_index": 14,
     "phase": "Phase 1",
     "saga": "Infinity Saga",
     "runtime_minutes": 143,
@@ -196,7 +461,37 @@
     "overview": "The Avengers zijn een buitengewoon team van superhelden. Wanneer een onverwachte vijand opduikt die een bedreiging vormt voor de wereldwijde veiligheid heeft Nick Fury, directeur van de internationale vredesmacht S.H.I.E.L.D., een team nodig om de wereld te redden van de ondergang.",
     "trailer_url": "https://www.youtube.com/watch?v=hIR8Ar-Z4hw",
     "story_year": "2012",
-    "story_order": 7
+    "story_order": 20
+  },
+  {
+    "tmdb_id": 1930,
+    "type": "movie",
+    "title": "The Amazing Spider-Man",
+    "slug": "the-amazing-spider-man",
+    "release_date": "2012-07-03",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Amazing Spider-Man Universe",
+    "runtime_minutes": 136,
+    "streaming_platform": null,
+    "canon_level": "standalone",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Andrew Garfield's Spider-Man en Lizard verschijnen in MCU via Spider-Man: No Way Home",
+    "characters": [
+      "Peter Parker / Spider-Man",
+      "Gwen Stacy",
+      "Dr. Curt Connors / Lizard",
+      "Captain George Stacy"
+    ],
+    "teams": [],
+    "franchise": "Spider-Man (Webb)",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fSbqPbqXa7ePo8bcnZYN9AHv6WA.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jHZFDJrKoVjVljY6KfJAihUPFOi.jpg",
+    "overview": "Peter Parker vindt een mysterieuze koffer die toebehoorde aan zijn vader. De sporen leiden hem naar het laboratorium van Dr. Curt Connors, zijn vaders voormalige partner. Als Spider-Man moet Peter een ongemakkelijke keuze maken: het monster opsporen dat New York terroriseert, of het mysterie van zijn ouders ontrafelen.",
+    "trailer_url": "https://www.youtube.com/watch?v=-tnxzJ0SSOw",
+    "story_year": "2012",
+    "story_order": 21,
+    "chronology_index": 15
   },
   {
     "tmdb_id": 68721,
@@ -205,7 +500,7 @@
     "slug": "iron-man-3",
     "release_date": "2013-05-03",
     "release_status": "released",
-    "chronology_index": 7,
+    "chronology_index": 16,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 130,
@@ -226,7 +521,72 @@
     "overview": "De briljante Tony Stark komt tegenover een vijand te staan die geen grenzen kent. Wanneer zijn persoonlijke wereld door deze vijand verwoest wordt, begint hij aan een aangrijpende zoektocht naar de verantwoordelijken. Deze reis zal zijn moed op de proef stellen. Wanneer Stark met zijn rug tegen de muur komt te staan kan hij alleen overleven door te vertrouwen op zijn eigen uitvindingen, vindingrijkheid en instinct om zijn naasten te beschermen.",
     "trailer_url": "https://www.youtube.com/watch?v=YLorLVa95Xo",
     "story_year": "2012",
-    "story_order": 8
+    "story_order": 22
+  },
+  {
+    "tmdb_id": 76170,
+    "type": "movie",
+    "title": "The Wolverine",
+    "slug": "the-wolverine-fox",
+    "release_date": "2013-07-26",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 126,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": null,
+    "characters": [
+      "Logan / Wolverine",
+      "Mariko Yashida",
+      "Yukio",
+      "Viper",
+      "Silver Samurai"
+    ],
+    "teams": [],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2W4ZvACrwrQs7nNorgzrGBPpnDV.jpg",
+    "backdrop_url": null,
+    "overview": "Logan reist naar Japan waar hij wordt geconfronteerd met zijn onsterfelijkheid, een verloren liefde en een samurai-erfgenaam. Voor het eerst wordt zijn healing factor bedreigd.",
+    "trailer_url": "https://www.youtube.com/watch?v=bQ4y5jfRL1U",
+    "story_year": "2013",
+    "story_order": 23,
+    "chronology_index": 17
+  },
+  {
+    "tmdb_id": 1403,
+    "type": "series",
+    "title": "Agents of S.H.I.E.L.D.",
+    "slug": "agents-of-shield",
+    "release_date": "2013-09-24",
+    "release_status": "released",
+    "chronology_index": 18,
+    "phase": "Phase 1-5",
+    "saga": "ABC Saga",
+    "runtime_minutes": 5940,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Begon als MCU-canon maar divergeerde door tijdreizen. Canon-status is onduidelijk.",
+    "characters": [
+      "Phil Coulson",
+      "Daisy Johnson / Quake",
+      "Melinda May",
+      "Leo Fitz",
+      "Jemma Simmons",
+      "Grant Ward"
+    ],
+    "teams": [
+      "S.H.I.E.L.D."
+    ],
+    "franchise": "S.H.I.E.L.D.",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gHUCCMy1vvj58tzE3dZqeC9SXus.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/iWopHyAvuIDjGX10Yc3nn6UEebW.jpg",
+    "overview": "Agent Phil Coulson keert terug naar de wereldwijde rechtshandhavingsorganisatie S.H.I.E.L.D. Hij zet een klein, zeer goed opgeleid team van agenten in voor zaken die nog niet geclassificeerd zijn: het nieuwe, het vreemde en het onbekende. Dat team bestaat uit Grant Ward, een expert in het gevecht en spionage, piloot en martial artist Melinda May, en de geweldige, maar ook sociaal onhandige wetenschappers Leo Fitz en Jemma Simmons. Ze zullen worden vergezeld door de nieuwe rekruut en computerhacker Skye.",
+    "trailer_url": "https://www.youtube.com/watch?v=T3T-evQZiQo",
+    "story_year": "2013-2020",
+    "story_order": 25
   },
   {
     "tmdb_id": 76338,
@@ -235,7 +595,7 @@
     "slug": "thor-the-dark-world",
     "release_date": "2013-11-08",
     "release_status": "released",
-    "chronology_index": 8,
+    "chronology_index": 19,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 112,
@@ -260,7 +620,7 @@
     "overview": "Na de gebeurtenissen in The Avengers strijdt Thor om de orde te herstellen in de kosmos. Maar een oud ras van Duistere Elven onder leiding van de wraaklustige Malekith wil het universum in duisternis onderdompelen. Wanneer zelfs Odin en Asgard niet opgewassen zijn tegen deze vijand, zal Thor zijn meest gevaarlijke en persoonlijke strijd moeten aangaan, die hem opnieuw zal herenigen met Jane Foster en hem zal dwingen tot de ultieme opoffering voor de redding van onze wereld.",
     "trailer_url": "https://www.youtube.com/watch?v=npvJ9FTgZbM",
     "story_year": "2013",
-    "story_order": 9
+    "story_order": 24
   },
   {
     "tmdb_id": 100402,
@@ -269,7 +629,7 @@
     "slug": "captain-america-the-winter-soldier",
     "release_date": "2014-04-04",
     "release_status": "released",
-    "chronology_index": 9,
+    "chronology_index": 20,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 136,
@@ -295,7 +655,71 @@
     "overview": "Steve Rogers, beter bekend als de superheld Captain America, heeft moeite met zijn rol in de moderne wereld. Samen met Natasha Romanoff, alias Black Widow, trekt hij ten strijde om een sterke maar geheimzinnige vijand te bestrijden, die zich verstopt in het hedendaagse Washington. Natasha is een spionne die werkt voor S.H.I.E.L.D., de veiligheidsdienst onder leiding van Nick Fury.",
     "trailer_url": "https://www.youtube.com/watch?v=7SlILk2WMTI",
     "story_year": "2014",
-    "story_order": 10
+    "story_order": 26
+  },
+  {
+    "tmdb_id": 102382,
+    "type": "movie",
+    "title": "The Amazing Spider-Man 2",
+    "slug": "the-amazing-spider-man-2",
+    "release_date": "2014-04-18",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Amazing Spider-Man Universe",
+    "runtime_minutes": 142,
+    "streaming_platform": null,
+    "canon_level": "standalone",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Electro verschijnt in MCU via Spider-Man: No Way Home",
+    "characters": [
+      "Peter Parker / Spider-Man",
+      "Gwen Stacy",
+      "Max Dillon / Electro",
+      "Harry Osborn / Green Goblin"
+    ],
+    "teams": [],
+    "franchise": "Spider-Man (Webb)",
+    "poster_url": "https://image.tmdb.org/t/p/w500/c3e9e18SSlvFd1cQaGmUhsselE.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/ky3jWNKZqlUbIrMWRTuhLPLuskV.jpg",
+    "overview": "Peter Parker geniet van zijn leven als Spider-Man, maar wordt geconfronteerd met een krachtige nieuwe vijand: Electro. Wanneer ook zijn oude vriend Harry Osborn terugkeert met duistere bedoelingen, moet Spider-Man zijn dierbaren beschermen tegen gevaren die groter zijn dan hij ooit heeft meegemaakt.",
+    "trailer_url": "https://www.youtube.com/watch?v=nbp3Ra3Yp74",
+    "story_year": "2014",
+    "story_order": 27,
+    "chronology_index": 21
+  },
+  {
+    "tmdb_id": 127585,
+    "type": "movie",
+    "title": "X-Men: Days of Future Past",
+    "slug": "x-men-days-of-future-past",
+    "release_date": "2014-05-23",
+    "release_status": "released",
+    "chronology_index": 22,
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 132,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 3,
+    "retcon_notes": "Fox-universum. Wordt relevant door Deadpool & Wolverine multiverse-connectie.",
+    "characters": [
+      "Wolverine / Logan",
+      "Charles Xavier / Professor X",
+      "Erik Lehnsherr / Magneto",
+      "Mystique",
+      "Hank McCoy / Beast",
+      "Bolivar Trask"
+    ],
+    "teams": [
+      "X-Men"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tYfijzolzgoMOtegh1Y7j2Enorg.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3czpqXzFy5UcNuD1AubecRLWkwD.jpg",
+    "overview": "De film speelt zich af in een alternatieve toekomst waarin Magneto’s Brotherhood een belangrijke senator vermoordt. Als gevolg daarvan wordt de jacht op mutanten geopend en is het aan de X-Men uit het verleden en de X-Men uit de toekomst om samen te werken.",
+    "trailer_url": "https://www.youtube.com/watch?v=gsjtg7m1MMM",
+    "story_year": "1973/2023",
+    "story_order": 5
   },
   {
     "tmdb_id": 118340,
@@ -304,7 +728,7 @@
     "slug": "guardians-of-the-galaxy",
     "release_date": "2014-08-01",
     "release_status": "released",
-    "chronology_index": 10,
+    "chronology_index": 23,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 121,
@@ -330,7 +754,73 @@
     "overview": "In het heelal wordt onverbiddelijk jacht gemaakt op de onbezonnen avonturier Peter Quill, die een geheimzinnige bol heeft gestolen. Ronan, een machtige slechterik met plannen die het hele universum in gevaar dreigen te brengen, heeft zijn zinnen op de bol gezet.",
     "trailer_url": "https://www.youtube.com/watch?v=3CqymRQ1uUU",
     "story_year": "2014",
-    "story_order": 11
+    "story_order": 28
+  },
+  {
+    "tmdb_id": 61550,
+    "type": "series",
+    "title": "Agent Carter",
+    "slug": "agent-carter",
+    "release_date": "2015-01-06",
+    "release_status": "released",
+    "chronology_index": 24,
+    "phase": "Pre-Phase 1",
+    "saga": "ABC Saga",
+    "runtime_minutes": 540,
+    "streaming_platform": "Disney+",
+    "canon_level": "extended",
+    "mcu_relevance_score": 5,
+    "retcon_notes": "Peggy Carter's verhaal na WWII. Sluit aan op Captain America: The First Avenger.",
+    "characters": [
+      "Peggy Carter",
+      "Edwin Jarvis",
+      "Howard Stark",
+      "Daniel Sousa"
+    ],
+    "teams": [
+      "S.H.I.E.L.D.",
+      "SSR"
+    ],
+    "franchise": "Agent Carter",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7kqIsjjDMZA5GRMH5VCdQYZJqc6.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/MaQ7hbNsiJ30p14UgRdEnXDGMH.jpg",
+    "overview": "Het is 1946, en de vrede heeft Peggy Carter een behoorlijke dreun uitgedeeld als ze zich tussen mannen die terugkeren van oorlogsgevechten in het buitenland bevindt. Werkend voor het geheime SSR (Strategic Scientific Reserve) moet Peggy haar administratieve werk doen alsook geheime missies voor Howard Stark volbrengen terwijl ze probeert haar leven als alleenstaande vrouw in Amerika staande te houden vlak na het verlies van grote liefde (Steve Rogers).",
+    "trailer_url": "https://www.youtube.com/watch?v=V13W9gQ_1GA",
+    "story_year": "1946-1947",
+    "story_order": 3
+  },
+  {
+    "tmdb_id": 61889,
+    "type": "series",
+    "title": "Daredevil (Netflix)",
+    "slug": "daredevil-netflix",
+    "release_date": "2015-04-10",
+    "release_status": "released",
+    "chronology_index": 25,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 1560,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 7,
+    "retcon_notes": "Oorspronkelijk los van MCU, nu retroactief canon verklaard via Daredevil: Born Again",
+    "characters": [
+      "Matt Murdock / Daredevil",
+      "Kingpin / Wilson Fisk",
+      "Foggy Nelson",
+      "Karen Page",
+      "Elektra",
+      "Punisher / Frank Castle",
+      "Bullseye"
+    ],
+    "teams": [],
+    "franchise": "Daredevil",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uqsecCHXsXq8GSPsVJf0rILApRo.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/qsnXwGS7KBbX4JLqHvICngtR8qg.jpg",
+    "overview": "Matt Murdock is een advocaat die op jonge leeftijd door een vreemd ongeluk wordt verblind. Gelukkig worden zijn andere zintuigen op wonderlijke wijze verbeterd, waardoor hij zich, met een beetje vechtsporttraining, ontpopt tot een misdaadbestrijder met superkrachten in New York’s Hell’s Kitchen.",
+    "trailer_url": "https://www.youtube.com/watch?v=jAy6NJ_D5vU",
+    "story_year": "2015-2018",
+    "story_order": 32
   },
   {
     "tmdb_id": 99861,
@@ -339,7 +829,7 @@
     "slug": "avengers-age-of-ultron",
     "release_date": "2015-05-01",
     "release_status": "released",
-    "chronology_index": 11,
+    "chronology_index": 26,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 141,
@@ -368,7 +858,7 @@
     "overview": "The Avengers, een buitengewoon team van superhelden bestaande uit Iron Man, Incredible Hulk, Black Widow, Thor, Hawkeye en Captain America komen opnieuw samen om de strijd aan te binden tegen Ultron, een intelligente robot.",
     "trailer_url": "https://www.youtube.com/watch?v=JAUoeqvedMo",
     "story_year": "2015",
-    "story_order": 13
+    "story_order": 30
   },
   {
     "tmdb_id": 102899,
@@ -377,7 +867,7 @@
     "slug": "ant-man",
     "release_date": "2015-07-17",
     "release_status": "released",
-    "chronology_index": 12,
+    "chronology_index": 27,
     "phase": "Phase 2",
     "saga": "Infinity Saga",
     "runtime_minutes": 117,
@@ -398,7 +888,72 @@
     "overview": "Het geheime wapen van meesterdief Scott Lang is zijn uitzonderlijke vermogen om kleiner en tegelijkertijd sterker te worden. Hij moet zijn innerlijke held aanvaarden en zijn mentor Dr. Hank Pym helpen om het geheim van zijn spectaculaire Ant-Man uniform te beschermen tegen een nieuwe generatie van opkomende bedreigingen.",
     "trailer_url": "https://www.youtube.com/watch?v=cx3joJnXydc",
     "story_year": "2015",
-    "story_order": 14
+    "story_order": 31
+  },
+  {
+    "tmdb_id": 38472,
+    "type": "series",
+    "title": "Jessica Jones",
+    "slug": "jessica-jones",
+    "release_date": "2015-11-20",
+    "release_status": "released",
+    "chronology_index": 28,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 780,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Netflix-serie, canon-status onduidelijk maar characters verschijnen in MCU",
+    "characters": [
+      "Jessica Jones",
+      "Kilgrave / Purple Man",
+      "Luke Cage",
+      "Trish Walker",
+      "Malcolm Ducasse"
+    ],
+    "teams": [],
+    "franchise": "Jessica Jones",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1ghmaDw650NuUpGI7mYq6xE2QE2.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/fjEOQhzZk2Or7VYUBeMx5ZIwU95.jpg",
+    "overview": "De serie draait om Jones, die haar persoonlijke leven weer probeert op te pakken nadat een korte periode als superheld op een tragische manier is geëindigd.\n\nJones wordt rechercheur maar krijgt al snel te maken met zaken die met superhelden te maken heeft. Op een gegeven moment komt ze Kilgrave tegen, die ze maar al te goed kent. ",
+    "trailer_url": "https://www.youtube.com/watch?v=nWHUjuJ8zxE",
+    "story_year": "2015-2019",
+    "story_order": 33
+  },
+  {
+    "tmdb_id": 293660,
+    "type": "movie",
+    "title": "Deadpool",
+    "slug": "deadpool",
+    "release_date": "2016-02-12",
+    "release_status": "released",
+    "chronology_index": 29,
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 108,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 6,
+    "retcon_notes": "Oorspronkelijk Fox-universum, nu MCU-adjacent door Deadpool & Wolverine",
+    "characters": [
+      "Wade Wilson / Deadpool",
+      "Vanessa",
+      "Colossus",
+      "Negasonic Teenage Warhead",
+      "Ajax / Francis",
+      "Weasel"
+    ],
+    "teams": [
+      "X-Men"
+    ],
+    "franchise": "Deadpool",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jnaahY4s4ThMpCzBE6u0ZXAN8Xy.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/en971MEXui9diirXlogOrPKmsEn.jpg",
+    "overview": "Wade Wilson is een speciale agent van de overheid die, nadat hij onderworpen is aan een behandeling die hem bovenmenselijke genezende krachten heeft gegeven, een alter-ego in de vorm van 'Deadpool' aanneemt.",
+    "trailer_url": "https://www.youtube.com/watch?v=9vN6DHB6bJc",
+    "story_year": "2016",
+    "story_order": 40
   },
   {
     "tmdb_id": 271110,
@@ -407,7 +962,7 @@
     "slug": "captain-america-civil-war",
     "release_date": "2016-05-06",
     "release_status": "released",
-    "chronology_index": 13,
+    "chronology_index": 30,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 147,
@@ -437,7 +992,73 @@
     "overview": "In Marvel’s Captain America: Civil War zien we Steve Rogers als leider van het nieuw samengestelde Avengers team met het doel om de mensheid te beschermen. Maar na weer een incident waarbij de Avengers betrokken zijn, grijpt de overheid in. Ze zet het team onder politieke druk waardoor ze onder toezicht van een gecontroleerd beleid te werk moeten gaan. Deze nieuwe situatie verdeeld The Avengers in tweeën: het ene team wordt geleid door Steve Rogers en zijn wil om met The Avengers de mensheid te beschermen zonder de bemoeienis van de overheid. Daar tegenover staat Tony Stark met zijn verrassende beslissing om de overheid te steunen.",
     "trailer_url": "https://www.youtube.com/watch?v=dKrVegVI0Us",
     "story_year": "2016",
-    "story_order": 15
+    "story_order": 34
+  },
+  {
+    "tmdb_id": 246655,
+    "type": "movie",
+    "title": "X-Men: Apocalypse",
+    "slug": "x-men-apocalypse-fox",
+    "release_date": "2016-05-27",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 144,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": null,
+    "characters": [
+      "Charles Xavier",
+      "Erik Lehnsherr / Magneto",
+      "Raven / Mystique",
+      "En Sabah Nur / Apocalypse",
+      "Jean Grey",
+      "Scott Summers"
+    ],
+    "teams": [
+      "X-Men",
+      "Four Horsemen"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2ex2beA4TFaZOOIJBiJpHxiIqiM.jpg",
+    "backdrop_url": null,
+    "overview": "De eerste en machtigste mutant ooit, Apocalypse, ontwaakt na millennia en wil de beschaving vernietigen om een nieuwe wereldorde te creëren. De X-Men moeten hem stoppen.",
+    "trailer_url": "https://www.youtube.com/watch?v=COvnHv42T-A",
+    "story_year": "1983",
+    "story_order": 6,
+    "chronology_index": 31
+  },
+  {
+    "tmdb_id": 62126,
+    "type": "series",
+    "title": "Luke Cage",
+    "slug": "luke-cage",
+    "release_date": "2016-09-30",
+    "release_status": "released",
+    "chronology_index": 32,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 780,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 3,
+    "retcon_notes": null,
+    "characters": [
+      "Luke Cage",
+      "Misty Knight",
+      "Cottonmouth",
+      "Diamondback",
+      "Mariah Dillard",
+      "Shades"
+    ],
+    "teams": [],
+    "franchise": "Luke Cage",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yzM1hMB3PUJqbISX0f421b3xOjB.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/bJOmop22SGTHPo1tiuVAFf4U7B9.jpg",
+    "overview": "Wanneer een gesaboteerd experiment Luke Cage superkrachten en onbreekbare huid geeft, wordt hij een voortvluchtige die zich schuil houdt in Harlem. Daar probeert hij zijn leven weer op te bouwen. Geconfronteerd met zijn verleden gaat hij de strijd aan om criminelen te weren uit het centrum van zijn stad.",
+    "story_year": "2016-2018",
+    "story_order": 39
   },
   {
     "tmdb_id": 284052,
@@ -446,7 +1067,7 @@
     "slug": "doctor-strange",
     "release_date": "2016-11-04",
     "release_status": "released",
-    "chronology_index": 14,
+    "chronology_index": 33,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 115,
@@ -470,7 +1091,70 @@
     "overview": "Wanneer zijn carrière als chirurg voorbij is, gaat Stephen Strange op onderzoek uit naar het mystieke. Tijdens zijn zoektocht ontmoet hij een tovenaar, the Ancient One, die hem niet alleen beter maakt, maar hem ook magische krachten geeft en leert te beheersen. Al snel moet hij deze magie gebruiken om de aarde te beschermen tegen kwaad uit andere dimensies.",
     "trailer_url": "https://www.youtube.com/watch?v=HSzx-zryEgM",
     "story_year": "2016-2017",
-    "story_order": 19
+    "story_order": 38
+  },
+  {
+    "tmdb_id": 263115,
+    "type": "movie",
+    "title": "Logan",
+    "slug": "logan",
+    "release_date": "2017-03-03",
+    "release_status": "released",
+    "chronology_index": 34,
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 137,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 4,
+    "retcon_notes": "Wolverine's verhaal in Fox-universum. Relevant context voor Deadpool & Wolverine.",
+    "characters": [
+      "Wolverine / Logan",
+      "Charles Xavier / Professor X",
+      "X-23 / Laura",
+      "Donald Pierce"
+    ],
+    "teams": [
+      "X-Men"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/4DZxWNSAyksN6N3JkvpJ53Yq6zU.jpg",
+    "overview": "In 2029 is de mutant bevolking aanzienlijk geslonken en de X-Men zijn ontbonden. Logan zijn vermogen om zichzelf te genezen is slinkende en hij ontfermt zich nu samen met de mutant Caliban  over de zieke Professor X in een schuilplaats op de grens met Mexico.",
+    "trailer_url": "https://www.youtube.com/watch?v=XaE_9pfybL4",
+    "story_year": "2029",
+    "story_order": 78
+  },
+  {
+    "tmdb_id": 62127,
+    "type": "series",
+    "title": "Iron Fist",
+    "slug": "iron-fist",
+    "release_date": "2017-03-17",
+    "release_status": "released",
+    "chronology_index": 35,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 780,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 2,
+    "retcon_notes": null,
+    "characters": [
+      "Danny Rand / Iron Fist",
+      "Colleen Wing",
+      "Ward Meachum",
+      "Joy Meachum",
+      "Harold Meachum"
+    ],
+    "teams": [],
+    "franchise": "Iron Fist",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uqWOooLd180SQmFKhkEAoIajWzk.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/cuckn6IFp9OKu9H8AgD0iEANxhc.jpg",
+    "overview": "Nadat al 15 jaar werd aangenomen dat hij dood was, keert Danny Rand terug. Met de kracht van de Iron Fist wil hij zijn verleden heroveren en zijn levenslot vervullen.",
+    "trailer_url": "https://www.youtube.com/watch?v=f9OKL5no-S0",
+    "story_year": "2017-2018",
+    "story_order": 42
   },
   {
     "tmdb_id": 283995,
@@ -479,7 +1163,7 @@
     "slug": "guardians-of-the-galaxy-vol-2",
     "release_date": "2017-05-05",
     "release_status": "released",
-    "chronology_index": 15,
+    "chronology_index": 36,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 136,
@@ -507,7 +1191,7 @@
     "overview": "'Guardians of the Galaxy Vol. 2' zet de avonturen van het team voort terwijl ze reizen door de buitenste regionen van de kosmos. De Guardians moeten vechten om hun familie bij elkaar te houden, terwijl ze de mysteries over Peter Quills vader ontrafelen.",
     "trailer_url": "https://www.youtube.com/watch?v=wUn05hdkhjM",
     "story_year": "2014",
-    "story_order": 12
+    "story_order": 29
   },
   {
     "tmdb_id": 315635,
@@ -516,7 +1200,7 @@
     "slug": "spider-man-homecoming",
     "release_date": "2017-07-07",
     "release_status": "released",
-    "chronology_index": 16,
+    "chronology_index": 37,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 133,
@@ -540,7 +1224,41 @@
     "overview": "Peter Parker keert na zijn eerste superheldengevecht als Spider-Man terug naar zijn normale leven in Queens. Hij hoopt snel bij The Avengers gevraagd te worden door Tony Stark, maar het telefoontje blijft uit.",
     "trailer_url": "https://www.youtube.com/watch?v=xEvV3OsE2WM",
     "story_year": "2016-2017",
-    "story_order": 17
+    "story_order": 36
+  },
+  {
+    "tmdb_id": 62285,
+    "type": "series",
+    "title": "The Defenders",
+    "slug": "the-defenders",
+    "release_date": "2017-08-18",
+    "release_status": "released",
+    "chronology_index": 38,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 420,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 4,
+    "retcon_notes": null,
+    "characters": [
+      "Matt Murdock / Daredevil",
+      "Jessica Jones",
+      "Luke Cage",
+      "Danny Rand / Iron Fist",
+      "Elektra",
+      "Stick"
+    ],
+    "teams": [
+      "Defenders"
+    ],
+    "franchise": "Defenders",
+    "poster_url": "https://image.tmdb.org/t/p/w500/49XzINhH4LFsgz7cx6TOPcHUJUL.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/ycAWXhAhyaE7g3JBAaierK4LgNg.jpg",
+    "overview": "In Marvel's The Defenders volgen we Daredevil, Jessica Jones, Iron Fist en Luke Cage. Een viertal van unieke helden die één gemeenschappelijk doel hebben, het redden van New York City. Dit is het verhaal van vier solitaire figuren, belast met hun eigen persoonlijke uitdagingen, die zich realiseren dat ze samen misschien wel sterker zijn.",
+    "trailer_url": "https://www.youtube.com/watch?v=MAbjq7ydKDI",
+    "story_year": "2017",
+    "story_order": 43
   },
   {
     "tmdb_id": 284053,
@@ -549,7 +1267,7 @@
     "slug": "thor-ragnarok",
     "release_date": "2017-11-03",
     "release_status": "released",
-    "chronology_index": 17,
+    "chronology_index": 39,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 130,
@@ -576,7 +1294,37 @@
     "overview": "Loki heerst nu over Asgard, nadat hij zijn vader heeft verbannen, maar niemand beseft welke gevaren deze verbanning met zich meebracht. Nu Odin er niet meer is om Asgard te beschermen, weet Hela , de godin van de dood, Asgard binnen te dringen en de macht over te nemen.",
     "trailer_url": "https://www.youtube.com/watch?v=ue80QwXMRHg",
     "story_year": "2017",
-    "story_order": 20
+    "story_order": 41
+  },
+  {
+    "tmdb_id": 67178,
+    "type": "series",
+    "title": "The Punisher",
+    "slug": "the-punisher",
+    "release_date": "2017-11-17",
+    "release_status": "released",
+    "chronology_index": 40,
+    "phase": "Pre-Phase 4",
+    "saga": "Netflix Saga",
+    "runtime_minutes": 780,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 3,
+    "retcon_notes": null,
+    "characters": [
+      "Punisher / Frank Castle",
+      "Micro",
+      "Billy Russo / Jigsaw",
+      "Dinah Madani"
+    ],
+    "teams": [],
+    "franchise": "Punisher",
+    "poster_url": "https://image.tmdb.org/t/p/w500/y6wYElX5HaPZItVGJcYGdQO7k8g.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jBGjbSDRxOEudW9rmQbWDzJUKq9.jpg",
+    "overview": "Een voormalig marinier wil de criminelen straffen die verantwoordelijk zijn voor de moord op zijn gezin, maar raakt verstrikt in een militaire samenzwering.",
+    "trailer_url": "https://www.youtube.com/watch?v=s4QV6OZdmWY",
+    "story_year": "2017-2019",
+    "story_order": 44
   },
   {
     "tmdb_id": 284054,
@@ -585,7 +1333,7 @@
     "slug": "black-panther",
     "release_date": "2018-02-16",
     "release_status": "released",
-    "chronology_index": 18,
+    "chronology_index": 41,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 134,
@@ -611,7 +1359,7 @@
     "overview": "T'Challa keert terug naar Wakanda om zijn plaats als koning in te nemen. Echter wanneer er een oude vijand op de radar verschijnt wordt T'Challa op de proef gesteld. Hij wordt meegesleurd in een conflict dat de hele wereld in gevaar brengt.",
     "trailer_url": "https://www.youtube.com/watch?v=xjDjIWPwcPU",
     "story_year": "2016",
-    "story_order": 18
+    "story_order": 37
   },
   {
     "tmdb_id": 299536,
@@ -620,7 +1368,7 @@
     "slug": "avengers-infinity-war",
     "release_date": "2018-04-27",
     "release_status": "released",
-    "chronology_index": 19,
+    "chronology_index": 42,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 149,
@@ -654,7 +1402,43 @@
     "overview": "Tien jaar nadat de eerste film van het Marvel Cinematic Universe werd uitgebracht, komt de spanning tot een hoogtepunt in de grootste en meest gevreesde confrontatie aller tijden in Marvel’s Avengers: Infinity War.",
     "trailer_url": "https://www.youtube.com/watch?v=QwievZ1Tx-8",
     "story_year": "2018",
-    "story_order": 22
+    "story_order": 46
+  },
+  {
+    "tmdb_id": 383498,
+    "type": "movie",
+    "title": "Deadpool 2",
+    "slug": "deadpool-2",
+    "release_date": "2018-05-18",
+    "release_status": "released",
+    "chronology_index": 43,
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 119,
+    "streaming_platform": "Disney+",
+    "canon_level": "adjacent",
+    "mcu_relevance_score": 6,
+    "retcon_notes": "Zie Deadpool. Cable en andere characters relevant voor MCU via multiverse.",
+    "characters": [
+      "Wade Wilson / Deadpool",
+      "Cable",
+      "Domino",
+      "Colossus",
+      "Negasonic Teenage Warhead",
+      "Russell / Firefist",
+      "Vanessa"
+    ],
+    "teams": [
+      "X-Force",
+      "X-Men"
+    ],
+    "franchise": "Deadpool",
+    "poster_url": "https://image.tmdb.org/t/p/w500/to0spRl1CMDvyUbOnbb4fTk3VAd.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3P52oz9HPQWxcwHOwxtyrVV1LKi.jpg",
+    "overview": "Wade Wilson werkt al twee jaar als de gemaskerde held Deadpool. Op een dag verliest hij echter alles waar hij van houdt. Hij geeft zichzelf hiervan de schuld. Alles wat hij overhoudt aan de tijd met zijn geliefde Vanessa, is een Skee-Ball-munt.",
+    "trailer_url": "https://www.youtube.com/watch?v=20bpjtCbCz0",
+    "story_year": "2018",
+    "story_order": 49
   },
   {
     "tmdb_id": 363088,
@@ -663,7 +1447,7 @@
     "slug": "ant-man-and-the-wasp",
     "release_date": "2018-07-06",
     "release_status": "released",
-    "chronology_index": 20,
+    "chronology_index": 44,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 118,
@@ -685,7 +1469,35 @@
     "overview": "Scott Lang worstelt met het vinden van een balans tussen zijn gezin en zijn verantwoordelijkheden als superheld, maar transformeert opnieuw tot Ant-man als hij zijn krachten moet bundelen met Hope van Dyne, de Wasp. Zij is op een belangrijke missie om geheimen uit het verleden te ontrafelen.",
     "trailer_url": "https://www.youtube.com/watch?v=UUkn-enk2RU",
     "story_year": "2018",
-    "story_order": 21
+    "story_order": 45
+  },
+  {
+    "tmdb_id": 335983,
+    "type": "movie",
+    "title": "Venom",
+    "slug": "venom",
+    "release_date": "2018-10-05",
+    "release_status": "released",
+    "chronology_index": 45,
+    "phase": null,
+    "saga": "Sony Spider-Man Universe",
+    "runtime_minutes": 112,
+    "streaming_platform": "Netflix",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": "Sony-universum. Post-credits in Let There Be Carnage en No Way Home suggereren multiverse-connectie.",
+    "characters": [
+      "Eddie Brock / Venom",
+      "Carlton Drake / Riot"
+    ],
+    "teams": [],
+    "franchise": "Venom",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6H7WSV1ecBWauj0XqWYl8BiGQ2L.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/hNsYUryiwxcdeTMkaBcPF3iEg0p.jpg",
+    "overview": "Het verhaal volgt de fotojournalist Eddie Brock, die verbonden raakt met een symbiont, ofwel een buitenaardse levensvorm. Samen staan ze beter bekend onder de naam 'Venom'. Al snel groeit Eddie onder deze naam uit tot een antiheld die de onschuldigen probeert te beschermen.",
+    "trailer_url": "https://www.youtube.com/watch?v=xLCn88bfW1o",
+    "story_year": "2018",
+    "story_order": 48
   },
   {
     "tmdb_id": 299537,
@@ -694,7 +1506,7 @@
     "slug": "captain-marvel",
     "release_date": "2019-03-08",
     "release_status": "released",
-    "chronology_index": 21,
+    "chronology_index": 46,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 123,
@@ -719,7 +1531,7 @@
     "overview": "Het jaar 1990. Er is een galactische oorlog gaande tussen twee buitenaardse rassen. Carol Danvers, beter bekend als Captain Marvel, is een vrouw met superkrachten die na lange tijd terugkeert naar de aarde.",
     "trailer_url": "https://www.youtube.com/watch?v=GX33bIOA5aA",
     "story_year": "1995",
-    "story_order": 2
+    "story_order": 8
   },
   {
     "tmdb_id": 299534,
@@ -728,7 +1540,7 @@
     "slug": "avengers-endgame",
     "release_date": "2019-04-26",
     "release_status": "released",
-    "chronology_index": 22,
+    "chronology_index": 47,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 181,
@@ -758,7 +1570,40 @@
     "overview": "Na de gebeurtenissen in 'Infinity War' hebben de superhelden een grote tik gekregen. Hun gezamenlijke vijand Thanos is erin geslaagd om alle Infinity Stones te bemachtigen en heeft daarbij de helft van al het leven uitgewist. De overlevende helden, en met name de Avengers, hebben echter weinig tijd om te rouwen om hun vrienden en familie. Ze krijgen namelijk hulp aangeboden van onder meer Ant-Man en Captain Marvel. Allen slaan ze de handen in elkaar om Thanos alsnog te kunnen verslaan en om de miljarden doden die hij veroorzaakte weer tot leven te wekken.",
     "trailer_url": "https://www.youtube.com/watch?v=AMSITikqKiM",
     "story_year": "2018-2023",
-    "story_order": 23
+    "story_order": 47
+  },
+  {
+    "tmdb_id": 320288,
+    "type": "movie",
+    "title": "Dark Phoenix",
+    "slug": "dark-phoenix-fox",
+    "release_date": "2019-06-07",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 114,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 1,
+    "retcon_notes": null,
+    "characters": [
+      "Jean Grey / Phoenix",
+      "Charles Xavier",
+      "Erik Lehnsherr / Magneto",
+      "Raven / Mystique",
+      "Vuk"
+    ],
+    "teams": [
+      "X-Men"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cCTJPelKGLhALq3r51A9uMonxKj.jpg",
+    "backdrop_url": null,
+    "overview": "Tijdens een reddingsmissie in de ruimte wordt Jean Grey getroffen door een kosmische kracht die haar oneindig machtig maar ook dodelijk instabiel maakt — de Phoenix is ontwaakt.",
+    "trailer_url": "https://www.youtube.com/watch?v=1-q8C_c-nlE",
+    "story_year": "1992",
+    "story_order": 7,
+    "chronology_index": 48
   },
   {
     "tmdb_id": 429617,
@@ -767,7 +1612,7 @@
     "slug": "spider-man-far-from-home",
     "release_date": "2019-07-02",
     "release_status": "released",
-    "chronology_index": 23,
+    "chronology_index": 49,
     "phase": "Phase 3",
     "saga": "Infinity Saga",
     "runtime_minutes": 129,
@@ -790,7 +1635,40 @@
     "overview": "Onze vriendelijke buurtsuperheld besluit om samen met zijn beste vrienden Ned, MJ en anderen op vakantie naar Europa te gaan. Het plan van Peter om een paar weken geen superheld te zijn, moet hij echter snel schrappen wanneer hij met tegenzin instemt om Nick Fury te helpen het mysterie van verschillende elementaire aanvallen van wezens te ontrafelen. Spider-Man en Mysterio bundelen hun krachten om de chaos op het continent te bestrijden, maar niets is wat het lijkt.",
     "trailer_url": "https://www.youtube.com/watch?v=LFoz8ZJWmPs",
     "story_year": "2024",
-    "story_order": 27
+    "story_order": 56
+  },
+  {
+    "tmdb_id": 340102,
+    "type": "movie",
+    "title": "The New Mutants",
+    "slug": "the-new-mutants-fox",
+    "release_date": "2020-08-28",
+    "release_status": "released",
+    "phase": null,
+    "saga": "Fox X-Men Universe",
+    "runtime_minutes": 94,
+    "streaming_platform": "Disney+",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 1,
+    "retcon_notes": null,
+    "characters": [
+      "Danielle Moonstar",
+      "Rahne Sinclair / Wolfsbane",
+      "Sam Guthrie / Cannonball",
+      "Roberto da Costa / Sunspot",
+      "Illyana Rasputin / Magik"
+    ],
+    "teams": [
+      "New Mutants"
+    ],
+    "franchise": "X-Men",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xZNw9xxtwbEf25NYoz52KdbXHPM.jpg",
+    "backdrop_url": null,
+    "overview": "Vijf jonge mutanten ontdekken hun krachten terwijl ze gevangen zitten in een geheim instituut. Terwijl ze hun verleden onder ogen zien, moeten ze ontsnappen aan de duistere kracht die het gebouw controleert.",
+    "trailer_url": "https://www.youtube.com/watch?v=Wy_tsp7V6cU",
+    "story_year": "2020",
+    "story_order": 50,
+    "chronology_index": 50
   },
   {
     "tmdb_id": 85271,
@@ -799,7 +1677,7 @@
     "slug": "wandavision",
     "release_date": "2021-01-15",
     "release_status": "released",
-    "chronology_index": 24,
+    "chronology_index": 51,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 360,
@@ -824,7 +1702,7 @@
     "overview": "Leiden Wanda Maximoff en Vision een ideaal burgerlijk leventje wanneer zij beginnen te vermoeden dat alles niet is wat het lijkt.",
     "trailer_url": "https://www.youtube.com/watch?v=UBhlqe2OTt4",
     "story_year": "2023",
-    "story_order": 24
+    "story_order": 53
   },
   {
     "tmdb_id": 88396,
@@ -833,7 +1711,7 @@
     "slug": "the-falcon-and-the-winter-soldier",
     "release_date": "2021-03-19",
     "release_status": "released",
-    "chronology_index": 25,
+    "chronology_index": 52,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 300,
@@ -856,7 +1734,7 @@
     "overview": "Nu de voormalige Captain America zijn schild heeft overgedragen, komt zijn nalatenschap als nationale volksheld in het gedrang door de verschuivende positie van Sam Wilson 'The Falcon' als zijn opvolger. De opvolging wordt door de overheid niet erkend. Maar als een wereldwijd conflict op handen is, versterkt dit de roep van het volk om een nieuw nationaal boegbeeld. Sam en Bucky Barnes 'The Winter Soldier' slaan de handen ineen om het conflict tot een goed einde te brengen.",
     "trailer_url": "https://www.youtube.com/watch?v=ojGHE581lsM",
     "story_year": "2024",
-    "story_order": 25
+    "story_order": 55
   },
   {
     "tmdb_id": 84958,
@@ -865,7 +1743,7 @@
     "slug": "loki",
     "release_date": "2021-06-09",
     "release_status": "released",
-    "chronology_index": 26,
+    "chronology_index": 53,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 360,
@@ -890,7 +1768,7 @@
     "overview": "Loki \"God of Mischief\" weet de tesseract te bemachtigen, wat leidt tot zijn vrijheid. Hij kan zich nu door verschillende tijdsperioden verplaatsen en beïnvloedt daarmee de geschiedenis van de mensheid en enkele zeer belangrijke historische gebeurtenissen. Ook gaat Loki een samenwerking aan met de Time Variance Authority om het multiversum te beschermen.",
     "trailer_url": "https://www.youtube.com/watch?v=nW948Va-l10",
     "story_year": "Buiten de tijd",
-    "story_order": 26
+    "story_order": 80
   },
   {
     "tmdb_id": 497698,
@@ -899,7 +1777,7 @@
     "slug": "black-widow",
     "release_date": "2021-07-09",
     "release_status": "released",
-    "chronology_index": 27,
+    "chronology_index": 54,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 134,
@@ -923,7 +1801,7 @@
     "overview": "Vanaf haar geboorte is Natasha Romanoff toevertrouwd aan de KGB, die haar heeft opgeleid tot het ultieme wapen en hun beste agente. Wanneer de Sovjet-Unie uiteenvalt, staat ze ten dode opgeschreven en werd ze gedwongen naar New York te verhuizen. Daar leeft ze inmiddels als freelancer en is het jaren geleden dat de Sovjet-Unie ten val kwam.",
     "trailer_url": "https://www.youtube.com/watch?v=Fp9pNPdNwjI",
     "story_year": "2016",
-    "story_order": 16
+    "story_order": 35
   },
   {
     "tmdb_id": 91363,
@@ -932,7 +1810,7 @@
     "slug": "what-if",
     "release_date": "2021-08-11",
     "release_status": "released",
-    "chronology_index": 28,
+    "chronology_index": 55,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -955,7 +1833,7 @@
     "overview": "What If...? laat zien wat er zou gebeuren als belangrijke momenten uit de films van het Marvel Cinematic Universe (MCU) anders zouden verlopen dan dat ze deden in de films",
     "trailer_url": "https://www.youtube.com/watch?v=x9D0uUKJ5KI",
     "story_year": "Multiverse",
-    "story_order": 37
+    "story_order": 79
   },
   {
     "tmdb_id": 566525,
@@ -964,7 +1842,7 @@
     "slug": "shang-chi-and-the-legend-of-the-ten-rings",
     "release_date": "2021-09-03",
     "release_status": "released",
-    "chronology_index": 29,
+    "chronology_index": 56,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 132,
@@ -988,7 +1866,36 @@
     "overview": "Shang-Chi is een meester in martial-arts, en is daarin vrijwel ongeëvenaard. Shang-Chi kent een verleden die hij achter zich heeft gelaten, maar wordt hiermee opnieuw geconfronteerd wanneer hij in het web van de mysterieuze Ten Rings-organisatie verstrikt raakt. Tevens krijgt Shang-Chi te maken met een dreiging die zich achter de naam \"Mandarin\" schuilt.",
     "trailer_url": "https://www.youtube.com/watch?v=8YjFbMbfXaQ",
     "story_year": "2024",
-    "story_order": 28
+    "story_order": 57
+  },
+  {
+    "tmdb_id": 580489,
+    "type": "movie",
+    "title": "Venom: Let There Be Carnage",
+    "slug": "venom-let-there-be-carnage",
+    "release_date": "2021-10-01",
+    "release_status": "released",
+    "chronology_index": 57,
+    "phase": null,
+    "saga": "Sony Spider-Man Universe",
+    "runtime_minutes": 97,
+    "streaming_platform": "Netflix",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 3,
+    "retcon_notes": "Post-credits scene toont Venom die kort in MCU-universum terechtkomt",
+    "characters": [
+      "Eddie Brock / Venom",
+      "Cletus Kasady / Carnage",
+      "Shriek"
+    ],
+    "teams": [],
+    "franchise": "Venom",
+    "poster_url": "https://image.tmdb.org/t/p/w500/llKbKViMrfXsHGOB2GBAmYxtE5L.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/eENEf62tMXbhyVvdcXlnQz2wcuT.jpg",
+    "overview": "Eddie Brock probeert zijn dagelijkse leven en carrière als journalist weer op te pakken. De symbiont daarentegen wil alleen maar de rol van dodelijke beschermer spelen; bad guys in elkaar slaan en zijn bodemloze honger stillen. Daarnaast heeft een sadistische moordenaar, Carnage genaamd, het op Eddie gemunt en lijkt een confrontatie onvermijdelijk.",
+    "trailer_url": "https://www.youtube.com/watch?v=GVwq2HlKYpE",
+    "story_year": "2021",
+    "story_order": 51
   },
   {
     "tmdb_id": 524434,
@@ -997,7 +1904,7 @@
     "slug": "eternals",
     "release_date": "2021-11-05",
     "release_status": "released",
-    "chronology_index": 30,
+    "chronology_index": 58,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 156,
@@ -1026,7 +1933,7 @@
     "overview": "Een onsterfelijk buitenaards ras, gecreëerd door de Celestials, leeft al meer dan 7000 jaar in het geheim op aarde. Een onverwachte tragedie dwingt hen echter om na al die jaren uit hun schaduw te komen. Ze dienen zich te herenigen om de mensheid te beschermen tegen hun slechte tegenhangers, de Deviants.",
     "trailer_url": "https://www.youtube.com/watch?v=x_me3xsvDgk",
     "story_year": "5000 v.Chr.-2024",
-    "story_order": 29
+    "story_order": 58
   },
   {
     "tmdb_id": 88329,
@@ -1035,7 +1942,7 @@
     "slug": "hawkeye",
     "release_date": "2021-11-24",
     "release_status": "released",
-    "chronology_index": 31,
+    "chronology_index": 59,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1057,7 +1964,7 @@
     "overview": "Voormalig Avenger Clint Barton, alias Hawkeye, heeft een schijnbaar eenvoudige missie: zijn familie bezoeken voor Kerstmis. Maar wanneer een dreiging uit zijn verleden opduikt, werkt Hawkeye met tegenzin samen met Kate Bishop, een 22-jarige bedreven boogschutter en zijn grootste fan, om een criminele samenzwering te ontrafelen.",
     "trailer_url": "https://www.youtube.com/watch?v=5VYb3B1ETlk",
     "story_year": "2024",
-    "story_order": 30
+    "story_order": 59
   },
   {
     "tmdb_id": 634649,
@@ -1066,7 +1973,7 @@
     "slug": "spider-man-no-way-home",
     "release_date": "2021-12-17",
     "release_status": "released",
-    "chronology_index": 32,
+    "chronology_index": 60,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 148,
@@ -1090,7 +1997,7 @@
     "overview": "Peter Parker is ontmaskerd en kan zijn normale leven niet langer scheiden van de hoge inzet van een superheld zijn.  Wanneer hij om hulp vraagt ​​van Doctor Strange, wordt de inzet nog gevaarlijker, waardoor hij moet ontdekken wat het werkelijk betekent om Spider-Man te zijn.",
     "trailer_url": "https://www.youtube.com/watch?v=1mTjfMFyPi8",
     "story_year": "2024",
-    "story_order": 31
+    "story_order": 60
   },
   {
     "tmdb_id": 92749,
@@ -1099,7 +2006,7 @@
     "slug": "moon-knight",
     "release_date": "2022-03-30",
     "release_status": "released",
-    "chronology_index": 33,
+    "chronology_index": 61,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1121,7 +2028,35 @@
     "overview": "Marc Spector is een voormalige huurmoordenaar voor de Amerikaanse marine, die nu avonturier geworden is. Hij lijdt aan een dissociatieve identiteitsstoornis, wat inhoudt dat hij een meervoudige persoonlijkheid heeft. Marc krijgt op archeologische wijze met de Egyptische maangod Khonshu te maken, en krijgt dientengevolge diens bovenmenselijke krachten toegewezen. Hier hoort echter wel een taak bij: hij moet elke vijand die hij tegenkomt zien te verslaan met deze krachten. Hij komt er zo al vlug achter, dat deze krachten zowel een vloek als een zegen kunnen zijn in zijn toch al moeilijke leven. Zo wordt hij een dodelijk mysterie in gedreven, waar de Egyptische goden, al dan niet vereenzelvigd met Marcs persoonlijkheden, bij betrokken zijn.",
     "trailer_url": "https://www.youtube.com/watch?v=x7Krla_UxRg",
     "story_year": "2025",
-    "story_order": 32
+    "story_order": 63
+  },
+  {
+    "tmdb_id": 526896,
+    "type": "movie",
+    "title": "Morbius",
+    "slug": "morbius",
+    "release_date": "2022-04-01",
+    "release_status": "released",
+    "chronology_index": 62,
+    "phase": null,
+    "saga": "Sony Spider-Man Universe",
+    "runtime_minutes": 104,
+    "streaming_platform": "Netflix",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 1,
+    "retcon_notes": null,
+    "characters": [
+      "Michael Morbius",
+      "Milo / Lucian"
+    ],
+    "teams": [],
+    "franchise": "Morbius",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rfMwV6rCQ2RMKnk6xsSyDgFnqYl.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jzWT0zd8U77fqWg5WgUfYaMzSFz.jpg",
+    "overview": "In plaats van zichzelf te redden van een zeldzame bloedziekte, verandert biochemicus Michael Morbius zichzelf in een soort van vampier, met de bijbehorende dorst naar bloed. Morbius walgt van zijn eigen bloedlust, en daarom gaat hij op zoek naar criminelen waarvan hij vindt dat ze onwaardig leven. In de wereld van Spider-Man.",
+    "trailer_url": "https://www.youtube.com/watch?v=wG2TjtueeSU",
+    "story_year": "2022",
+    "story_order": 52
   },
   {
     "tmdb_id": 453395,
@@ -1130,7 +2065,7 @@
     "slug": "doctor-strange-in-the-multiverse-of-madness",
     "release_date": "2022-05-06",
     "release_status": "released",
-    "chronology_index": 34,
+    "chronology_index": 63,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 126,
@@ -1155,7 +2090,7 @@
     "overview": "Na een reeks van bizarre avonturen meegemaakt te hebben gaat Doctor Strange verder met zijn zoektocht naar de \"Time Stone\". Deze wordt echter weer onderbroken wanneer het multiversum wordt geopend, waarin verschillende parallelle universums huishouden. Het multiversum blijkt al snel levensgevaarlijk wanneer kwaadaardige versies van de helden samen met monsters tevoorschijn komen en voor onrust zorgen. Dr. Stephen Strange besluit daarom de hulp in te roepen van Scarlet Witch om de dreiging te stoppen.",
     "trailer_url": "https://www.youtube.com/watch?v=Rf8LAYJSOL8",
     "story_year": "2025",
-    "story_order": 33
+    "story_order": 64
   },
   {
     "tmdb_id": 92782,
@@ -1164,7 +2099,7 @@
     "slug": "ms-marvel",
     "release_date": "2022-06-08",
     "release_status": "released",
-    "chronology_index": 35,
+    "chronology_index": 64,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1185,7 +2120,7 @@
     "overview": "Kamala Khan, een geweldige studente, fervent gamer en vraatzuchtige fanfictieschrijfster, heeft een speciale affiniteit met superhelden, met name Captain Marvel. Ze worstelt echter om thuis en op school te passen - dat wil zeggen, totdat ze superkrachten krijgt zoals de helden waar ze altijd naar heeft opgekeken. Het leven is makkelijker met superkrachten, toch?",
     "trailer_url": "https://www.youtube.com/watch?v=m9EX0f6V11Y",
     "story_year": "2025",
-    "story_order": 34
+    "story_order": 65
   },
   {
     "tmdb_id": 616037,
@@ -1194,7 +2129,7 @@
     "slug": "thor-love-and-thunder",
     "release_date": "2022-07-08",
     "release_status": "released",
-    "chronology_index": 36,
+    "chronology_index": 65,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 119,
@@ -1218,7 +2153,7 @@
     "overview": "Thor is op een reis zoals hij nog nooit heeft meegemaakt: een zoektocht naar innerlijke vrede. Maar zijn pensionering wordt brutaal onderbroken door een galactische moordenaar. Deze staat bekend als Gorr the God Butcher, die de uitroeiing van de goden nastreeft. Daarbij heeft hij hulp nodig van een oude bekende.",
     "trailer_url": "https://www.youtube.com/watch?v=Go8nTmfrQd8",
     "story_year": "2025",
-    "story_order": 36
+    "story_order": 67
   },
   {
     "tmdb_id": 92783,
@@ -1227,7 +2162,7 @@
     "slug": "she-hulk-attorney-at-law",
     "release_date": "2022-08-18",
     "release_status": "released",
-    "chronology_index": 37,
+    "chronology_index": 66,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1250,7 +2185,7 @@
     "overview": "Jennifer Walters, het nichtje van Bruce Banner oftewel The Hulk, is een succesvolle advocate uit Los Angeles, werkzaam in het opkomende gebied van \"bovenmenselijk recht\". Wanneer ze een bloedtransfusie nodig heeft en haar neef haar hierbij helpt, krijgt ze krachten die vergelijkbaar zijn met die van hem. Bruce probeert vervolgens haar te leren hoe ze die kan gebruiken. Maar Jennifer weet één ding zeker: ze is geen superheld. Dat zijn immers miljardairs, narcisten, zo vindt ze.",
     "trailer_url": "https://www.youtube.com/watch?v=u7JsKhI2An0",
     "story_year": "2025",
-    "story_order": 35
+    "story_order": 66
   },
   {
     "tmdb_id": 505642,
@@ -1259,7 +2194,7 @@
     "slug": "black-panther-wakanda-forever",
     "release_date": "2022-11-11",
     "release_status": "released",
-    "chronology_index": 38,
+    "chronology_index": 67,
     "phase": "Phase 4",
     "saga": "Multiverse Saga",
     "runtime_minutes": 161,
@@ -1287,7 +2222,7 @@
     "overview": "Koningin Ramonda, Shuri, M'Baku, Okoye en de Dora Milaje vechten om hun natie te beschermen tegen tussenkomende wereldmachten na de dood van koning T'Challa. Terwijl de Wakandans ernaar streven hun volgende hoofdstuk te omarmen, moeten de helden samenwerken met de hulp van War Dog Nakia en Everett Ross en een nieuwe weg banen voor het koninkrijk Wakanda.",
     "trailer_url": "https://www.youtube.com/watch?v=_Z3QKkl1WyM",
     "story_year": "2025",
-    "story_order": 38
+    "story_order": 68
   },
   {
     "tmdb_id": 640146,
@@ -1296,7 +2231,7 @@
     "slug": "ant-man-and-the-wasp-quantumania",
     "release_date": "2023-02-17",
     "release_status": "released",
-    "chronology_index": 39,
+    "chronology_index": 68,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 125,
@@ -1320,42 +2255,7 @@
     "overview": "Nadat Scott Lang samen met de Avengers de wereld heeft gered van Thanos, besluit hij zijn persoonlijke verhaal uit te doeken te doen in een boek dat hem ongekende roem brengt. De faam drijft hem echter steeds verder weg van zijn dochter Cassie en de rest van zijn gezin. Maar dan gebeurt er een bizar ongeluk waardoor het gezin wordt opgeslokt in een andere dimensie.",
     "trailer_url": "https://www.youtube.com/watch?v=5WfTEZJnv_8",
     "story_year": "2025",
-    "story_order": 39
-  },
-  {
-    "tmdb_id": 114472,
-    "type": "series",
-    "title": "Secret Invasion",
-    "slug": "secret-invasion",
-    "release_date": "2023-06-21",
-    "release_status": "released",
-    "chronology_index": 40,
-    "phase": "Phase 5",
-    "saga": "Multiverse Saga",
-    "runtime_minutes": 270,
-    "streaming_platform": "Disney+",
-    "canon_level": "core",
-    "mcu_relevance_score": 5,
-    "retcon_notes": null,
-    "characters": [
-      "Nick Fury",
-      "Talos",
-      "G'iah",
-      "Gravik",
-      "James Rhodes / War Machine",
-      "Sonya Falsworth"
-    ],
-    "teams": [
-      "Skrulls",
-      "S.A.B.E.R."
-    ],
-    "franchise": "Secret Invasion",
-    "poster_url": "https://image.tmdb.org/t/p/w500/f5ZMzzCvt2IzVDxr54gHPv9jlC9.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/6mOK9j99OFlxGc3ird2jWUeUha9.jpg",
-    "overview": "Een groep buitenaardse gedaanteverwisselaars – de Skrulls – zijn op aarde neergedaalt en hebben de gedaante van allerhande levende wezens aangenomen. Jaren voorafgaand aan de daadwerkelijke invasie hebben ze in het geheim ook vele superhelden in het Marvel Universum vervangen door bedriegers. Het is aan Nick Fury en Talos om de Skrulls te stoppen.",
-    "trailer_url": "https://www.youtube.com/watch?v=Tp_YZNqNBhw",
-    "story_year": "2025",
-    "story_order": 41
+    "story_order": 69
   },
   {
     "tmdb_id": 447365,
@@ -1364,7 +2264,7 @@
     "slug": "guardians-of-the-galaxy-vol-3",
     "release_date": "2023-05-05",
     "release_status": "released",
-    "chronology_index": 41,
+    "chronology_index": 69,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 150,
@@ -1392,7 +2292,42 @@
     "overview": "Peter Quill, nog steeds aan het bijkomen van het verlies van Gamora, moet zijn team om hem heen verzamelen om het universum te verdedigen en een van hun eigen team te beschermen. Een missie die, als ze niet met succes wordt voltooid, mogelijk zou kunnen leiden tot het einde van de Guardians zoals we die kennen.",
     "trailer_url": "https://www.youtube.com/watch?v=AAE5VZktooM",
     "story_year": "2026",
-    "story_order": 40
+    "story_order": 73
+  },
+  {
+    "tmdb_id": 114472,
+    "type": "series",
+    "title": "Secret Invasion",
+    "slug": "secret-invasion",
+    "release_date": "2023-06-21",
+    "release_status": "released",
+    "chronology_index": 70,
+    "phase": "Phase 5",
+    "saga": "Multiverse Saga",
+    "runtime_minutes": 270,
+    "streaming_platform": "Disney+",
+    "canon_level": "core",
+    "mcu_relevance_score": 5,
+    "retcon_notes": null,
+    "characters": [
+      "Nick Fury",
+      "Talos",
+      "G'iah",
+      "Gravik",
+      "James Rhodes / War Machine",
+      "Sonya Falsworth"
+    ],
+    "teams": [
+      "Skrulls",
+      "S.A.B.E.R."
+    ],
+    "franchise": "Secret Invasion",
+    "poster_url": "https://image.tmdb.org/t/p/w500/f5ZMzzCvt2IzVDxr54gHPv9jlC9.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/6mOK9j99OFlxGc3ird2jWUeUha9.jpg",
+    "overview": "Een groep buitenaardse gedaanteverwisselaars – de Skrulls – zijn op aarde neergedaalt en hebben de gedaante van allerhande levende wezens aangenomen. Jaren voorafgaand aan de daadwerkelijke invasie hebben ze in het geheim ook vele superhelden in het Marvel Universum vervangen door bedriegers. Het is aan Nick Fury en Talos om de Skrulls te stoppen.",
+    "trailer_url": "https://www.youtube.com/watch?v=Tp_YZNqNBhw",
+    "story_year": "2025",
+    "story_order": 70
   },
   {
     "tmdb_id": 84958,
@@ -1401,7 +2336,7 @@
     "slug": "loki-season-2",
     "release_date": "2023-10-06",
     "release_status": "released",
-    "chronology_index": 42,
+    "chronology_index": 71,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1426,7 +2361,7 @@
     "overview": "Loki \"God of Mischief\" weet de tesseract te bemachtigen, wat leidt tot zijn vrijheid. Hij kan zich nu door verschillende tijdsperioden verplaatsen en beïnvloedt daarmee de geschiedenis van de mensheid en enkele zeer belangrijke historische gebeurtenissen. Ook gaat Loki een samenwerking aan met de Time Variance Authority om het multiversum te beschermen.",
     "trailer_url": "https://www.youtube.com/watch?v=nW948Va-l10",
     "story_year": "Buiten de tijd",
-    "story_order": 42
+    "story_order": 81
   },
   {
     "tmdb_id": 609681,
@@ -1435,7 +2370,7 @@
     "slug": "the-marvels",
     "release_date": "2023-11-10",
     "release_status": "released",
-    "chronology_index": 43,
+    "chronology_index": 72,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 105,
@@ -1459,7 +2394,7 @@
     "overview": "Carol Danvers, beter bekend als Captain Marvel, heeft haar naam heroverd tegen de Kree en wraak genomen op de Supreme Intelligence. Het universum is nu echter gedestabiliseerd en dat heeft grote gevolgen. Carol wordt naar een wormgat gestuurd dat verband houdt met de Kree. Om het universum te redden zal ze haar krachten moeten bundelen met haar nichtje Monica Rambeau en Kamala Khan, ook bekend als Ms. Marvel.",
     "trailer_url": "https://www.youtube.com/watch?v=uwmDH12MAA4",
     "story_year": "2026",
-    "story_order": 43
+    "story_order": 74
   },
   {
     "tmdb_id": 122226,
@@ -1468,7 +2403,7 @@
     "slug": "echo",
     "release_date": "2024-01-09",
     "release_status": "released",
-    "chronology_index": 44,
+    "chronology_index": 73,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 270,
@@ -1487,7 +2422,38 @@
     "overview": "Maya Lopez bevindt zich op een zeer kwetsbare, emotionele plek. Ze heeft veel opgekropte emoties, woede en gevoelens in zich, en ze weet niet wat ze ermee moet doen. Haar meedogenloze gedrag in New York City achtervolgd haar tot in haar geboortestad. Maar als ze ooit vooruit wil komen, moet ze haar verleden onder ogen zien, opnieuw contact maken met haar Indiaanse roots en de betekenis van familie en gemeenschap omarmen.",
     "trailer_url": "https://www.youtube.com/watch?v=g0f1o-KGWPM",
     "story_year": "2025",
-    "story_order": 44
+    "story_order": 71
+  },
+  {
+    "tmdb_id": 634492,
+    "type": "movie",
+    "title": "Madame Web",
+    "slug": "madame-web",
+    "release_date": "2024-02-14",
+    "release_status": "released",
+    "chronology_index": 74,
+    "phase": null,
+    "saga": "Sony Spider-Man Universe",
+    "runtime_minutes": 116,
+    "streaming_platform": "Netflix",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 1,
+    "retcon_notes": null,
+    "characters": [
+      "Cassandra Webb / Madame Web",
+      "Julia Cornwall",
+      "Mattie Franklin",
+      "Anya Corazon",
+      "Ezekiel Sims"
+    ],
+    "teams": [],
+    "franchise": "Madame Web",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1FC91fGkpPwltrqSzvOwC3YLLng.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/pwGmXVKUgKN13psUjlhC9zBcq1o.jpg",
+    "overview": "Cassandra Webb is een paramedicus uit New York die tekenen van helderziendheid begint te vertonen. Gedwongen om openbaringen over haar verleden aan te vechten, moet ze drie jonge vrouwen beschermen tegen een dodelijke tegenstander die hen wil vernietigen.",
+    "trailer_url": "https://www.youtube.com/watch?v=s_76M4c4LTo",
+    "story_year": "2003",
+    "story_order": 12
   },
   {
     "tmdb_id": 533535,
@@ -1496,7 +2462,7 @@
     "slug": "deadpool-and-wolverine",
     "release_date": "2024-07-26",
     "release_status": "released",
-    "chronology_index": 45,
+    "chronology_index": 75,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 128,
@@ -1525,7 +2491,7 @@
     "overview": "Leden van de bureaucratische organisatie, de 'Time Variance Authority', weten de verblijfplaats van Wade Wilson te traceren en brengen hem vervolgens een bezoek. Daarbij doen ze een beroep op Wade, waarmee hij zich onder de helden binnen het universum kan scharen. Het lot van de Marvel Cinematic Universe wordt daarmee in handen van de onverantwoordelijke Deadpool gelegd.",
     "trailer_url": "https://www.youtube.com/watch?v=Idh8n5XuYIA",
     "story_year": "2024",
-    "story_order": 46
+    "story_order": 61
   },
   {
     "tmdb_id": 138501,
@@ -1534,7 +2500,7 @@
     "slug": "agatha-all-along",
     "release_date": "2024-09-18",
     "release_status": "released",
-    "chronology_index": 46,
+    "chronology_index": 76,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 360,
@@ -1557,7 +2523,35 @@
     "trailer_url": "https://www.youtube.com/watch?v=R9pXbNz6Vbw",
     "overview": "De beruchte Agatha Harkness voelt zich machteloos nadat de verdachte goth Teen haar bevrijdt uit een verwrongen betovering. Haar interesse wordt gewekt als hij haar smeekt hem mee te nemen op de legendarische Witches' Road, een magische reeks beproevingen die, als ze worden overleefd, heksen beloont met wat ze nodig hebben. Samen vormen Agatha en Teen een wanhopige kring van heksen en gaan ze op weg naar de Witches' Road.",
     "story_year": "2023",
-    "story_order": 45
+    "story_order": 54
+  },
+  {
+    "tmdb_id": 912649,
+    "type": "movie",
+    "title": "Venom: The Last Dance",
+    "slug": "venom-the-last-dance",
+    "release_date": "2024-10-25",
+    "release_status": "released",
+    "chronology_index": 77,
+    "phase": null,
+    "saga": "Sony Spider-Man Universe",
+    "runtime_minutes": 109,
+    "streaming_platform": "Netflix",
+    "canon_level": "standalone",
+    "mcu_relevance_score": 2,
+    "retcon_notes": null,
+    "characters": [
+      "Eddie Brock / Venom",
+      "Knull"
+    ],
+    "teams": [],
+    "franchise": "Venom",
+    "poster_url": "https://image.tmdb.org/t/p/w500/swi9bJvi1aoyMpW7PpURR9JgOrF.jpg",
+    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg",
+    "overview": "Eddie en Venom worden gezochte vluchtelingen. Opgejaagd door hun beide werelden en met het net dat zich sluit, wordt het duo gedwongen tot een verwoestende beslissing die het lot van hun partnerschap en zelfs hun leven zal bepalen.",
+    "trailer_url": "https://www.youtube.com/watch?v=FKBN1qAzW3s",
+    "story_year": "2024",
+    "story_order": 62
   },
   {
     "tmdb_id": 822119,
@@ -1566,7 +2560,7 @@
     "slug": "captain-america-brave-new-world",
     "release_date": "2025-02-14",
     "release_status": "released",
-    "chronology_index": 47,
+    "chronology_index": 78,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 119,
@@ -1588,7 +2582,7 @@
     "overview": "Er lijken geen gemakkelijke, vriendelijke ontmoetingen te zijn voor Sam Wilson aka Captain America. Omdat de ontmoeting met de nieuw gekozen Amerikaanse president Thaddeus Ross de Avenger met het iconische vibraniumschild betrekt bij een conflict van wereldwijde proporties. Maar er is nog tijd om de wereld te redden van een absolute chaos. Maar de tijd dringt...",
     "trailer_url": "https://www.youtube.com/watch?v=5PSzFLV-EyQ",
     "story_year": "2025",
-    "story_order": 47
+    "story_order": 72
   },
   {
     "tmdb_id": 202555,
@@ -1597,7 +2591,7 @@
     "slug": "daredevil-born-again",
     "release_date": "2025-03-04",
     "release_status": "released",
-    "chronology_index": 48,
+    "chronology_index": 79,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 540,
@@ -1621,7 +2615,7 @@
     "overview": "Matt Murdock, een blinde advocaat met extra sterke zintuigen, strijdt voor gerechtigheid via zijn bruisende advocatenkantoor, terwijl de voormalige maffiabaas Wilson Fisk zijn eigen politieke doelen nastreeft in New York. Wanneer hun identiteiten uit het verleden aan het licht komen, komen beide mannen op een onvermijdelijke ramkoers terecht.",
     "trailer_url": "https://www.youtube.com/watch?v=7xALolZzhSM",
     "story_year": "2026",
-    "story_order": 48
+    "story_order": 75
   },
   {
     "tmdb_id": 986056,
@@ -1630,7 +2624,7 @@
     "slug": "thunderbolts",
     "release_date": "2025-05-02",
     "release_status": "released",
-    "chronology_index": 49,
+    "chronology_index": 80,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": 127,
@@ -1656,7 +2650,7 @@
     "overview": "Yelena Belova, getraind als een Black Widow, gaat doelloos door het leven na het verlies van haar zus. Ze krijgt van CIA-directrice Valentina Allegra de Fontaine de opdracht om iemand op een geheime locatie uit de weg te ruimen. Op haar bestemming krijgt Yelena plotseling te maken met U.S. Agent, Ghost en Taskmaster, die allemaal afzonderlijk van Val dezelfde taak hebben gekregen. Als ze zich realiseren dat ze erin geluisd zijn en dat het de bedoeling was dat ze tijdens de missie zouden sterven, besluiten de buitenbeentjes de handen ineen te slaan om wraak te nemen.",
     "trailer_url": "https://www.youtube.com/watch?v=7rs_HhSA7XY",
     "story_year": "2026",
-    "story_order": 49
+    "story_order": 76
   },
   {
     "tmdb_id": 114471,
@@ -1665,7 +2659,7 @@
     "slug": "ironheart",
     "release_date": "2025-06-24",
     "release_status": "upcoming",
-    "chronology_index": 50,
+    "chronology_index": 81,
     "phase": "Phase 5",
     "saga": "Multiverse Saga",
     "runtime_minutes": null,
@@ -1684,7 +2678,7 @@
     "overview": "De uitvinder Riri Williams keert terug naar Chicago waar ze Parker Robbins, ofwel The Hood ontmoet.",
     "trailer_url": "https://www.youtube.com/watch?v=r6j-wSIqJJ0",
     "story_year": "2026",
-    "story_order": 50
+    "story_order": 77
   },
   {
     "tmdb_id": 617126,
@@ -1693,7 +2687,7 @@
     "slug": "the-fantastic-four-first-steps",
     "release_date": "2025-07-25",
     "release_status": "upcoming",
-    "chronology_index": 51,
+    "chronology_index": 82,
     "phase": "Phase 6",
     "saga": "Multiverse Saga",
     "runtime_minutes": null,
@@ -1718,7 +2712,7 @@
     "overview": "In een retro-futuristische wereld geïnspireerd op de jaren 60 vormen Reed Richards, Sue Storm, Johnny Storm en Ben Grimm de Fantastic Four. Het superheldenteam komt voor hun grootste uitdaging tot nu toe te staan wanneer ze de raadselachtige Silver Surfer ontmoeten. Zij vertelt hen dat een roofzuchtige ruimtegod genaamd Galactus hun planeet met iedereen erop wil verslinden. Als het viertal de aarde wil verdedigen tegen deze nieuwe dreiging, zullen ze hun rol als helden in balans moeten brengen met de kracht van hun familieband.",
     "trailer_url": "https://www.youtube.com/watch?v=LJa5wv93YGM",
     "story_year": "Onbekend",
-    "story_order": 51
+    "story_order": 82
   },
   {
     "tmdb_id": 1003596,
@@ -1727,7 +2721,7 @@
     "slug": "avengers-doomsday",
     "release_date": "2026-05-01",
     "release_status": "announced",
-    "chronology_index": 52,
+    "chronology_index": 83,
     "phase": "Phase 6",
     "saga": "Multiverse Saga",
     "runtime_minutes": null,
@@ -1747,7 +2741,7 @@
     "overview": null,
     "trailer_url": null,
     "story_year": "Onbekend",
-    "story_order": 52
+    "story_order": 83
   },
   {
     "tmdb_id": 1003598,
@@ -1756,7 +2750,7 @@
     "slug": "avengers-secret-wars",
     "release_date": "2027-05-07",
     "release_status": "announced",
-    "chronology_index": 53,
+    "chronology_index": 84,
     "phase": "Phase 6",
     "saga": "Multiverse Saga",
     "runtime_minutes": null,
@@ -1774,543 +2768,6 @@
     "overview": null,
     "trailer_url": null,
     "story_year": "Onbekend",
-    "story_order": 53
-  },
-  {
-    "tmdb_id": 61889,
-    "type": "series",
-    "title": "Daredevil (Netflix)",
-    "slug": "daredevil-netflix",
-    "release_date": "2015-04-10",
-    "release_status": "released",
-    "chronology_index": 100.1,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 1560,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 7,
-    "retcon_notes": "Oorspronkelijk los van MCU, nu retroactief canon verklaard via Daredevil: Born Again",
-    "characters": [
-      "Matt Murdock / Daredevil",
-      "Kingpin / Wilson Fisk",
-      "Foggy Nelson",
-      "Karen Page",
-      "Elektra",
-      "Punisher / Frank Castle",
-      "Bullseye"
-    ],
-    "teams": [],
-    "franchise": "Daredevil",
-    "poster_url": "https://image.tmdb.org/t/p/w500/uqsecCHXsXq8GSPsVJf0rILApRo.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/qsnXwGS7KBbX4JLqHvICngtR8qg.jpg",
-    "overview": "Matt Murdock is een advocaat die op jonge leeftijd door een vreemd ongeluk wordt verblind. Gelukkig worden zijn andere zintuigen op wonderlijke wijze verbeterd, waardoor hij zich, met een beetje vechtsporttraining, ontpopt tot een misdaadbestrijder met superkrachten in New York’s Hell’s Kitchen.",
-    "trailer_url": "https://www.youtube.com/watch?v=jAy6NJ_D5vU",
-    "story_year": "2015-2018",
-    "story_order": 56
-  },
-  {
-    "tmdb_id": 38472,
-    "type": "series",
-    "title": "Jessica Jones",
-    "slug": "jessica-jones",
-    "release_date": "2015-11-20",
-    "release_status": "released",
-    "chronology_index": 100.2,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 780,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 4,
-    "retcon_notes": "Netflix-serie, canon-status onduidelijk maar characters verschijnen in MCU",
-    "characters": [
-      "Jessica Jones",
-      "Kilgrave / Purple Man",
-      "Luke Cage",
-      "Trish Walker",
-      "Malcolm Ducasse"
-    ],
-    "teams": [],
-    "franchise": "Jessica Jones",
-    "poster_url": "https://image.tmdb.org/t/p/w500/1ghmaDw650NuUpGI7mYq6xE2QE2.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/fjEOQhzZk2Or7VYUBeMx5ZIwU95.jpg",
-    "overview": "De serie draait om Jones, die haar persoonlijke leven weer probeert op te pakken nadat een korte periode als superheld op een tragische manier is geëindigd.\n\nJones wordt rechercheur maar krijgt al snel te maken met zaken die met superhelden te maken heeft. Op een gegeven moment komt ze Kilgrave tegen, die ze maar al te goed kent. ",
-    "trailer_url": "https://www.youtube.com/watch?v=nWHUjuJ8zxE",
-    "story_year": "2015-2019",
-    "story_order": 57
-  },
-  {
-    "tmdb_id": 62126,
-    "type": "series",
-    "title": "Luke Cage",
-    "slug": "luke-cage",
-    "release_date": "2016-09-30",
-    "release_status": "released",
-    "chronology_index": 100.3,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 780,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 3,
-    "retcon_notes": null,
-    "characters": [
-      "Luke Cage",
-      "Misty Knight",
-      "Cottonmouth",
-      "Diamondback",
-      "Mariah Dillard",
-      "Shades"
-    ],
-    "teams": [],
-    "franchise": "Luke Cage",
-    "poster_url": "https://image.tmdb.org/t/p/w500/yzM1hMB3PUJqbISX0f421b3xOjB.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/bJOmop22SGTHPo1tiuVAFf4U7B9.jpg",
-    "overview": "Wanneer een gesaboteerd experiment Luke Cage superkrachten en onbreekbare huid geeft, wordt hij een voortvluchtige die zich schuil houdt in Harlem. Daar probeert hij zijn leven weer op te bouwen. Geconfronteerd met zijn verleden gaat hij de strijd aan om criminelen te weren uit het centrum van zijn stad.",
-    "story_year": "2016-2018",
-    "story_order": 58
-  },
-  {
-    "tmdb_id": 62127,
-    "type": "series",
-    "title": "Iron Fist",
-    "slug": "iron-fist",
-    "release_date": "2017-03-17",
-    "release_status": "released",
-    "chronology_index": 100.4,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 780,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 2,
-    "retcon_notes": null,
-    "characters": [
-      "Danny Rand / Iron Fist",
-      "Colleen Wing",
-      "Ward Meachum",
-      "Joy Meachum",
-      "Harold Meachum"
-    ],
-    "teams": [],
-    "franchise": "Iron Fist",
-    "poster_url": "https://image.tmdb.org/t/p/w500/uqWOooLd180SQmFKhkEAoIajWzk.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/cuckn6IFp9OKu9H8AgD0iEANxhc.jpg",
-    "overview": "Nadat al 15 jaar werd aangenomen dat hij dood was, keert Danny Rand terug. Met de kracht van de Iron Fist wil hij zijn verleden heroveren en zijn levenslot vervullen.",
-    "trailer_url": "https://www.youtube.com/watch?v=f9OKL5no-S0",
-    "story_year": "2017-2018",
-    "story_order": 59
-  },
-  {
-    "tmdb_id": 62285,
-    "type": "series",
-    "title": "The Defenders",
-    "slug": "the-defenders",
-    "release_date": "2017-08-18",
-    "release_status": "released",
-    "chronology_index": 100.5,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 420,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 4,
-    "retcon_notes": null,
-    "characters": [
-      "Matt Murdock / Daredevil",
-      "Jessica Jones",
-      "Luke Cage",
-      "Danny Rand / Iron Fist",
-      "Elektra",
-      "Stick"
-    ],
-    "teams": [
-      "Defenders"
-    ],
-    "franchise": "Defenders",
-    "poster_url": "https://image.tmdb.org/t/p/w500/49XzINhH4LFsgz7cx6TOPcHUJUL.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/ycAWXhAhyaE7g3JBAaierK4LgNg.jpg",
-    "overview": "In Marvel's The Defenders volgen we Daredevil, Jessica Jones, Iron Fist en Luke Cage. Een viertal van unieke helden die één gemeenschappelijk doel hebben, het redden van New York City. Dit is het verhaal van vier solitaire figuren, belast met hun eigen persoonlijke uitdagingen, die zich realiseren dat ze samen misschien wel sterker zijn.",
-    "trailer_url": "https://www.youtube.com/watch?v=MAbjq7ydKDI",
-    "story_year": "2017",
-    "story_order": 60
-  },
-  {
-    "tmdb_id": 67178,
-    "type": "series",
-    "title": "The Punisher",
-    "slug": "the-punisher",
-    "release_date": "2017-11-17",
-    "release_status": "released",
-    "chronology_index": 100.6,
-    "phase": "Pre-Phase 4",
-    "saga": "Netflix Saga",
-    "runtime_minutes": 780,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 3,
-    "retcon_notes": null,
-    "characters": [
-      "Punisher / Frank Castle",
-      "Micro",
-      "Billy Russo / Jigsaw",
-      "Dinah Madani"
-    ],
-    "teams": [],
-    "franchise": "Punisher",
-    "poster_url": "https://image.tmdb.org/t/p/w500/y6wYElX5HaPZItVGJcYGdQO7k8g.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jBGjbSDRxOEudW9rmQbWDzJUKq9.jpg",
-    "overview": "Een voormalig marinier wil de criminelen straffen die verantwoordelijk zijn voor de moord op zijn gezin, maar raakt verstrikt in een militaire samenzwering.",
-    "trailer_url": "https://www.youtube.com/watch?v=s4QV6OZdmWY",
-    "story_year": "2017-2019",
-    "story_order": 61
-  },
-  {
-    "tmdb_id": 1403,
-    "type": "series",
-    "title": "Agents of S.H.I.E.L.D.",
-    "slug": "agents-of-shield",
-    "release_date": "2013-09-24",
-    "release_status": "released",
-    "chronology_index": 100.7,
-    "phase": "Phase 1-5",
-    "saga": "ABC Saga",
-    "runtime_minutes": 5940,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 4,
-    "retcon_notes": "Begon als MCU-canon maar divergeerde door tijdreizen. Canon-status is onduidelijk.",
-    "characters": [
-      "Phil Coulson",
-      "Daisy Johnson / Quake",
-      "Melinda May",
-      "Leo Fitz",
-      "Jemma Simmons",
-      "Grant Ward"
-    ],
-    "teams": [
-      "S.H.I.E.L.D."
-    ],
-    "franchise": "S.H.I.E.L.D.",
-    "poster_url": "https://image.tmdb.org/t/p/w500/gHUCCMy1vvj58tzE3dZqeC9SXus.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/iWopHyAvuIDjGX10Yc3nn6UEebW.jpg",
-    "overview": "Agent Phil Coulson keert terug naar de wereldwijde rechtshandhavingsorganisatie S.H.I.E.L.D. Hij zet een klein, zeer goed opgeleid team van agenten in voor zaken die nog niet geclassificeerd zijn: het nieuwe, het vreemde en het onbekende. Dat team bestaat uit Grant Ward, een expert in het gevecht en spionage, piloot en martial artist Melinda May, en de geweldige, maar ook sociaal onhandige wetenschappers Leo Fitz en Jemma Simmons. Ze zullen worden vergezeld door de nieuwe rekruut en computerhacker Skye.",
-    "trailer_url": "https://www.youtube.com/watch?v=T3T-evQZiQo",
-    "story_year": "2013-2020",
-    "story_order": 54
-  },
-  {
-    "tmdb_id": 61550,
-    "type": "series",
-    "title": "Agent Carter",
-    "slug": "agent-carter",
-    "release_date": "2015-01-06",
-    "release_status": "released",
-    "chronology_index": 100.8,
-    "phase": "Pre-Phase 1",
-    "saga": "ABC Saga",
-    "runtime_minutes": 540,
-    "streaming_platform": "Disney+",
-    "canon_level": "extended",
-    "mcu_relevance_score": 5,
-    "retcon_notes": "Peggy Carter's verhaal na WWII. Sluit aan op Captain America: The First Avenger.",
-    "characters": [
-      "Peggy Carter",
-      "Edwin Jarvis",
-      "Howard Stark",
-      "Daniel Sousa"
-    ],
-    "teams": [
-      "S.H.I.E.L.D.",
-      "SSR"
-    ],
-    "franchise": "Agent Carter",
-    "poster_url": "https://image.tmdb.org/t/p/w500/7kqIsjjDMZA5GRMH5VCdQYZJqc6.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/MaQ7hbNsiJ30p14UgRdEnXDGMH.jpg",
-    "overview": "Het is 1946, en de vrede heeft Peggy Carter een behoorlijke dreun uitgedeeld als ze zich tussen mannen die terugkeren van oorlogsgevechten in het buitenland bevindt. Werkend voor het geheime SSR (Strategic Scientific Reserve) moet Peggy haar administratieve werk doen alsook geheime missies voor Howard Stark volbrengen terwijl ze probeert haar leven als alleenstaande vrouw in Amerika staande te houden vlak na het verlies van grote liefde (Steve Rogers).",
-    "trailer_url": "https://www.youtube.com/watch?v=V13W9gQ_1GA",
-    "story_year": "1946-1947",
-    "story_order": 55
-  },
-  {
-    "tmdb_id": 335983,
-    "type": "movie",
-    "title": "Venom",
-    "slug": "venom",
-    "release_date": "2018-10-05",
-    "release_status": "released",
-    "chronology_index": 200.1,
-    "phase": null,
-    "saga": "Sony Spider-Man Universe",
-    "runtime_minutes": 112,
-    "streaming_platform": "Netflix",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 2,
-    "retcon_notes": "Sony-universum. Post-credits in Let There Be Carnage en No Way Home suggereren multiverse-connectie.",
-    "characters": [
-      "Eddie Brock / Venom",
-      "Carlton Drake / Riot"
-    ],
-    "teams": [],
-    "franchise": "Venom",
-    "poster_url": "https://image.tmdb.org/t/p/w500/6H7WSV1ecBWauj0XqWYl8BiGQ2L.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/hNsYUryiwxcdeTMkaBcPF3iEg0p.jpg",
-    "overview": "Het verhaal volgt de fotojournalist Eddie Brock, die verbonden raakt met een symbiont, ofwel een buitenaardse levensvorm. Samen staan ze beter bekend onder de naam 'Venom'. Al snel groeit Eddie onder deze naam uit tot een antiheld die de onschuldigen probeert te beschermen.",
-    "trailer_url": "https://www.youtube.com/watch?v=xLCn88bfW1o",
-    "story_year": "2018",
-    "story_order": 62
-  },
-  {
-    "tmdb_id": 580489,
-    "type": "movie",
-    "title": "Venom: Let There Be Carnage",
-    "slug": "venom-let-there-be-carnage",
-    "release_date": "2021-10-01",
-    "release_status": "released",
-    "chronology_index": 200.2,
-    "phase": null,
-    "saga": "Sony Spider-Man Universe",
-    "runtime_minutes": 97,
-    "streaming_platform": "Netflix",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 3,
-    "retcon_notes": "Post-credits scene toont Venom die kort in MCU-universum terechtkomt",
-    "characters": [
-      "Eddie Brock / Venom",
-      "Cletus Kasady / Carnage",
-      "Shriek"
-    ],
-    "teams": [],
-    "franchise": "Venom",
-    "poster_url": "https://image.tmdb.org/t/p/w500/llKbKViMrfXsHGOB2GBAmYxtE5L.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/eENEf62tMXbhyVvdcXlnQz2wcuT.jpg",
-    "overview": "Eddie Brock probeert zijn dagelijkse leven en carrière als journalist weer op te pakken. De symbiont daarentegen wil alleen maar de rol van dodelijke beschermer spelen; bad guys in elkaar slaan en zijn bodemloze honger stillen. Daarnaast heeft een sadistische moordenaar, Carnage genaamd, het op Eddie gemunt en lijkt een confrontatie onvermijdelijk.",
-    "trailer_url": "https://www.youtube.com/watch?v=GVwq2HlKYpE",
-    "story_year": "2021",
-    "story_order": 63
-  },
-  {
-    "tmdb_id": 526896,
-    "type": "movie",
-    "title": "Morbius",
-    "slug": "morbius",
-    "release_date": "2022-04-01",
-    "release_status": "released",
-    "chronology_index": 200.3,
-    "phase": null,
-    "saga": "Sony Spider-Man Universe",
-    "runtime_minutes": 104,
-    "streaming_platform": "Netflix",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 1,
-    "retcon_notes": null,
-    "characters": [
-      "Michael Morbius",
-      "Milo / Lucian"
-    ],
-    "teams": [],
-    "franchise": "Morbius",
-    "poster_url": "https://image.tmdb.org/t/p/w500/rfMwV6rCQ2RMKnk6xsSyDgFnqYl.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/jzWT0zd8U77fqWg5WgUfYaMzSFz.jpg",
-    "overview": "In plaats van zichzelf te redden van een zeldzame bloedziekte, verandert biochemicus Michael Morbius zichzelf in een soort van vampier, met de bijbehorende dorst naar bloed. Morbius walgt van zijn eigen bloedlust, en daarom gaat hij op zoek naar criminelen waarvan hij vindt dat ze onwaardig leven. In de wereld van Spider-Man.",
-    "trailer_url": "https://www.youtube.com/watch?v=wG2TjtueeSU",
-    "story_year": "2022",
-    "story_order": 64
-  },
-  {
-    "tmdb_id": 634492,
-    "type": "movie",
-    "title": "Madame Web",
-    "slug": "madame-web",
-    "release_date": "2024-02-14",
-    "release_status": "released",
-    "chronology_index": 200.4,
-    "phase": null,
-    "saga": "Sony Spider-Man Universe",
-    "runtime_minutes": 116,
-    "streaming_platform": "Netflix",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 1,
-    "retcon_notes": null,
-    "characters": [
-      "Cassandra Webb / Madame Web",
-      "Julia Cornwall",
-      "Mattie Franklin",
-      "Anya Corazon",
-      "Ezekiel Sims"
-    ],
-    "teams": [],
-    "franchise": "Madame Web",
-    "poster_url": "https://image.tmdb.org/t/p/w500/1FC91fGkpPwltrqSzvOwC3YLLng.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/pwGmXVKUgKN13psUjlhC9zBcq1o.jpg",
-    "overview": "Cassandra Webb is een paramedicus uit New York die tekenen van helderziendheid begint te vertonen. Gedwongen om openbaringen over haar verleden aan te vechten, moet ze drie jonge vrouwen beschermen tegen een dodelijke tegenstander die hen wil vernietigen.",
-    "trailer_url": "https://www.youtube.com/watch?v=s_76M4c4LTo",
-    "story_year": "2003",
-    "story_order": 65
-  },
-  {
-    "tmdb_id": 912649,
-    "type": "movie",
-    "title": "Venom: The Last Dance",
-    "slug": "venom-the-last-dance",
-    "release_date": "2024-10-25",
-    "release_status": "released",
-    "chronology_index": 200.5,
-    "phase": null,
-    "saga": "Sony Spider-Man Universe",
-    "runtime_minutes": 109,
-    "streaming_platform": "Netflix",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 2,
-    "retcon_notes": null,
-    "characters": [
-      "Eddie Brock / Venom",
-      "Knull"
-    ],
-    "teams": [],
-    "franchise": "Venom",
-    "poster_url": "https://image.tmdb.org/t/p/w500/swi9bJvi1aoyMpW7PpURR9JgOrF.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg",
-    "overview": "Eddie en Venom worden gezochte vluchtelingen. Opgejaagd door hun beide werelden en met het net dat zich sluit, wordt het duo gedwongen tot een verwoestende beslissing die het lot van hun partnerschap en zelfs hun leven zal bepalen.",
-    "trailer_url": "https://www.youtube.com/watch?v=FKBN1qAzW3s",
-    "story_year": "2024",
-    "story_order": 66
-  },
-  {
-    "tmdb_id": 127585,
-    "type": "movie",
-    "title": "X-Men: Days of Future Past",
-    "slug": "x-men-days-of-future-past",
-    "release_date": "2014-05-23",
-    "release_status": "released",
-    "chronology_index": 300.1,
-    "phase": null,
-    "saga": "Fox X-Men Universe",
-    "runtime_minutes": 132,
-    "streaming_platform": "Disney+",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 3,
-    "retcon_notes": "Fox-universum. Wordt relevant door Deadpool & Wolverine multiverse-connectie.",
-    "characters": [
-      "Wolverine / Logan",
-      "Charles Xavier / Professor X",
-      "Erik Lehnsherr / Magneto",
-      "Mystique",
-      "Hank McCoy / Beast",
-      "Bolivar Trask"
-    ],
-    "teams": [
-      "X-Men"
-    ],
-    "franchise": "X-Men",
-    "poster_url": "https://image.tmdb.org/t/p/w500/tYfijzolzgoMOtegh1Y7j2Enorg.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3czpqXzFy5UcNuD1AubecRLWkwD.jpg",
-    "overview": "De film speelt zich af in een alternatieve toekomst waarin Magneto’s Brotherhood een belangrijke senator vermoordt. Als gevolg daarvan wordt de jacht op mutanten geopend en is het aan de X-Men uit het verleden en de X-Men uit de toekomst om samen te werken.",
-    "trailer_url": "https://www.youtube.com/watch?v=gsjtg7m1MMM",
-    "story_year": "1973/2023",
-    "story_order": 67
-  },
-  {
-    "tmdb_id": 293660,
-    "type": "movie",
-    "title": "Deadpool",
-    "slug": "deadpool",
-    "release_date": "2016-02-12",
-    "release_status": "released",
-    "chronology_index": 300.2,
-    "phase": null,
-    "saga": "Fox X-Men Universe",
-    "runtime_minutes": 108,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 6,
-    "retcon_notes": "Oorspronkelijk Fox-universum, nu MCU-adjacent door Deadpool & Wolverine",
-    "characters": [
-      "Wade Wilson / Deadpool",
-      "Vanessa",
-      "Colossus",
-      "Negasonic Teenage Warhead",
-      "Ajax / Francis",
-      "Weasel"
-    ],
-    "teams": [
-      "X-Men"
-    ],
-    "franchise": "Deadpool",
-    "poster_url": "https://image.tmdb.org/t/p/w500/jnaahY4s4ThMpCzBE6u0ZXAN8Xy.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/en971MEXui9diirXlogOrPKmsEn.jpg",
-    "overview": "Wade Wilson is een speciale agent van de overheid die, nadat hij onderworpen is aan een behandeling die hem bovenmenselijke genezende krachten heeft gegeven, een alter-ego in de vorm van 'Deadpool' aanneemt.",
-    "trailer_url": "https://www.youtube.com/watch?v=9vN6DHB6bJc",
-    "story_year": "2016",
-    "story_order": 68
-  },
-  {
-    "tmdb_id": 383498,
-    "type": "movie",
-    "title": "Deadpool 2",
-    "slug": "deadpool-2",
-    "release_date": "2018-05-18",
-    "release_status": "released",
-    "chronology_index": 300.3,
-    "phase": null,
-    "saga": "Fox X-Men Universe",
-    "runtime_minutes": 119,
-    "streaming_platform": "Disney+",
-    "canon_level": "adjacent",
-    "mcu_relevance_score": 6,
-    "retcon_notes": "Zie Deadpool. Cable en andere characters relevant voor MCU via multiverse.",
-    "characters": [
-      "Wade Wilson / Deadpool",
-      "Cable",
-      "Domino",
-      "Colossus",
-      "Negasonic Teenage Warhead",
-      "Russell / Firefist",
-      "Vanessa"
-    ],
-    "teams": [
-      "X-Force",
-      "X-Men"
-    ],
-    "franchise": "Deadpool",
-    "poster_url": "https://image.tmdb.org/t/p/w500/to0spRl1CMDvyUbOnbb4fTk3VAd.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/3P52oz9HPQWxcwHOwxtyrVV1LKi.jpg",
-    "overview": "Wade Wilson werkt al twee jaar als de gemaskerde held Deadpool. Op een dag verliest hij echter alles waar hij van houdt. Hij geeft zichzelf hiervan de schuld. Alles wat hij overhoudt aan de tijd met zijn geliefde Vanessa, is een Skee-Ball-munt.",
-    "trailer_url": "https://www.youtube.com/watch?v=20bpjtCbCz0",
-    "story_year": "2018",
-    "story_order": 69
-  },
-  {
-    "tmdb_id": 263115,
-    "type": "movie",
-    "title": "Logan",
-    "slug": "logan",
-    "release_date": "2017-03-03",
-    "release_status": "released",
-    "chronology_index": 300.4,
-    "phase": null,
-    "saga": "Fox X-Men Universe",
-    "runtime_minutes": 137,
-    "streaming_platform": "Disney+",
-    "canon_level": "standalone",
-    "mcu_relevance_score": 4,
-    "retcon_notes": "Wolverine's verhaal in Fox-universum. Relevant context voor Deadpool & Wolverine.",
-    "characters": [
-      "Wolverine / Logan",
-      "Charles Xavier / Professor X",
-      "X-23 / Laura",
-      "Donald Pierce"
-    ],
-    "teams": [
-      "X-Men"
-    ],
-    "franchise": "X-Men",
-    "poster_url": "https://image.tmdb.org/t/p/w500/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",
-    "backdrop_url": "https://image.tmdb.org/t/p/w1280/4DZxWNSAyksN6N3JkvpJ53Yq6zU.jpg",
-    "overview": "In 2029 is de mutant bevolking aanzienlijk geslonken en de X-Men zijn ontbonden. Logan zijn vermogen om zichzelf te genezen is slinkende en hij ontfermt zich nu samen met de mutant Caliban  over de zieke Professor X in een schuilplaats op de grens met Mexico.",
-    "trailer_url": "https://www.youtube.com/watch?v=XaE_9pfybL4",
-    "story_year": "2029",
-    "story_order": 70
+    "story_order": 84
   }
 ]
