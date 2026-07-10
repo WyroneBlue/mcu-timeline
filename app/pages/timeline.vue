@@ -194,6 +194,7 @@ type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
 const { t } = useI18n()
 const { settings } = useSettings()
+const { playTransition } = useTransitionEffects()
 const timelineContainer = ref<HTMLElement | null>(null)
 const { focusMode, exitFocusMode } = useFocusMode()
 
@@ -225,8 +226,6 @@ watch(viewMode, (v) => {
     localStorage.setItem('ck:viewMode', v)
     if (v === 'list') exitFocusMode()
 })
-
-const { playTransition } = useTransitionEffects()
 
 function onViewModeChange(v: 'list' | 'universe' | 'planet') {
     const from = viewMode.value

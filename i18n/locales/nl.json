@@ -108,7 +108,10 @@
     "focusMode": "Focusmodus",
     "exitFocusMode": "Focusmodus verlaten",
     "previous": "Vorige",
-    "nextTitle": "Volgende"
+    "nextTitle": "Volgende",
+    "activeUniverse": "{name} bekijken",
+    "clearUniverse": "Terug naar MCU",
+    "backToMultiverse": "Terug naar Multiverse"
   },
   "filters": {
     "title": "Filters",
@@ -317,7 +320,21 @@
     "friends": "Vrienden",
     "leaderboard": "Ranglijst",
     "profile": "Profiel",
-    "planet": "Planeet"
+    "planet": "Planeet",
+    "multiverse": "Multiverse"
+  },
+  "multiverse": {
+    "title": "Het Multiverse",
+    "subtitle": "Verken vertakkende tijdlijnen door universa",
+    "sacredTimeline": "Heilige Tijdlijn",
+    "nexusEvent": "Nexus Event",
+    "pruned": "Gesnoeid",
+    "enterUniverse": "Betreed Universe",
+    "watchedCount": "{watched}/{total} gezien",
+    "designation": "Earth-{designation}",
+    "selectHint": "Selecteer een branch om te verkennen",
+    "loading": "Multiverse in kaart brengen...",
+    "branchesFrom": "Vertakt van de Heilige Tijdlijn"
   },
   "spoiler": {
     "modeOn": "Spoilervrije modus aan",

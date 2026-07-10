@@ -108,7 +108,10 @@
     "focusMode": "专注模式",
     "exitFocusMode": "退出专注模式",
     "previous": "上一个",
-    "nextTitle": "下一个"
+    "nextTitle": "下一个",
+    "activeUniverse": "正在查看 {name}",
+    "clearUniverse": "返回MCU",
+    "backToMultiverse": "返回多元宇宙"
   },
   "filters": {
     "title": "筛选",
@@ -317,7 +320,21 @@
     "friends": "好友",
     "leaderboard": "排行榜",
     "profile": "个人资料",
-    "planet": "星球"
+    "planet": "星球",
+    "multiverse": "多元宇宙"
+  },
+  "multiverse": {
+    "title": "多元宇宙",
+    "subtitle": "探索分支时间线",
+    "sacredTimeline": "神圣时间线",
+    "nexusEvent": "连接点事件",
+    "pruned": "已修剪",
+    "enterUniverse": "进入宇宙",
+    "watchedCount": "已看 {watched}/{total}",
+    "designation": "地球-{designation}",
+    "selectHint": "选择一个分支进行探索",
+    "loading": "正在映射多元宇宙...",
+    "branchesFrom": "从神圣时间线分支"
   },
   "spoiler": {
     "modeOn": "无剧透模式已开启",

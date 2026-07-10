@@ -108,7 +108,10 @@
     "focusMode": "Focus mode",
     "exitFocusMode": "Exit focus mode",
     "previous": "Previous",
-    "nextTitle": "Next"
+    "nextTitle": "Next",
+    "activeUniverse": "Viewing {name}",
+    "clearUniverse": "Back to MCU",
+    "backToMultiverse": "Back to Multiverse"
   },
   "filters": {
     "title": "Filters",
@@ -317,7 +320,21 @@
     "friends": "Friends",
     "leaderboard": "Leaderboard",
     "profile": "Profile",
-    "planet": "Planet"
+    "planet": "Planet",
+    "multiverse": "Multiverse"
+  },
+  "multiverse": {
+    "title": "The Multiverse",
+    "subtitle": "Explore branching timelines across universes",
+    "sacredTimeline": "Sacred Timeline",
+    "nexusEvent": "Nexus Event",
+    "pruned": "Pruned",
+    "enterUniverse": "Enter Universe",
+    "watchedCount": "{watched}/{total} watched",
+    "designation": "Earth-{designation}",
+    "selectHint": "Select a branch to explore",
+    "loading": "Mapping the multiverse...",
+    "branchesFrom": "Branches from the Sacred Timeline"
   },
   "spoiler": {
     "modeOn": "Spoiler-free mode on",

@@ -44,6 +44,7 @@ export type Database = {
                     retconned_by: number[] | null
                     retcon_date: string | null
                     created_at: string | null
+                    universe_code: string | null
                 }
                 Insert: Partial<Database['public']['Tables']['titles']['Row']> & { franchise_id: number; type: string; title: string; slug: string }
                 Update: Partial<Database['public']['Tables']['titles']['Row']>

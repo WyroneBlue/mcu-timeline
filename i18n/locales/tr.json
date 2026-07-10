@@ -108,7 +108,10 @@
     "focusMode": "Odak modu",
     "exitFocusMode": "Odak modundan çık",
     "previous": "Önceki",
-    "nextTitle": "Sonraki"
+    "nextTitle": "Sonraki",
+    "activeUniverse": "{name} görüntüleniyor",
+    "clearUniverse": "MCU'ya Dön",
+    "backToMultiverse": "Çoklu Evrene Dön"
   },
   "filters": {
     "title": "Filtreler",
@@ -317,7 +320,21 @@
     "friends": "Arkadaşlar",
     "leaderboard": "Sıralama",
     "profile": "Profil",
-    "planet": "Gezegen"
+    "planet": "Gezegen",
+    "multiverse": "Çoklu Evren"
+  },
+  "multiverse": {
+    "title": "Çoklu Evren",
+    "subtitle": "Dallanan zaman çizgilerini keşfedin",
+    "sacredTimeline": "Kutsal Zaman Çizgisi",
+    "nexusEvent": "Nexus Olayı",
+    "pruned": "Budanmış",
+    "enterUniverse": "Evrene Gir",
+    "watchedCount": "{watched}/{total} izlendi",
+    "designation": "Dünya-{designation}",
+    "selectHint": "Keşfetmek için bir dal seçin",
+    "loading": "Çoklu evren haritalanıyor...",
+    "branchesFrom": "Kutsal Zaman Çizgisinden dallanır"
   },
   "spoiler": {
     "modeOn": "Spoiler koruması açık",

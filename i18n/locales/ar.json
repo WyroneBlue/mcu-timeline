@@ -108,7 +108,10 @@
     "focusMode": "وضع التركيز",
     "exitFocusMode": "الخروج من وضع التركيز",
     "previous": "السابق",
-    "nextTitle": "التالي"
+    "nextTitle": "التالي",
+    "activeUniverse": "عرض {name}",
+    "clearUniverse": "العودة إلى MCU",
+    "backToMultiverse": "العودة إلى الأكوان المتعددة"
   },
   "filters": {
     "title": "التصفية",
@@ -317,7 +320,21 @@
     "friends": "الأصدقاء",
     "leaderboard": "المتصدرون",
     "profile": "الملف الشخصي",
-    "planet": "كوكب"
+    "planet": "كوكب",
+    "multiverse": "الأكوان المتعددة"
+  },
+  "multiverse": {
+    "title": "الأكوان المتعددة",
+    "subtitle": "استكشف الجداول الزمنية المتفرعة",
+    "sacredTimeline": "الجدول الزمني المقدس",
+    "nexusEvent": "حدث نيكسوس",
+    "pruned": "مقلّم",
+    "enterUniverse": "ادخل الكون",
+    "watchedCount": "{watched}/{total} تمت مشاهدتها",
+    "designation": "أرض-{designation}",
+    "selectHint": "اختر فرعاً للاستكشاف",
+    "loading": "جارٍ رسم خريطة الأكوان المتعددة...",
+    "branchesFrom": "يتفرع من الجدول الزمني المقدس"
   },
   "spoiler": {
     "modeOn": "وضع خالٍ من الحرق مفعّل",

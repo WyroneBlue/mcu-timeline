@@ -108,7 +108,10 @@
     "focusMode": "Modalità focus",
     "exitFocusMode": "Esci dalla modalità focus",
     "previous": "Precedente",
-    "nextTitle": "Successivo"
+    "nextTitle": "Successivo",
+    "activeUniverse": "Stai vedendo {name}",
+    "clearUniverse": "Torna al MCU",
+    "backToMultiverse": "Torna al Multiverso"
   },
   "filters": {
     "title": "Filtri",
@@ -317,7 +320,21 @@
     "friends": "Amici",
     "leaderboard": "Classifica",
     "profile": "Profilo",
-    "planet": "Pianeta"
+    "planet": "Pianeta",
+    "multiverse": "Multiverso"
+  },
+  "multiverse": {
+    "title": "Il Multiverso",
+    "subtitle": "Esplora le linee temporali ramificate",
+    "sacredTimeline": "Linea Temporale Sacra",
+    "nexusEvent": "Evento Nexus",
+    "pruned": "Potata",
+    "enterUniverse": "Entra nell'Universo",
+    "watchedCount": "{watched}/{total} visti",
+    "designation": "Terra-{designation}",
+    "selectHint": "Seleziona un ramo da esplorare",
+    "loading": "Mappatura del multiverso...",
+    "branchesFrom": "Si dirama dalla Linea Temporale Sacra"
   },
   "spoiler": {
     "modeOn": "Modalità anti-spoiler attiva",

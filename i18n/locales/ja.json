@@ -108,7 +108,10 @@
     "focusMode": "フォーカスモード",
     "exitFocusMode": "フォーカスモードを終了",
     "previous": "前へ",
-    "nextTitle": "次へ"
+    "nextTitle": "次へ",
+    "activeUniverse": "{name}を閲覧中",
+    "clearUniverse": "MCUに戻る",
+    "backToMultiverse": "マルチバースに戻る"
   },
   "filters": {
     "title": "フィルター",
@@ -317,7 +320,21 @@
     "friends": "フレンド",
     "leaderboard": "ランキング",
     "profile": "プロフィール",
-    "planet": "惑星"
+    "planet": "惑星",
+    "multiverse": "マルチバース"
+  },
+  "multiverse": {
+    "title": "マルチバース",
+    "subtitle": "分岐するタイムラインを探索",
+    "sacredTimeline": "神聖なタイムライン",
+    "nexusEvent": "ネクサスイベント",
+    "pruned": "剪定済み",
+    "enterUniverse": "ユニバースに入る",
+    "watchedCount": "{watched}/{total} 視聴済み",
+    "designation": "アース{designation}",
+    "selectHint": "ブランチを選んで探索",
+    "loading": "マルチバースをマッピング中...",
+    "branchesFrom": "神聖なタイムラインから分岐"
   },
   "spoiler": {
     "modeOn": "ネタバレ防止モード オン",

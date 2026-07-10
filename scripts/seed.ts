@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import titlesData from '../data/mcu-titles.json' assert { type: 'json' }
+import multiverseTitlesData from '../data/multiverse-titles.json' assert { type: 'json' }
 import retconsData from '../data/retcons-seed.json' assert { type: 'json' }
 import quizData from '../data/quiz-questions.json' assert { type: 'json' }
 import summariesData from '../data/context-summaries.json' assert { type: 'json' }
@@ -29,6 +30,38 @@ async function seedFranchise() {
     }, { onConflict: 'code' })
     if (error) throw error
     console.log('Seeded MCU franchise')
+}
+
+async function seedMultiverseFranchises() {
+    const franchises = [
+        { code: 'fox-xmen', name: 'Fox X-Men Universe', slug: 'fox-xmen', description: 'De Fox X-Men filmreeks — van X-Men tot New Mutants', color_primary: '#F6E05E', color_accent: '#ECC94B', sort_order: 10 },
+        { code: 'ssu', name: "Sony's Spider-Man Universe", slug: 'ssu', description: "Sony's Spider-Man Universe — Venom, Morbius en meer", color_primary: '#E53E3E', color_accent: '#FC8181', sort_order: 11 },
+        { code: 'blade-verse', name: 'Blade Trilogy', slug: 'blade-verse', description: 'De originele Blade-trilogie', color_primary: '#991B1B', color_accent: '#F87171', sort_order: 12 },
+    ]
+    const { error } = await client.from('franchises').upsert(franchises, { onConflict: 'code' })
+    if (error) throw error
+    console.log(`Seeded ${franchises.length} multiverse franchises`)
+}
+
+async function seedMultiverseTitles() {
+    const franchiseCodes = ['fox-xmen', 'ssu', 'blade-verse']
+    const { data: franchises } = await client
+        .from('franchises')
+        .select('id, code')
+        .in('code', franchiseCodes)
+
+    if (!franchises || franchises.length === 0) throw new Error('Multiverse franchises not found')
+
+    const codeToId = new Map(franchises.map(f => [f.code, f.id]))
+
+    const titlesWithFranchise = multiverseTitlesData.map((t: any) => {
+        const { characters, teams, franchise: franchiseCode, ...rest } = t
+        return { ...rest, franchise_id: codeToId.get(franchiseCode) }
+    })
+
+    const { error } = await client.from('titles').upsert(titlesWithFranchise, { onConflict: 'slug' })
+    if (error) throw error
+    console.log(`Seeded ${multiverseTitlesData.length} multiverse titles`)
 }
 
 async function seedTitles() {
@@ -230,6 +263,8 @@ async function main() {
     await seedLocations()
     await seedUniverses()
     await seedTimelineBranches()
+    await seedMultiverseFranchises()
+    await seedMultiverseTitles()
     console.log('Seed complete!')
 }
 

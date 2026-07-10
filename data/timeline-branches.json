@@ -86,5 +86,16 @@
     "is_nexus_event": false,
     "is_pruned": false,
     "color": "#63B3ED"
+  },
+  {
+    "id": "blade-daywalker-origin",
+    "event_name": "The Daywalker Rises",
+    "description": "In a separate corner of the Marvel multiverse, Blade — born half-vampire, half-human — wages a one-man war against the vampire nation, predating the Avengers Initiative by over a decade.",
+    "source_title_slug": "blade-1998",
+    "chronology_point": 1,
+    "branch_universe_code": "blade-verse",
+    "is_nexus_event": false,
+    "is_pruned": false,
+    "color": "#991B1B"
   }
 ]

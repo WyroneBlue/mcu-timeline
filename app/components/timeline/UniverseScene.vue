@@ -1017,33 +1017,38 @@ function onPointerUp(e: PointerEvent) {
     }
 }
 
-let scrollCooldown = false
+let wheelAccum = 0
 
 function onWheel(e: WheelEvent) {
     e.preventDefault()
-    autoRotate = false
-    killCameraTweens()
 
     // Ctrl/Cmd + scroll = zoom
     if (e.ctrlKey || e.metaKey) {
+        autoRotate = false
+        killCameraTweens()
         const speed = 0.004
         targetDistance = Math.max(4, Math.min(60, targetDistance + e.deltaY * speed))
         return
     }
 
     if (settings.scrollBehavior === 'snap') {
-        // Snap: jump one card per scroll tick
-        if (scrollCooldown) return
-        scrollCooldown = true
-        setTimeout(() => { scrollCooldown = false }, 300)
+        // Accumulate trackpad delta across events; only navigate once
+        // the accumulated momentum crosses a threshold.
+        wheelAccum += e.deltaY
+        const threshold = 40
+        if (Math.abs(wheelAccum) < threshold) return
+        const direction = wheelAccum > 0 ? 1 : -1
+        wheelAccum = 0
 
-        const direction = e.deltaY > 0 ? 1 : -1
         const nextIndex = Math.max(0, Math.min(cardMeshes.length - 1, props.focusedIndex + direction))
         if (nextIndex !== props.focusedIndex) {
+            autoRotate = false
             emit('update:focusedIndex', nextIndex)
         }
     } else {
         // Free scroll: smooth camera movement along the timeline
+        autoRotate = false
+        killCameraTweens()
         const speed = 0.015
         targetCenter.x += e.deltaY * speed
         targetCenter.x = Math.max(-50, Math.min(70, targetCenter.x))
@@ -1084,6 +1089,11 @@ onUnmounted(() => {
 const { onLoop } = useRenderLoop()
 let elapsed = 0
 
+// Frame-rate-independent smoothing: produces the same visual speed at any fps.
+function damp(factor: number, dt: number) {
+    return 1 - Math.pow(1 - factor, dt * 60)
+}
+
 // Scratch objects: the loop must not allocate.
 const _billboardDir = new Vector3()
 const _toCard = new Vector3()
@@ -1102,10 +1112,11 @@ onLoop(({ delta }) => {
     })
 
     if (!cameraTweening) {
-        camState.angleX += (targetAngle.x - camState.angleX) * 0.08
-        camState.angleY += (targetAngle.y - camState.angleY) * 0.08
-        camState.distance += (targetDistance - camState.distance) * 0.08
-        cameraCenter.lerp(targetCenter, 0.06)
+        const af = damp(0.08, delta)
+        camState.angleX += (targetAngle.x - camState.angleX) * af
+        camState.angleY += (targetAngle.y - camState.angleY) * af
+        camState.distance += (targetDistance - camState.distance) * af
+        cameraCenter.lerp(targetCenter, damp(0.06, delta))
     }
 
     if (autoRotate && !props.selectedId && !cameraTweening) {
@@ -1154,7 +1165,7 @@ onLoop(({ delta }) => {
         if (camera.value) {
             _billboardDir.subVectors(camera.value.position, card.position)
             const angle = Math.atan2(_billboardDir.x, _billboardDir.z)
-            card.rotation.y += (angle - card.rotation.y) * 0.15
+            card.rotation.y += (angle - card.rotation.y) * damp(0.15, delta)
             halo.rotation.y = card.rotation.y
         }
 
@@ -1181,19 +1192,19 @@ onLoop(({ delta }) => {
 
         const targetScale = selected ? 1.3 : focused ? 1.15 : hover ? 1.08 : 1.0
         const scaleLerp = selected || focused ? 0.18 : 0.12
-        card.scale.lerp(_scaleTarget.set(targetScale, targetScale, 1), scaleLerp)
+        card.scale.lerp(_scaleTarget.set(targetScale, targetScale, 1), damp(scaleLerp, delta))
         halo.scale.copy(card.scale)
 
         const baseCardOpacity = selected ? 1.0 : focused ? 1.0 : hover ? 1.0 : (status === 'skipped' ? 0.25 : 0.88)
         const targetCardOpacity = baseCardOpacity * (1.0 - occludeAmount * 0.97)
         const cardDiff = targetCardOpacity - cardMat.opacity
-        cardMat.opacity = Math.abs(cardDiff) < 0.005 ? targetCardOpacity : cardMat.opacity + cardDiff * 0.18
+        cardMat.opacity = Math.abs(cardDiff) < 0.005 ? targetCardOpacity : cardMat.opacity + cardDiff * damp(0.18, delta)
 
         const glowPulse = selected || focused ? Math.sin(elapsed * 2.0) * 0.06 : 0
         const baseHaloOpacity = selected ? 0.6 + glowPulse : focused ? 0.45 + glowPulse : hover ? 0.32 : (status === 'watched' ? 0.22 : 0.09)
         const targetHaloOpacity = baseHaloOpacity * (1.0 - occludeAmount)
         const haloDiff = targetHaloOpacity - haloMat.opacity
-        haloMat.opacity = Math.abs(haloDiff) < 0.005 ? targetHaloOpacity : haloMat.opacity + haloDiff * 0.14
+        haloMat.opacity = Math.abs(haloDiff) < 0.005 ? targetHaloOpacity : haloMat.opacity + haloDiff * damp(0.14, delta)
     }
 
     // Hover raycast only when the pointer actually moved (never per-frame),
