@@ -147,11 +147,18 @@
             </div>
         </div>
 
-        <!-- Navigation controls (Prev / Next) -->
-        <div v-if="planetMode.viewState.value !== 'earth-detail'" class="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]">
+        <!-- Navigation controls (Prev / Next) — re-centers within the visible
+             scene when the location panel is open. -->
+        <div
+            v-if="planetMode.viewState.value !== 'traveling'"
+            :class="[
+                'absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))] transition-[left] duration-500',
+                planetMode.selectedLocation.value && !isMobile ? 'left-[calc((100%-340px)/2)]' : 'left-1/2'
+            ]"
+        >
             <div class="relative flex items-center justify-between">
                 <button
-                    :disabled="focusedIndex <= 0"
+                    :disabled="navIndex <= 0"
                     class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
                     :title="$t('timeline.previous')"
                     @click="goPrev"
@@ -163,13 +170,15 @@
 
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div class="px-5 py-2.5 rounded-full bg-black/60 border border-white/[0.08] backdrop-blur-xl text-center">
-                        <div class="text-white/90 text-xs sm:text-sm font-medium truncate max-w-[160px] sm:max-w-[200px]">{{ focusedLocation?.name ?? '—' }}</div>
-                        <div class="text-white/30 text-[10px] sm:text-[11px] mt-0.5">{{ focusedIndex + 1 }} / {{ sortedLocations.length }}</div>
+                        <div class="text-white/90 text-xs sm:text-sm font-medium truncate max-w-[160px] sm:max-w-[200px]">{{ navPrimary }}</div>
+                        <div class="text-white/30 text-[10px] sm:text-[11px] mt-0.5 truncate max-w-[160px] sm:max-w-[200px]">
+                            {{ navIndex >= 0 ? navIndex + 1 : '—' }} / {{ navTotal }}<template v-if="navSecondary"> &middot; {{ navSecondary }}</template>
+                        </div>
                     </div>
                 </div>
 
                 <button
-                    :disabled="focusedIndex >= sortedLocations.length - 1"
+                    :disabled="navIndex >= navTotal - 1"
                     class="shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 border border-white/10 backdrop-blur-xl flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
                     :title="$t('timeline.nextTitle')"
                     @click="goNext"
@@ -307,6 +316,25 @@
                         <div v-if="planetMode.selectedTitle.value" class="mt-4 pt-4 border-t border-white/[0.06] flex flex-col gap-2">
                             <div class="text-xs text-white/50 font-medium mb-1">{{ planetMode.selectedTitle.value.title }}</div>
 
+                            <!-- Previously On recap -->
+                            <button
+                                v-if="!showRecap"
+                                class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium bg-purple-500/10 hover:bg-purple-500/15 text-purple-400/80 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200"
+                                @click="showRecap = true"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Previously On...
+                            </button>
+                            <div v-if="showRecap" class="mb-2">
+                                <TitlePreviouslyOn
+                                    :current-title-id="planetMode.selectedTitle.value.id"
+                                    :current-title-slug="planetMode.selectedTitle.value.slug"
+                                    :watched-ids="watchedIds"
+                                />
+                            </div>
+
                             <div class="flex items-center gap-2">
                                 <button
                                     v-if="progressMap.get(planetMode.selectedTitle.value.id) !== 'watched'"
@@ -349,14 +377,16 @@ import type { Database } from '~/types/supabase'
 import SolarSystemScene from '../planet/SolarSystemScene.vue'
 import EarthGlobeScene from '../planet/EarthGlobeScene.vue'
 import { usePlanetLayout, type PlanetLayout } from '~/composables/usePlanetLayout'
+import type { JourneyStop } from '~/composables/usePlanetMode'
 
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     titles: Title[]
     progressMap: Map<number, ProgressStatus>
-}>()
+    fullscreen?: boolean
+}>(), { fullscreen: false })
 
 defineEmits<{
     markWatched: [id: number]
@@ -386,9 +416,44 @@ const showDragHint = ref(true)
 const tooltipPos = ref({ x: 0, y: 0 })
 const prefersReducedMotion = ref(false)
 
+const watchedIds = computed(() => {
+    const ids = new Set<number>()
+    for (const [id, status] of props.progressMap) {
+        if (status === 'watched') ids.add(id)
+    }
+    return ids
+})
+
+const showRecap = ref(false)
+watch(() => planetMode.selectedTitle.value, () => { showRecap.value = false })
+
 const sortedLocations = computed(() => planetMode.solarSystemLocations.value)
 
-const focusedLocation = computed(() => sortedLocations.value[focusedIndex.value] ?? null)
+
+// The prev/next bar serves both scenes. In the solar system it tracks
+// focusedIndex; on the globe there is no index, so it tracks the selected
+// pin's position in the (story-ordered) earth location list — hence -1 while
+// nothing is selected there.
+const isEarthDetail = computed(() => planetMode.viewState.value === 'earth-detail')
+
+// In the solar system the bar walks the story itself — one stop per title, the
+// camera hopping to wherever that title plays. On the globe there is no such
+// journey, so it falls back to stepping through Earth's own locations.
+const journey = computed(() => planetMode.journey.value)
+const journeyIndex = ref(0)
+
+// The bar previews the first stop before the journey starts, so the opening
+// Next travels to that stop instead of skipping past it.
+const journeyStarted = ref(false)
+const navIndex = computed(() => journeyIndex.value)
+const navTotal = computed(() => journey.value.length)
+const navStop = computed(() => journey.value[journeyIndex.value] ?? null)
+const navPrimary = computed(() => navStop.value?.title.title ?? '—')
+const navSecondary = computed(() => {
+    const stop = navStop.value
+    if (!stop) return null
+    return stop.earthLocation?.name ?? stop.location.name
+})
 
 const hoveredLocation = computed(() => {
     if (!hoveredCode.value) return null
@@ -425,6 +490,7 @@ function typeBadgeClass(type: string) {
 const { height: viewportHeight, isMobile } = useViewport()
 
 const containerHeight = computed(() => {
+    if (props.fullscreen) return '100%'
     const bottomNavOffset = isMobile.value ? 80 : 0
     return `${Math.max(500, viewportHeight.value - 140 - bottomNavOffset)}px`
 })
@@ -434,7 +500,42 @@ onMounted(() => {
     setTimeout(() => { showDragHint.value = false }, 5000)
 
     const onKeydown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') skipDive()
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+
+        switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+                e.preventDefault()
+                goNext()
+                break
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                e.preventDefault()
+                goPrev()
+                break
+            case 'Enter': {
+                e.preventDefault()
+                const stop = navStop.value
+                const loc = isEarthDetail.value ? stop?.earthLocation : stop?.location
+                if (!loc) break
+                if (planetMode.selectedLocationCode.value === loc.id) {
+                    planetMode.selectLocation(null)
+                } else {
+                    onSelect(loc.id)
+                }
+                break
+            }
+            case 'Escape':
+                if (planetMode.selectedLocationCode.value) {
+                    planetMode.selectLocation(null)
+                    if (!isEarthDetail.value) focusedIndex.value = 0
+                } else if (isEarthDetail.value) {
+                    onExitEarth()
+                } else {
+                    skipDive()
+                }
+                break
+        }
     }
     window.addEventListener('keydown', onKeydown)
     onUnmounted(() => {
@@ -455,6 +556,7 @@ onMounted(() => {
 function flashAndSwap() {
     diveFlash.value = true
     planetMode.completeTravel()
+    consumePendingStop()
     if (diveFlashTimeout) clearTimeout(diveFlashTimeout)
     diveFlashTimeout = setTimeout(() => { diveFlash.value = false }, 280)
 }
@@ -477,7 +579,17 @@ function onSelect(code: string | null) {
         showDragHint.value = false
         const idx = sortedLocations.value.findIndex(l => l.id === code)
         if (idx >= 0) focusedIndex.value = idx
+        syncJourneyTo(s => s.location.id === code)
     }
+}
+
+// Clicking a planet, pin or title bypasses the prev/next bar, so the journey
+// position is realigned — otherwise the bar keeps naming a film you left.
+function syncJourneyTo(match: (stop: JourneyStop) => boolean) {
+    const idx = journey.value.findIndex(match)
+    if (idx < 0) return
+    journeyIndex.value = idx
+    journeyStarted.value = true
 }
 
 function finishReturn() {
@@ -487,8 +599,18 @@ function finishReturn() {
     cameFromDive.value = false
     returnFromEarth.value = true
     planetMode.exitEarth()
+    consumePendingStop()
     if (diveFlashTimeout) clearTimeout(diveFlashTimeout)
     diveFlashTimeout = setTimeout(() => { diveFlash.value = false }, 280)
+}
+
+// enterEarth/exitEarth reset the selection as they swap scenes, so the stop is
+// applied on the far side of the transition rather than before it.
+function consumePendingStop() {
+    const stop = pendingStop.value
+    if (!stop) return
+    pendingStop.value = null
+    nextTick(() => applyStop(stop))
 }
 
 function skipDive() {
@@ -503,6 +625,7 @@ function skipDive() {
 
 function onEarthPinSelect(code: string | null) {
     planetMode.selectLocation(code)
+    if (code) syncJourneyTo(s => s.earthLocation?.id === code)
 }
 
 function onExitEarth() {
@@ -518,23 +641,90 @@ function onExitEarth() {
 }
 
 function onTitleClick(title: Title) {
-    planetMode.selectTitle(title.slug === planetMode.selectedTitleSlug.value ? null : title.slug)
+    const deselecting = title.slug === planetMode.selectedTitleSlug.value
+    planetMode.selectTitle(deselecting ? null : title.slug)
+    if (deselecting) return
+
+    // Only follow the click when this title's stop is the place we are already
+    // looking at. A location lists titles that play elsewhere too (Asgard lists
+    // Love and Thunder, whose stop is New Asgard on Earth), and pointing the bar
+    // there without travelling would just mislabel the view.
+    const here = planetMode.selectedLocationCode.value
+    syncJourneyTo(s => s.title.slug === title.slug
+        && (isEarthDetail.value ? s.earthLocation?.id === here : s.location.id === here))
+}
+
+// Applied once a dive or return finishes, since both clear the selection as
+// they swap scenes.
+const pendingStop = ref<JourneyStop | null>(null)
+
+function applyStop(stop: JourneyStop) {
+    if (stop.location.id === 'earth') {
+        if (stop.earthLocation) planetMode.selectLocation(stop.earthLocation.id)
+        else planetMode.selectLocation(null)
+        return
+    }
+    const locIdx = sortedLocations.value.findIndex(l => l.id === stop.location.id)
+    if (locIdx >= 0) focusedIndex.value = locIdx
+    planetMode.selectLocation(stop.location.id)
+    planetMode.selectTitle(stop.title.slug)
+}
+
+function stepNav(delta: number) {
+    // Mid-flight presses would fight the dive/return animation.
+    if (planetMode.viewState.value === 'traveling' || returning.value) return
+
+    const target = journeyStarted.value ? journeyIndex.value + delta : journeyIndex.value
+    const stop = journey.value[target]
+    if (!stop) return
+
+    journeyStarted.value = true
+    journeyIndex.value = target
+    showDragHint.value = false
+
+    const wantsEarth = stop.location.id === 'earth'
+    const onEarth = isEarthDetail.value
+    const instant = prefersReducedMotion.value || settings.reducedMotion
+
+    // The journey crosses between the two scenes on its own: Earth-bound
+    // titles zoom into the globe, off-world ones pull back out to the system.
+    if (wantsEarth && !onEarth) {
+        if (instant || !solarRef.value) {
+            cameFromDive.value = false
+            planetMode.enterEarth()
+            applyStop(stop)
+        } else {
+            cameFromDive.value = true
+            pendingStop.value = stop
+            planetMode.beginTravel()
+            solarRef.value.diveToEarth(flashAndSwap)
+        }
+        return
+    }
+
+    if (!wantsEarth && onEarth) {
+        if (instant || !earthRef.value) {
+            cameFromDive.value = false
+            returnFromEarth.value = false
+            planetMode.exitEarth()
+            applyStop(stop)
+        } else {
+            pendingStop.value = stop
+            returning.value = true
+            earthRef.value.zoomOut(finishReturn)
+        }
+        return
+    }
+
+    applyStop(stop)
 }
 
 function goNext() {
-    if (focusedIndex.value < sortedLocations.value.length - 1) {
-        focusedIndex.value++
-        const nextLoc = sortedLocations.value[focusedIndex.value]
-        if (nextLoc) planetMode.selectLocation(nextLoc.id)
-    }
+    stepNav(1)
 }
 
 function goPrev() {
-    if (focusedIndex.value > 0) {
-        focusedIndex.value--
-        const prevLoc = sortedLocations.value[focusedIndex.value]
-        if (prevLoc) planetMode.selectLocation(prevLoc.id)
-    }
+    stepNav(-1)
 }
 
 function resetCamera() {

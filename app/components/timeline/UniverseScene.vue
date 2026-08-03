@@ -161,15 +161,6 @@ function createPosterTexture(title: Title, status: ProgressStatus | undefined, p
         })
         ctx.globalAlpha = 1
 
-        const chronoNum = `#${title.chronology_index ?? '?'}`
-        ctx.font = 'bold 14px system-ui'
-        ctx.textAlign = 'left'
-        ctx.textBaseline = 'top'
-        ctx.fillStyle = 'rgba(0,0,0,0.5)'
-        ctx.fillText(chronoNum, 9, 9)
-        ctx.fillStyle = 'rgba(255,255,255,0.7)'
-        ctx.fillText(chronoNum, 8, 8)
-
         if (status === 'watched') {
             ctx.fillStyle = 'rgba(34,197,94,0.8)'
             ctx.beginPath()
@@ -346,7 +337,6 @@ function getLayoutForPhase(phaseNum: number) {
 
 const scene = new Group()
 const raycaster = new Raycaster()
-const pointer = new Vector2()
 
 interface CardEntry {
     card: Mesh
@@ -853,8 +843,11 @@ watch(() => props.themeBg, () => applyBg())
 // Camera rig: cameraCenter + camState are the single source of truth composed
 // in onLoop. GSAP owns them while `cameraTweening`; the drag/wheel targets take
 // back over via syncTargetsAndRelease() so the two never fight.
-let isDragging = false
-let dragStart = { x: 0, y: 0 }
+const canvasEl = computed(() => renderer.value?.domElement ?? null)
+const gesture = usePointerGesture(canvasEl)
+const momentum = { x: 0, y: 0 }
+let wasDraggingPrev = false
+
 const camState = { distance: 18, angleX: 0, angleY: 0.15 }
 const targetAngle = { x: 0, y: 0.15 }
 let targetDistance = 18
@@ -864,8 +857,6 @@ let lastHoveredId: number | null = null
 let autoRotate = true
 let cameraTweening = false
 let camTl: gsap.core.Timeline | null = null
-let pointerDirty = false
-let lastPointerType = 'mouse'
 
 function shortestAngle(from: number, to: number) {
     return from + ((((to - from + Math.PI) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)) - Math.PI
@@ -957,123 +948,10 @@ watch(() => props.focusedIndex, (newIdx) => {
     if (settings.cameraAutoReset) flyToCard(newIdx)
 })
 
-function onPointerDown(e: PointerEvent) {
-    isDragging = true
-    autoRotate = false
-    killCameraTweens()
-    dragStart = { x: e.clientX, y: e.clientY }
-}
-
-function onPointerMove(e: PointerEvent) {
-    const canvas = renderer.value?.domElement
-    if (!canvas) return
-    const rect = canvas.getBoundingClientRect()
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
-    pointerDirty = true
-    lastPointerType = e.pointerType
-    if (isDragging) {
-        const dx = e.clientX - dragStart.x
-        const dy = e.clientY - dragStart.y
-        targetAngle.x -= dx * 0.004
-        targetAngle.y = Math.max(-0.6, Math.min(0.6, targetAngle.y + dy * 0.004))
-        dragStart = { x: e.clientX, y: e.clientY }
-    }
-}
-
-function onPointerLeave() {
-    pointerDirty = false
-    if (lastHoveredId !== null) {
-        lastHoveredId = null
-        emit('hover', null)
-    }
-}
-
-function onPointerUp(e: PointerEvent) {
-    const wasDrag = Math.abs(e.clientX - dragStart.x) > 5 || Math.abs(e.clientY - dragStart.y) > 5
-    isDragging = false
-    if (!wasDrag && camera.value) {
-        raycaster.setFromCamera(pointer, camera.value)
-        const intersects = raycaster.intersectObjects(clickTargets, false)
-        const hit = intersects.find(i => i.object.userData.titleId != null)
-        if (hit) {
-            const id = hit.object.userData.titleId
-            const entry = cardMeshes.find(p => p.titleId === id)
-            if (entry) {
-                const deselecting = id === props.selectedId
-                if (deselecting) {
-                    emit('select', null)
-                    flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
-                } else {
-                    emit('select', id)
-                    emit('update:focusedIndex', entry.index)
-                    flyToCard(entry.index)
-                }
-            }
-        } else {
-            emit('select', null)
-            flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
-        }
-    }
-}
-
+// Pointer input handled by usePointerGesture composable
 let wheelAccum = 0
 
-function onWheel(e: WheelEvent) {
-    e.preventDefault()
-
-    // Ctrl/Cmd + scroll = zoom
-    if (e.ctrlKey || e.metaKey) {
-        autoRotate = false
-        killCameraTweens()
-        const speed = 0.004
-        targetDistance = Math.max(4, Math.min(60, targetDistance + e.deltaY * speed))
-        return
-    }
-
-    if (settings.scrollBehavior === 'snap') {
-        // Accumulate trackpad delta across events; only navigate once
-        // the accumulated momentum crosses a threshold.
-        wheelAccum += e.deltaY
-        const threshold = 40
-        if (Math.abs(wheelAccum) < threshold) return
-        const direction = wheelAccum > 0 ? 1 : -1
-        wheelAccum = 0
-
-        const nextIndex = Math.max(0, Math.min(cardMeshes.length - 1, props.focusedIndex + direction))
-        if (nextIndex !== props.focusedIndex) {
-            autoRotate = false
-            emit('update:focusedIndex', nextIndex)
-        }
-    } else {
-        // Free scroll: smooth camera movement along the timeline
-        autoRotate = false
-        killCameraTweens()
-        const speed = 0.015
-        targetCenter.x += e.deltaY * speed
-        targetCenter.x = Math.max(-50, Math.min(70, targetCenter.x))
-    }
-}
-
-onMounted(() => {
-    const canvas = renderer.value?.domElement
-    if (!canvas) return
-    canvas.addEventListener('pointerdown', onPointerDown)
-    canvas.addEventListener('pointermove', onPointerMove)
-    canvas.addEventListener('pointerup', onPointerUp)
-    canvas.addEventListener('pointerleave', onPointerLeave)
-    canvas.addEventListener('wheel', onWheel, { passive: false })
-})
-
 onUnmounted(() => {
-    const canvas = renderer.value?.domElement
-    if (canvas) {
-        canvas.removeEventListener('pointerdown', onPointerDown)
-        canvas.removeEventListener('pointermove', onPointerMove)
-        canvas.removeEventListener('pointerup', onPointerUp)
-        canvas.removeEventListener('pointerleave', onPointerLeave)
-        canvas.removeEventListener('wheel', onWheel)
-    }
     if (camTl) camTl.kill()
     gsap.killTweensOf(pathOpacity)
     cardMeshes.forEach(entry => gsap.killTweensOf(entry.basePos))
@@ -1111,6 +989,110 @@ onLoop(({ delta }) => {
         if (mat?.uniforms?.uOpacity) mat.uniforms.uOpacity.value = pathOpacity.value
     })
 
+    const isTouch = gesture.pointerType.value === 'touch'
+    const sens = 0.004 * (isTouch ? 1.5 : 1)
+
+    // Process drag input
+    if (gesture.isDragging.value) {
+        const drag = gesture.consumeDrag()
+        if (!cameraTweening) {
+            autoRotate = false
+            killCameraTweens()
+            targetAngle.x -= drag.x * sens
+            targetAngle.y = Math.max(-0.6, Math.min(0.6, targetAngle.y + drag.y * sens))
+        }
+    }
+
+    // Process wheel input
+    const wheel = gesture.consumeWheel()
+    if (wheel.delta !== 0) {
+        if (wheel.ctrl) {
+            autoRotate = false
+            killCameraTweens()
+            targetDistance = Math.max(4, Math.min(60, targetDistance + wheel.delta * 0.004))
+        } else if (settings.scrollBehavior === 'snap') {
+            wheelAccum += wheel.delta
+            if (Math.abs(wheelAccum) >= 40) {
+                const direction = wheelAccum > 0 ? 1 : -1
+                wheelAccum = 0
+                const nextIndex = Math.max(0, Math.min(cardMeshes.length - 1, props.focusedIndex + direction))
+                if (nextIndex !== props.focusedIndex) {
+                    autoRotate = false
+                    emit('update:focusedIndex', nextIndex)
+                }
+            }
+        } else {
+            autoRotate = false
+            killCameraTweens()
+            targetCenter.x += wheel.delta * 0.015
+            targetCenter.x = Math.max(-50, Math.min(70, targetCenter.x))
+        }
+    }
+
+    // Process pinch input
+    const pinch = gesture.consumePinch()
+    if (pinch !== 0) {
+        autoRotate = false
+        killCameraTweens()
+        targetDistance = Math.max(4, Math.min(60, targetDistance * (1 - pinch)))
+    }
+
+    // Momentum capture on release
+    if (!gesture.isDragging.value && wasDraggingPrev) {
+        const vel = gesture.getVelocity()
+        momentum.x = vel.x
+        momentum.y = vel.y
+    }
+    wasDraggingPrev = gesture.isDragging.value
+
+    // Apply momentum
+    if (!gesture.isDragging.value && !cameraTweening && (Math.abs(momentum.x) > 0.0001 || Math.abs(momentum.y) > 0.0001)) {
+        targetAngle.x -= momentum.x * sens
+        targetAngle.y = Math.max(-0.6, Math.min(0.6, targetAngle.y + momentum.y * sens))
+        const decay = Math.pow(0.92, delta * 60)
+        momentum.x *= decay
+        momentum.y *= decay
+    }
+
+    // Tap detection for click
+    if (gesture.consumeTap() && camera.value) {
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const intersects = raycaster.intersectObjects(clickTargets, false)
+        const hit = intersects.find(i => i.object.userData.titleId != null)
+        if (hit) {
+            const id = hit.object.userData.titleId
+            const entry = cardMeshes.find(p => p.titleId === id)
+            if (entry) {
+                const deselecting = id === props.selectedId
+                if (deselecting) {
+                    emit('select', null)
+                    flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
+                } else {
+                    emit('select', id)
+                    emit('update:focusedIndex', entry.index)
+                    flyToCard(entry.index)
+                }
+            }
+        } else {
+            emit('select', null)
+            flyTo({ distance: 14, angleY: 0.12, duration: 0.9 })
+        }
+    }
+
+    // Hover raycasting
+    if (gesture.isPointerDirty() && camera.value) {
+        gesture.clearPointerDirty()
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const intersects = raycaster.intersectObjects(clickTargets, false)
+        const hit = intersects.find(i => i.object.userData.titleId != null)
+        const hovId = hit?.object.userData.titleId ?? null
+        if (hovId !== lastHoveredId) {
+            lastHoveredId = hovId
+            emit('hover', hovId)
+        }
+    }
     if (!cameraTweening) {
         const af = damp(0.08, delta)
         camState.angleX += (targetAngle.x - camState.angleX) * af
@@ -1205,19 +1187,6 @@ onLoop(({ delta }) => {
         const targetHaloOpacity = baseHaloOpacity * (1.0 - occludeAmount)
         const haloDiff = targetHaloOpacity - haloMat.opacity
         haloMat.opacity = Math.abs(haloDiff) < 0.005 ? targetHaloOpacity : haloMat.opacity + haloDiff * damp(0.14, delta)
-    }
-
-    // Hover raycast only when the pointer actually moved (never per-frame),
-    // and never for touch — tap selection runs its own raycast in onPointerUp.
-    if (pointerDirty && camera.value && !isDragging && lastPointerType !== 'touch') {
-        pointerDirty = false
-        raycaster.setFromCamera(pointer, camera.value)
-        const hit = raycaster.intersectObjects(clickTargets, false)[0]
-        const newId = (hit?.object.userData.titleId as number | undefined) ?? null
-        if (newId !== lastHoveredId) {
-            lastHoveredId = newId
-            emit('hover', newId)
-        }
     }
 
     stars.rotation.y = elapsed * 0.008

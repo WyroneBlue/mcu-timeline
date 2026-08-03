@@ -95,6 +95,40 @@
             </div>
         </div>
 
+        <!-- Artifacts Collection -->
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="font-display text-xl tracking-wider text-white">Artifacts</h2>
+                <span class="text-xs text-white/30 font-mono">{{ artifactUnlockedCount }} / {{ artifactTotalCount }}</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                <div
+                    v-for="artifact in artifactsWithState"
+                    :key="artifact.id"
+                    :class="[
+                        'glass-card p-4 text-center transition-all duration-300',
+                        artifact.unlocked
+                            ? 'border-white/10 hover:border-white/20'
+                            : 'opacity-40 grayscale border-white/5'
+                    ]"
+                >
+                    <div :class="['text-3xl mb-2', artifact.unlocked && 'animate-pulse-glow']">{{ artifact.icon }}</div>
+                    <div class="text-xs font-medium text-white/80 mb-1 leading-tight">{{ artifact.name }}</div>
+                    <div v-if="artifact.unlocked" class="text-[10px] text-green-400/70">Ontgrendeld</div>
+                    <div v-else class="text-[10px] text-white/25 leading-tight">{{ artifact.unlockHint }}</div>
+                    <div v-if="!artifact.unlocked && artifact.progress.total > 1" class="mt-1.5">
+                        <div class="w-full h-1 rounded-full bg-white/5 overflow-hidden">
+                            <div
+                                class="h-full rounded-full bg-purple-500/50 transition-all duration-500"
+                                :style="{ width: (artifact.progress.done / artifact.progress.total * 100) + '%' }"
+                            />
+                        </div>
+                        <span class="text-[9px] text-white/20 mt-0.5 block">{{ artifact.progress.done }}/{{ artifact.progress.total }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Settings -->
         <div>
             <h2 class="font-display text-xl tracking-wider text-white mb-4">{{ $t('profile.settings') }}</h2>
@@ -145,6 +179,7 @@ const user = useSupabaseUser()
 const { getLevelFromXP, getLevelName, getTotalXP } = useXP()
 const { signOut } = useAuth()
 const { spoilerMode: guardSpoilerMode, toggleSpoilerMode: guardToggleSpoiler } = useSpoilerGuard()
+const { artifacts: allArtifacts, isUnlocked, checkUnlocks, getProgress, unlockedCount: artifactUnlockedCount, totalCount: artifactTotalCount } = useArtifacts()
 
 const allTitles = mcuTitlesJson as any[]
 
@@ -171,6 +206,14 @@ const levelName = computed(() => getLevelName(level.value))
 const displayName = computed(() => user.value?.email?.split('@')[0] || t('profile.user'))
 const userInitial = computed(() => displayName.value.charAt(0).toUpperCase())
 const earnedBadgeCount = computed(() => earnedCodes.value.size)
+
+const watchedSlugs = ref(new Set<string>())
+
+const artifactsWithState = computed(() => allArtifacts.map(a => ({
+    ...a,
+    unlocked: isUnlocked(a.id),
+    progress: getProgress(a, watchedSlugs.value),
+})))
 
 const formattedWatchTime = computed(() => {
     const hours = Math.floor(watchedTotalMinutes.value / 60)
@@ -310,6 +353,15 @@ onMounted(async () => {
         }
         watchedTotalMinutes.value = Array.from(watchedIds)
             .reduce((sum, id) => sum + (idToRuntime.get(id) || 0), 0)
+
+        const slugSet = new Set<string>()
+        for (const p of watched) {
+            for (const [slug, id] of titleIdMap.value) {
+                if (id === p.title_id) { slugSet.add(slug); break }
+            }
+        }
+        watchedSlugs.value = slugSet
+        checkUnlocks(slugSet)
     } catch { /* no progress */ }
 
     try {

@@ -100,7 +100,6 @@ function createLabelTexture(name: string, color: string, titleCount: number): Ca
 
 const scene = new Group()
 const raycaster = new Raycaster()
-const pointer = new Vector2()
 
 interface LocationEntry {
     sphere: Mesh
@@ -365,23 +364,27 @@ watch(() => [props.filterType], () => {
     buildLocations()
 })
 
-const { camera } = useTres()
-const cameraAngle = { x: 0.15, y: 0 }
-const cameraDistance = ref(30)
-const targetAngle = { x: 0.15, y: 0 }
-const targetDistance = ref(30)
-const cameraTarget = new Vector3(0, 0, 0)
-const targetCameraTarget = new Vector3(0, 0, 0)
-let isDragging = false
-let dragStart = { x: 0, y: 0 }
+const { camera, renderer } = useTres()
+const canvasEl = computed(() => renderer.value?.domElement ?? null)
+
+const interaction = useSceneInteraction(canvasEl, {
+    pitchClamp: [-0.5, 0.8],
+    zoomClamp: [5, 80],
+    initialAngle: { x: 0.15, y: 0 },
+    initialDistance: 30,
+    dragSensitivity: 0.005,
+    zoomSpeed: 0.015,
+    dampFactor: 0.08,
+    centerDampFactor: 0.06,
+})
 let hasFocus = false
 
 function flyToLocation(index: number) {
     const entry = locationMeshes[index]
     if (!entry) return
-    targetCameraTarget.copy(entry.basePos)
-    targetDistance.value = Math.max(8, entry.radius * 12)
-    targetAngle.y = 0.05
+    interaction.setTargetCenter(entry.basePos.x, entry.basePos.y, entry.basePos.z)
+    interaction.setTargetDistance(Math.max(8, entry.radius * 12))
+    interaction.target.angleY = 0.05
     hasFocus = true
 }
 
@@ -397,76 +400,12 @@ watch(() => props.selectedCode, (code) => {
         if (idx >= 0) {
             emit('update:focusedIndex', idx)
             flyToLocation(idx)
-            targetDistance.value = Math.max(6, locationMeshes[idx].radius * 8)
+            interaction.setTargetDistance(Math.max(6, locationMeshes[idx].radius * 8))
         }
     }
 })
 
-function onPointerDown(e: PointerEvent) {
-    isDragging = true
-    dragStart = { x: e.clientX, y: e.clientY }
-}
-
-function onPointerMove(e: PointerEvent) {
-    const rect = (e.target as HTMLElement)?.closest('canvas')?.getBoundingClientRect()
-    if (!rect) return
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
-
-    if (isDragging) {
-        const dx = e.clientX - dragStart.x
-        const dy = e.clientY - dragStart.y
-        targetAngle.y -= dx * 0.005
-        targetAngle.x = Math.max(-0.5, Math.min(0.8, targetAngle.x + dy * 0.005))
-        dragStart = { x: e.clientX, y: e.clientY }
-    }
-
-    if (!camera.value) return
-    raycaster.setFromCamera(pointer, camera.value)
-    const spheres = locationMeshes.map(e => e.sphere)
-    const intersects = raycaster.intersectObjects(spheres, false)
-    if (intersects.length > 0) {
-        const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
-        emit('hover', hit?.code ?? null)
-    } else {
-        emit('hover', null)
-    }
-}
-
-function onPointerUp(e: PointerEvent) {
-    const dx = Math.abs(e.clientX - dragStart.x)
-    const dy = Math.abs(e.clientY - dragStart.y)
-    isDragging = false
-
-    if (dx < 5 && dy < 5 && camera.value) {
-        raycaster.setFromCamera(pointer, camera.value)
-        const spheres = locationMeshes.map(e => e.sphere)
-        const intersects = raycaster.intersectObjects(spheres, false)
-        if (intersects.length > 0) {
-            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
-            if (hit) {
-                emit('select', hit.code)
-            }
-        } else {
-            emit('select', null)
-            hasFocus = false
-            targetDistance.value = 30
-            targetCameraTarget.set(0, 0, 0)
-        }
-    }
-}
-
-function onWheel(e: WheelEvent) {
-    e.preventDefault()
-    const speed = e.ctrlKey || e.metaKey ? 0.003 : 0.015
-    targetDistance.value = Math.max(5, Math.min(80, targetDistance.value + e.deltaY * speed))
-}
-
-if (typeof window !== 'undefined') {
-    window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
-}
+// Raycasting uses pointer NDC from gesture composable
 
 let flyProgress = 1.0
 
@@ -488,19 +427,42 @@ onLoop(({ delta }) => {
         mat.opacity = 0.08 + Math.sin(elapsed * 0.3 + child.position.x) * 0.03
     })
 
-    if (camera.value) {
-        cameraAngle.x += (targetAngle.x - cameraAngle.x) * 0.06
-        cameraAngle.y += (targetAngle.y - cameraAngle.y) * 0.06
-        cameraDistance.value += (targetDistance.value - cameraDistance.value) * 0.06
-        cameraTarget.lerp(targetCameraTarget, 0.06)
+    interaction.update(delta)
 
-        const d = cameraDistance.value
-        camera.value.position.set(
-            cameraTarget.x + Math.sin(cameraAngle.y) * Math.cos(cameraAngle.x) * d,
-            cameraTarget.y + Math.sin(cameraAngle.x) * d,
-            cameraTarget.z + Math.cos(cameraAngle.y) * Math.cos(cameraAngle.x) * d,
-        )
-        camera.value.lookAt(cameraTarget)
+    // Raycasting for hover
+    if (interaction.gesture.isPointerDirty() && camera.value) {
+        const { pointer: pt } = interaction.gesture
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const spheres = locationMeshes.map(e => e.sphere)
+        const intersects = raycaster.intersectObjects(spheres, false)
+        if (intersects.length > 0) {
+            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
+            emit('hover', hit?.code ?? null)
+        } else {
+            emit('hover', null)
+        }
+        interaction.gesture.clearPointerDirty()
+    }
+
+    // Tap detection for click
+    if (interaction.gesture.consumeTap() && camera.value) {
+        const { pointer: pt } = interaction.gesture
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const spheres = locationMeshes.map(e => e.sphere)
+        const intersects = raycaster.intersectObjects(spheres, false)
+        if (intersects.length > 0) {
+            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
+            if (hit) emit('select', hit.code)
+        } else {
+            emit('select', null)
+            hasFocus = false
+            interaction.setTargetDistance(30)
+            interaction.setTargetCenter(0, 0, 0)
+        }
+    }
+
+    if (camera.value) {
+        interaction.applyCameraPosition(camera.value)
     }
 
     for (const entry of locationMeshes) {
@@ -542,11 +504,6 @@ onLoop(({ delta }) => {
 })
 
 onUnmounted(() => {
-    if (typeof window !== 'undefined') {
-        window.removeEventListener('pointerdown', onPointerDown)
-        window.removeEventListener('pointermove', onPointerMove)
-        window.removeEventListener('pointerup', onPointerUp)
-    }
     disposables.forEach(d => d.dispose())
     starGeo.dispose()
     starMat.dispose()

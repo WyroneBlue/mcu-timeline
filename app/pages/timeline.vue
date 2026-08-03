@@ -1,20 +1,59 @@
 <template>
-    <div ref="timelineContainer">
-        <template v-if="!focusMode">
-            <!-- 3D Particle starfield background -->
-            <TimelineParticleBackground :active-phase="scrollPhase" />
+    <!-- The layout wraps pages in pt-16 (navbar) and pb-20 on mobile (bottom
+         nav), so a full-height 3D view has to subtract those or its bottom
+         overlay controls end up below the fold. -->
+    <div
+        ref="timelineContainer"
+        :class="is3DView ? 'h-[calc(100dvh-4rem-5rem)] md:h-[calc(100dvh-4rem)] flex flex-col overflow-hidden' : ''"
+    >
+        <!-- Compact top bar for 3D views -->
+        <div v-if="is3DView" class="shrink-0 flex items-center justify-between px-3 sm:px-4 h-12 bg-black/80 backdrop-blur-md border-b border-white/[0.06] z-40 relative">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1.5 bg-white/[0.06] rounded-lg p-0.5">
+                    <button
+                        v-for="v in (['list', 'universe', 'planet'] as const)"
+                        :key="v"
+                        :class="[
+                            'px-3 py-1 rounded-md text-xs font-medium transition-all duration-200',
+                            viewMode === v
+                                ? 'bg-white/[0.12] text-white shadow-sm'
+                                : 'text-white/40 hover:text-white/70'
+                        ]"
+                        @click="onViewModeChange(v)"
+                    >
+                        {{ v === 'list' ? 'List' : v === 'universe' ? 'Galaxy' : 'Worlds' }}
+                    </button>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 text-[11px] text-white/30">
+                    <span>{{ progressPercent }}%</span>
+                    <span class="w-px h-3 bg-white/10" />
+                    <span v-if="nextUpTitle">Next: {{ nextUpTitle.title }}</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <select
+                    :value="sortBy"
+                    class="bg-white/[0.06] border border-white/[0.06] rounded-md text-xs text-white/60 px-2 py-1 appearance-none cursor-pointer hover:bg-white/[0.1] transition-colors"
+                    @change="sortBy = ($event.target as HTMLSelectElement).value as any"
+                >
+                    <option value="phase" class="bg-neutral-900">Phase</option>
+                    <option value="chronological" class="bg-neutral-900">Release</option>
+                    <option value="story" class="bg-neutral-900">Story</option>
+                </select>
+            </div>
+        </div>
 
-            <!-- Ambient phase background (gradient orbs) -->
+        <!-- List view: full scrollable page with backgrounds, hero, toolbar -->
+        <template v-if="viewMode === 'list' && !focusMode">
+            <TimelineParticleBackground :active-phase="scrollPhase" />
             <TimelinePhaseBackground :active-phase="scrollPhase" />
 
-            <!-- Sticky progress bar -->
             <TimelineProgress
                 :percent="progressPercent"
                 :current-phase="currentPhase"
                 :next-up="nextUpTitle"
             />
 
-            <!-- Intro hero -->
             <TimelineIntro
                 :posters="introPosters"
                 :title-count="titles.length"
@@ -22,7 +61,6 @@
                 :percent="progressPercent"
             />
 
-            <!-- Mode selector + Filters — inline bar on desktop only -->
             <div class="hidden sm:block sticky top-[7.5rem] z-30 py-4 px-4">
                 <div class="flex flex-wrap items-center justify-center gap-2">
                     <TimelineModeSelector v-model="mode" :sort-by="sortBy" :view-mode="viewMode" @update:sort-by="sortBy = $event" @update:view-mode="onViewModeChange" />
@@ -36,8 +74,9 @@
             </div>
         </template>
 
-        <!-- Mobile: floating controls FAB + bottom sheet (also available in 3D / focus mode) -->
+        <!-- Mobile: floating controls FAB + bottom sheet -->
         <TimelineControlsSheet
+            v-if="viewMode === 'list'"
             v-model="mode"
             v-model:filters="activeFilters"
             :sort-by="sortBy"
@@ -60,22 +99,24 @@
         </div>
 
         <Transition v-if="!loading && titles.length > 0" name="view-fade" mode="out-in">
-        <!-- Universe 3D View -->
-        <div v-if="viewMode === 'universe'" key="universe" class="relative">
+        <!-- Universe 3D View — fullscreen -->
+        <div v-if="viewMode === 'universe'" key="universe" class="relative flex-1 min-h-0">
             <TimelineUniverse
                 :titles="sortBy === 'story' ? storyTitles : sortBy === 'phase' ? phaseSortedTitles : chronologicalTitles"
                 :progress-map="progressMap"
                 :active-phase="scrollPhase"
+                :fullscreen="true"
                 @mark-watched="handleMarkWatched"
                 @mark-skipped="handleMarkSkipped"
             />
         </div>
 
-        <!-- Planet View (3D Solar System) -->
-        <div v-else-if="viewMode === 'planet'" key="planet" class="relative">
+        <!-- Planet View (3D Solar System) — fullscreen -->
+        <div v-else-if="viewMode === 'planet'" key="planet" class="relative flex-1 min-h-0">
             <TimelinePlanetView
                 :titles="chronologicalTitles"
                 :progress-map="progressMap"
+                :fullscreen="true"
                 @mark-watched="handleMarkWatched"
                 @mark-skipped="handleMarkSkipped"
             />
@@ -100,7 +141,7 @@
                     v-if="nextUpTitle && firstTitleInPhase(phase.number)?.id === nextUpTitle.id"
                 />
 
-                <div class="space-y-4 mb-8">
+                <div class="space-y-3.5 mb-6">
                     <TimelineCard
                         v-for="title in phase.titles"
                         :key="title.id"
@@ -126,7 +167,7 @@
 
         <!-- List View: Release order -->
         <div v-else-if="sortBy === 'chronological'" :key="'chrono-' + filterKey" class="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
-            <div class="space-y-4">
+            <div class="space-y-3.5">
                 <template v-for="(title, idx) in chronologicalTitles" :key="title.id">
                     <TimelineScrollPosition
                         v-if="nextUpTitle && title.id === nextUpTitle.id"
@@ -154,7 +195,7 @@
 
         <!-- List View: Story chronological -->
         <div v-else :key="'story-' + filterKey" class="max-w-4xl mx-auto px-4 sm:px-6 pb-24">
-            <div class="space-y-4">
+            <div class="space-y-3.5">
                 <template v-for="title in storyTitles" :key="title.id">
                     <TimelineScrollPosition
                         v-if="nextUpTitle && title.id === nextUpTitle.id"
@@ -219,6 +260,8 @@ const sortBy = ref<'phase' | 'chronological' | 'story'>(
 const viewMode = ref<'list' | 'universe' | 'planet'>(
     (typeof localStorage !== 'undefined' && localStorage.getItem('ck:viewMode') as any) || 'list'
 )
+
+const is3DView = computed(() => viewMode.value === 'universe' || viewMode.value === 'planet')
 
 watch(mode, v => localStorage.setItem('ck:mode', v))
 watch(sortBy, v => localStorage.setItem('ck:sortBy', v))
@@ -305,6 +348,7 @@ const { getTitlesForMode } = useTitles()
 const { getProgressForUser, markWatched, markSkipped } = useProgress()
 const { awardWatchXP } = useXP()
 const { checkAndAwardBadges } = useBadges()
+const { checkUnlocks: checkArtifactUnlocks } = useArtifacts()
 const { isRevealed: spoilerRevealed } = useSpoilerGuard()
 const user = useSupabaseUser()
 const client = useSupabaseClient<Database>()
@@ -477,6 +521,14 @@ async function handleMarkWatched(titleId: number) {
                     watchedCount: watchedIds.value.size,
                     totalCount: titles.value.length,
                 })
+                const slugs = new Set<string>()
+                for (const [id, status] of progressMap.value) {
+                    if (status === 'watched') {
+                        const t = allTitles.value.find(t => t.id === id)
+                        if (t) slugs.add(t.slug)
+                    }
+                }
+                checkArtifactUnlocks(slugs)
             }
         } catch (e) {
             progressMap.value.delete(titleId)

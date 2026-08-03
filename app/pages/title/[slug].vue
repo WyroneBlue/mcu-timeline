@@ -67,6 +67,7 @@
                 <!-- Previously On: personalized recap of the lead-up titles -->
                 <TitlePreviouslyOn
                     :current-title-id="title.id"
+                    :current-title-slug="title.slug"
                     :watched-ids="watchedIds"
                 />
 

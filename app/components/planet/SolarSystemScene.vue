@@ -16,6 +16,7 @@ import type { Database } from '~/types/supabase'
 import type { LocationJson } from '~/types/multiverse'
 import type { PlanetLayout } from '~/composables/usePlanetLayout'
 import { computeLayout } from '~/composables/usePlanetLayout'
+import { orderLocationsByChronology } from '~/composables/usePlanetMode'
 import locationsJson from '../../../data/locations.json'
 
 type Title = Database['public']['Tables']['titles']['Row']
@@ -37,8 +38,13 @@ const emit = defineEmits<{
     'update:focusedIndex': [index: number]
 }>()
 
+// Same story ordering as usePlanetMode.solarSystemLocations — the two lists are
+// indexed by the shared focusedIndex, so they must not diverge.
 const locations = computed(() =>
-    (locationsJson as LocationJson[]).filter(l => l.parent_code === null)
+    orderLocationsByChronology(
+        (locationsJson as LocationJson[]).filter(l => l.parent_code === null),
+        props.titles,
+    )
 )
 
 const typeColors: Record<string, string> = {
@@ -310,7 +316,6 @@ function getGeometry(type: string, radius: number): SphereGeometry | Icosahedron
 
 const scene = new Group()
 const raycaster = new Raycaster()
-const pointer = new Vector2()
 
 interface LocationEntry {
     sphere: Mesh
@@ -627,6 +632,12 @@ function buildConnections(locs: LocationJson[]) {
 
 buildLocations()
 
+// A mode or filter change reorders the story-sorted locations; the meshes carry
+// the index focusedIndex addresses, so they have to be rebuilt in step.
+watch(() => locations.value.map(l => l.id).join(','), (next, prev) => {
+    if (next !== prev) buildLocations()
+})
+
 watch(() => props.layout, (newLayout) => {
     const locs = locations.value
     const newPositions = computeLayout(newLayout, locs, props.titles)
@@ -686,7 +697,10 @@ watch(() => props.layout, (newLayout) => {
 
 // --- Camera ---
 
-const { camera } = useTres()
+const { camera, renderer } = useTres()
+const canvasEl = computed(() => renderer.value?.domElement ?? null)
+const gesture = usePointerGesture(canvasEl)
+
 const cameraState = reactive({
     angle: { x: 0.15, y: 0 },
     distance: 35,
@@ -697,9 +711,13 @@ const cameraGoal = reactive({
     distance: 35,
     target: new Vector3(0, 0, 0),
 })
-let isDragging = false
-let dragStart = { x: 0, y: 0 }
 let idleTime = 0
+const momentum = { x: 0, y: 0 }
+let wasDragging = false
+
+function damp(factor: number, dt: number) {
+    return 1 - Math.pow(1 - factor, dt * 60)
+}
 
 // Cinematic dive toward earth: flies the camera into the planet and fires
 // onPeak at closest approach so the parent can swap to the earth scene there.
@@ -788,79 +806,9 @@ watch(() => props.selectedCode, (code) => {
     }
 })
 
-// --- Pointer events ---
-
-function onPointerDown(e: PointerEvent) {
-    isDragging = true
-    dragStart = { x: e.clientX, y: e.clientY }
-    idleTime = 0
-}
-
-function onPointerMove(e: PointerEvent) {
-    const rect = (e.target as HTMLElement)?.closest('canvas')?.getBoundingClientRect()
-    if (!rect) return
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
-
-    if (isDragging) {
-        const dx = e.clientX - dragStart.x
-        const dy = e.clientY - dragStart.y
-        cameraGoal.angle.y -= dx * 0.005
-        cameraGoal.angle.x = Math.max(-0.5, Math.min(0.8, cameraGoal.angle.x + dy * 0.005))
-        dragStart = { x: e.clientX, y: e.clientY }
-        idleTime = 0
-    }
-
-    if (!camera.value) return
-    raycaster.setFromCamera(pointer, camera.value)
-    const spheres = locationMeshes.map(e => e.sphere)
-    const intersects = raycaster.intersectObjects(spheres, false)
-    if (intersects.length > 0) {
-        const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
-        emit('hover', hit?.code ?? null)
-    } else {
-        emit('hover', null)
-    }
-}
-
-function onPointerUp(e: PointerEvent) {
-    const dx = Math.abs(e.clientX - dragStart.x)
-    const dy = Math.abs(e.clientY - dragStart.y)
-    isDragging = false
-
-    if (dx < 5 && dy < 5 && camera.value && !isDiving) {
-        raycaster.setFromCamera(pointer, camera.value)
-        const spheres = locationMeshes.map(e => e.sphere)
-        const intersects = raycaster.intersectObjects(spheres, false)
-        if (intersects.length > 0) {
-            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
-            if (hit) emit('select', hit.code)
-        } else {
-            emit('select', null)
-        }
-    }
-}
-
-function onWheel(e: WheelEvent) {
-    e.preventDefault()
-    const speed = e.ctrlKey || e.metaKey ? 0.003 : 0.015
-    cameraGoal.distance = Math.max(5, Math.min(80, cameraGoal.distance + e.deltaY * speed))
-    idleTime = 0
-}
-
-let canvasEl: HTMLCanvasElement | null = null
+// --- Pointer input via gesture composable (replaces window event listeners) ---
 
 onMounted(() => {
-    canvasEl = document.querySelector('.planet-container canvas')
-    if (canvasEl) {
-        canvasEl.addEventListener('wheel', onWheel, { passive: false })
-    }
-    window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
-
-    // Returning from the earth view: start the camera close to earth and
-    // pull back to the overview shot.
     if (props.entryFromEarth) {
         const earth = locationMeshes.find(e => e.code === 'earth')
         if (earth) {
@@ -885,8 +833,78 @@ onLoop(({ delta }) => {
     idleTime += delta
     starMat.uniforms.uTime.value = elapsed
 
+    const isTouch = gesture.pointerType.value === 'touch'
+    const sens = 0.005 * (isTouch ? 1.5 : 1)
+
+    // Process gesture input
+    if (gesture.isDragging.value) {
+        const drag = gesture.consumeDrag()
+        cameraGoal.angle.y -= drag.x * sens
+        cameraGoal.angle.x = Math.max(-0.5, Math.min(0.8, cameraGoal.angle.x + drag.y * sens))
+        idleTime = 0
+    }
+
+    const wheel = gesture.consumeWheel()
+    if (wheel.delta !== 0) {
+        const speed = wheel.ctrl ? 0.003 : 0.015
+        cameraGoal.distance = Math.max(5, Math.min(80, cameraGoal.distance + wheel.delta * speed))
+        idleTime = 0
+    }
+
+    const pinch = gesture.consumePinch()
+    if (pinch !== 0) {
+        cameraGoal.distance = Math.max(5, Math.min(80, cameraGoal.distance * (1 - pinch)))
+        idleTime = 0
+    }
+
+    // Momentum capture on release
+    if (!gesture.isDragging.value && wasDragging) {
+        const vel = gesture.getVelocity()
+        momentum.x = vel.x
+        momentum.y = vel.y
+    }
+    wasDragging = gesture.isDragging.value
+
+    // Apply momentum
+    if (!gesture.isDragging.value && (Math.abs(momentum.x) > 0.0001 || Math.abs(momentum.y) > 0.0001)) {
+        cameraGoal.angle.y -= momentum.x * sens
+        cameraGoal.angle.x = Math.max(-0.5, Math.min(0.8, cameraGoal.angle.x + momentum.y * sens))
+        const decay = Math.pow(0.92, delta * 60)
+        momentum.x *= decay
+        momentum.y *= decay
+    }
+
+    // Raycasting for hover
+    if (gesture.isPointerDirty() && camera.value) {
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const spheres = locationMeshes.map(e => e.sphere)
+        const intersects = raycaster.intersectObjects(spheres, false)
+        if (intersects.length > 0) {
+            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
+            emit('hover', hit?.code ?? null)
+        } else {
+            emit('hover', null)
+        }
+        gesture.clearPointerDirty()
+    }
+
+    // Tap detection for click
+    if (gesture.consumeTap() && camera.value && !isDiving) {
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const spheres = locationMeshes.map(e => e.sphere)
+        const intersects = raycaster.intersectObjects(spheres, false)
+        if (intersects.length > 0) {
+            const hit = locationMeshes.find(e => e.sphere === intersects[0].object)
+            if (hit) emit('select', hit.code)
+        } else {
+            emit('select', null)
+        }
+    }
+
     // Auto-rotate when idle
-    if (idleTime > 3.0 && !isDragging && !props.selectedCode) {
+    if (idleTime > 3.0 && !gesture.isDragging.value && !props.selectedCode) {
         cameraGoal.angle.y += delta * 0.04
     }
 
@@ -901,14 +919,14 @@ onLoop(({ delta }) => {
         mat.opacity = 0.06 + Math.sin(elapsed * 0.3 + child.position.x) * 0.02
     })
 
-    // Smooth camera interpolation (faster while diving so the camera
-    // actually reaches the goal within the tween window)
+    // Frame-rate independent camera interpolation
     if (camera.value) {
-        const lerpSpeed = isDiving ? 0.22 : isDragging ? 0.12 : 0.06
-        cameraState.angle.x += (cameraGoal.angle.x - cameraState.angle.x) * lerpSpeed
-        cameraState.angle.y += (cameraGoal.angle.y - cameraState.angle.y) * lerpSpeed
-        cameraState.distance += (cameraGoal.distance - cameraState.distance) * lerpSpeed
-        cameraState.target.lerp(cameraGoal.target, lerpSpeed)
+        const baseFactor = isDiving ? 0.22 : 0.08
+        const af = damp(baseFactor, delta)
+        cameraState.angle.x += (cameraGoal.angle.x - cameraState.angle.x) * af
+        cameraState.angle.y += (cameraGoal.angle.y - cameraState.angle.y) * af
+        cameraState.distance += (cameraGoal.distance - cameraState.distance) * af
+        cameraState.target.lerp(cameraGoal.target, damp(0.06, delta))
 
         const d = cameraState.distance
         camera.value.position.set(
@@ -995,10 +1013,6 @@ onLoop(({ delta }) => {
 })
 
 onUnmounted(() => {
-    if (canvasEl) canvasEl.removeEventListener('wheel', onWheel)
-    window.removeEventListener('pointerdown', onPointerDown)
-    window.removeEventListener('pointermove', onPointerMove)
-    window.removeEventListener('pointerup', onPointerUp)
     gsap.killTweensOf(cameraGoal.target)
     gsap.killTweensOf(cameraGoal)
     gsap.killTweensOf(cameraGoal.angle)

@@ -1,5 +1,5 @@
 <template>
-    <div v-if="prerequisites.length > 0" class="space-y-4">
+    <div v-if="prerequisites.length > 0" id="previously-on" class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <h3 class="font-display text-xl tracking-wider text-white flex items-center gap-2">
                 <svg class="w-5 h-5 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,6 +101,9 @@ interface ScopeState {
 const props = defineProps<{
     currentTitleId: number
     watchedIds: Set<number>
+    // Slug of the current title — used by the local-data fallback, where ids
+    // are mode-dependent and unreliable but slugs are stable.
+    currentTitleSlug?: string
 }>()
 
 const { t, locale } = useI18n()
@@ -183,7 +186,7 @@ async function init() {
         return
     }
     try {
-        prerequisites.value = await getPrerequisites(props.currentTitleId)
+        prerequisites.value = await getPrerequisites(props.currentTitleId, props.currentTitleSlug)
     } catch {
         prerequisites.value = []
     }

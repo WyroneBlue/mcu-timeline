@@ -122,7 +122,6 @@ const haloFragmentShader = `
 
 const scene = new Group()
 const raycaster = new Raycaster()
-const pointer = new Vector2()
 
 interface PinEntry {
     sphere: Mesh
@@ -159,13 +158,18 @@ const cameraGoal = { x: 0.3, y: 0 }
 const START_DISTANCE = 14
 const cameraDistance = ref(props.entryDive ? 26 : START_DISTANCE)
 const cameraDistanceGoal = ref(props.entryDive ? 26 : START_DISTANCE)
-let isDragging = false
-let dragStart = { x: 0, y: 0 }
-let pointerStart = { x: 0, y: 0 }
-let pointerDirty = false
 let idleTime = 0
 const { camera, renderer } = useTres()
 const { settings } = useSettings()
+
+const canvasEl = computed(() => renderer.value?.domElement ?? null)
+const gesture = usePointerGesture(canvasEl)
+const momentum = { x: 0, y: 0 }
+let wasDragging = false
+
+function damp(factor: number, dt: number) {
+    return 1 - Math.pow(1 - factor, dt * 60)
+}
 
 function disposeScene() {
     disposables.forEach(d => d.dispose())
@@ -411,96 +415,22 @@ function buildScene() {
 onMounted(() => {
     buildScene()
 
-    // Finish the dive that started in the solar-system scene
     if (props.entryDive) {
         gsap.to(cameraDistanceGoal, { value: START_DISTANCE, duration: 0.6, ease: 'power3.out' })
     }
+})
 
-    const el = renderer.value?.domElement
-    if (!el) return
-
-    el.addEventListener('pointerdown', onPointerDown)
-    el.addEventListener('pointermove', onPointerMove)
-    el.addEventListener('pointerup', onPointerUp)
-    el.addEventListener('wheel', onWheel, { passive: false })
-
-    onUnmounted(() => {
-        el.removeEventListener('pointerdown', onPointerDown)
-        el.removeEventListener('pointermove', onPointerMove)
-        el.removeEventListener('pointerup', onPointerUp)
-        el.removeEventListener('wheel', onWheel)
-        gsap.killTweensOf(cameraDistanceGoal)
-        gsap.killTweensOf(cameraGoal)
-        if (globeMaterial) gsap.killTweensOf(globeMaterial.uniforms.uTexMix)
-        if (clouds) gsap.killTweensOf(clouds.material)
-        disposeScene()
-    })
+onUnmounted(() => {
+    gsap.killTweensOf(cameraDistanceGoal)
+    gsap.killTweensOf(cameraGoal)
+    if (globeMaterial) gsap.killTweensOf(globeMaterial.uniforms.uTexMix)
+    if (clouds) gsap.killTweensOf(clouds.material)
+    disposeScene()
 })
 
 watch(earthLocations, buildScene, { deep: true })
 
-function onPointerDown(e: PointerEvent) {
-    isDragging = true
-    dragStart = { x: cameraAngle.x, y: cameraAngle.y }
-    pointerStart = { x: e.clientX, y: e.clientY }
-    idleTime = 0
-}
-
-function onPointerMove(e: PointerEvent) {
-    const el = renderer.value?.domElement
-    if (!el) return
-
-    const rect = el.getBoundingClientRect()
-    pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
-    pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1
-    pointerDirty = true
-
-    if (isDragging) {
-        const dx = e.clientX - pointerStart.x
-        const dy = e.clientY - pointerStart.y
-        // Default: the globe follows the pointer ("grab" feel); the setting
-        // flips it for people who prefer orbit-style dragging.
-        const dir = settings.invertGlobeDrag ? 1 : -1
-        cameraGoal.y = dragStart.y + dir * dx * 0.005
-        cameraGoal.x = Math.max(-0.8, Math.min(0.8, dragStart.x + dy * 0.005))
-        idleTime = 0
-    }
-}
-
-function onPointerUp(e: PointerEvent) {
-    const dx = Math.abs(e.clientX - pointerStart.x)
-    const dy = Math.abs(e.clientY - pointerStart.y)
-    const wasClick = dx < 5 && dy < 5
-
-    isDragging = false
-
-    if (wasClick && camera.value) {
-        raycaster.setFromCamera(pointer, camera.value)
-
-        const pinTargets = pins.map(p => p.hit)
-        const hits = raycaster.intersectObjects(pinTargets)
-        if (hits.length > 0) {
-            const pin = pins.find(p => p.hit === hits[0].object)
-            if (pin) {
-                emit('select', pin.code)
-                flyToPin(pin)
-                return
-            }
-        }
-
-        const globeHits = globe ? raycaster.intersectObject(globe) : []
-        if (globeHits.length === 0 && hits.length === 0) {
-            emit('select', null)
-        }
-    }
-}
-
-function onWheel(e: WheelEvent) {
-    e.preventDefault()
-    const speed = e.ctrlKey || e.metaKey ? 0.003 : 0.015
-    cameraDistanceGoal.value = Math.max(8, Math.min(30, cameraDistanceGoal.value + e.deltaY * speed))
-    idleTime = 0
-}
+// Pointer input handled by usePointerGesture composable
 
 // Reverse dive: pull the camera away from the globe, then let the parent
 // swap back to the solar system at the visual peak.
@@ -527,6 +457,14 @@ function cancelZoomOut() {
 }
 
 defineExpose({ zoomOut, cancelZoomOut })
+
+// Selection can also come from outside (prev/next bar, arrow keys), so the
+// camera follows selectedCode rather than only the tap that set it.
+watch(() => props.selectedCode, (code) => {
+    if (!code) return
+    const pin = pins.find(p => p.code === code)
+    if (pin) flyToPin(pin)
+})
 
 function flyToPin(pin: PinEntry) {
     const targetAngleY = Math.atan2(pin.surfacePos.x, pin.surfacePos.z)
@@ -560,17 +498,78 @@ onLoop(({ delta }) => {
     sunDir.set(Math.cos(sunAngle), 0.25, Math.sin(sunAngle)).normalize()
     if (clouds) clouds.rotation.y += delta * 0.006
 
+    const isTouch = gesture.pointerType.value === 'touch'
+    const sens = 0.005 * (isTouch ? 1.5 : 1)
+    const dir = settings.invertGlobeDrag ? 1 : -1
+
+    // Process gesture input
+    if (gesture.isDragging.value) {
+        const drag = gesture.consumeDrag()
+        cameraGoal.y += dir * drag.x * sens
+        cameraGoal.x = Math.max(-0.8, Math.min(0.8, cameraGoal.x + drag.y * sens))
+        idleTime = 0
+    }
+
+    const wheel = gesture.consumeWheel()
+    if (wheel.delta !== 0) {
+        const speed = wheel.ctrl ? 0.003 : 0.015
+        cameraDistanceGoal.value = Math.max(8, Math.min(30, cameraDistanceGoal.value + wheel.delta * speed))
+        idleTime = 0
+    }
+
+    const pinch = gesture.consumePinch()
+    if (pinch !== 0) {
+        cameraDistanceGoal.value = Math.max(8, Math.min(30, cameraDistanceGoal.value * (1 - pinch)))
+        idleTime = 0
+    }
+
+    // Momentum capture on release
+    if (!gesture.isDragging.value && wasDragging) {
+        const vel = gesture.getVelocity()
+        momentum.x = vel.x
+        momentum.y = vel.y
+    }
+    wasDragging = gesture.isDragging.value
+
+    // Apply momentum
+    if (!gesture.isDragging.value && (Math.abs(momentum.x) > 0.0001 || Math.abs(momentum.y) > 0.0001)) {
+        cameraGoal.y += dir * momentum.x * sens
+        cameraGoal.x = Math.max(-0.8, Math.min(0.8, cameraGoal.x + momentum.y * sens))
+        const decay = Math.pow(0.92, delta * 60)
+        momentum.x *= decay
+        momentum.y *= decay
+    }
+
+    // Tap detection for click
+    if (gesture.consumeTap() && camera.value) {
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
+        const pinTargets = pins.map(p => p.hit)
+        const hits = raycaster.intersectObjects(pinTargets)
+        if (hits.length > 0) {
+            const pin = pins.find(p => p.hit === hits[0].object)
+            if (pin) {
+                emit('select', pin.code)
+                flyToPin(pin)
+            }
+        } else {
+            const globeHits = globe ? raycaster.intersectObject(globe) : []
+            if (globeHits.length === 0) emit('select', null)
+        }
+    }
+
     // Idle auto-rotation
     idleTime += delta
-    if (!isDragging && idleTime > 3) {
+    if (!gesture.isDragging.value && idleTime > 3) {
         cameraGoal.y += delta * 0.08
     }
 
-    // Smooth camera interpolation (faster while the exit zoom-out runs so
-    // the camera reaches the goal within the tween window)
-    cameraAngle.x += (cameraGoal.x - cameraAngle.x) * 0.08
-    cameraAngle.y += (cameraGoal.y - cameraAngle.y) * 0.08
-    cameraDistance.value += (cameraDistanceGoal.value - cameraDistance.value) * (zoomingOut ? 0.22 : 0.08)
+    // Frame-rate independent camera interpolation
+    const baseFactor = zoomingOut ? 0.22 : 0.08
+    const af = damp(baseFactor, delta)
+    cameraAngle.x += (cameraGoal.x - cameraAngle.x) * af
+    cameraAngle.y += (cameraGoal.y - cameraAngle.y) * af
+    cameraDistance.value += (cameraDistanceGoal.value - cameraDistance.value) * damp(baseFactor, delta)
 
     const dist = cameraDistance.value
     const cx = Math.sin(cameraAngle.y) * Math.cos(cameraAngle.x) * dist
@@ -580,10 +579,11 @@ onLoop(({ delta }) => {
     camera.value.position.set(cx, cy, cz)
     camera.value.lookAt(0, 0, 0)
 
-    // Hover raycast against the enlarged hit spheres, only when the pointer moved
-    if (pointerDirty && camera.value && !isDragging) {
-        pointerDirty = false
-        raycaster.setFromCamera(pointer, camera.value)
+    // Hover raycast
+    if (gesture.isPointerDirty() && camera.value && !gesture.isDragging.value) {
+        gesture.clearPointerDirty()
+        const pt = gesture.pointer
+        raycaster.setFromCamera(new Vector2(pt.x, pt.y), camera.value)
         const pinTargets = pins.map(p => p.hit)
         const hits = raycaster.intersectObjects(pinTargets)
         const hoveredPin = hits.length > 0 ? pins.find(p => p.hit === hits[0].object) : null

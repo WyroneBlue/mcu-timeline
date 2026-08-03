@@ -1,5 +1,5 @@
 <template>
-    <div ref="triggerEl" class="phase-transition-wrapper relative h-[30vh] flex items-center justify-center overflow-hidden my-4">
+    <div ref="triggerEl" class="phase-transition-wrapper relative h-[12vh] flex items-center justify-center overflow-hidden my-2">
         <ClientOnly>
             <div class="absolute inset-0 transition-opacity duration-700" :class="isVisible ? 'opacity-100' : 'opacity-0'">
                 <TresCanvas
@@ -19,10 +19,10 @@
             </div>
         </ClientOnly>
         <div ref="labelEl" class="relative z-10 text-center pointer-events-none">
-            <span class="font-display text-xs uppercase tracking-[0.4em] block mb-1" :style="{ color: portalColor + '80' }">
+            <span class="font-display text-[10px] uppercase tracking-[0.4em] block mb-0.5" :style="{ color: portalColor + '60' }">
                 Entering
             </span>
-            <span class="font-display text-2xl sm:text-3xl tracking-wider text-white/80">
+            <span class="font-display text-lg sm:text-xl tracking-wider text-white/70">
                 Phase {{ toPhase }}
             </span>
         </div>

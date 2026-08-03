@@ -6,7 +6,7 @@ import universesJson from '../../data/universes.json'
 
 type Title = Database['public']['Tables']['titles']['Row']
 
-function localTitlesForMode(mode: 'simple' | 'in_depth' | 'extreme') {
+export function localTitlesForMode(mode: 'simple' | 'in_depth' | 'extreme') {
     let filtered = mcuTitlesJson as any[]
 
     if (mode === 'simple') {

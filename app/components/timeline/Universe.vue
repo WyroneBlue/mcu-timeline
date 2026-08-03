@@ -130,8 +130,16 @@
             />
         </UiBottomSheet>
 
-        <!-- Navigation controls (Prev / Next) — buttons fixed, title centered between them -->
-        <div v-if="settings.scrollToNextEnabled" class="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))]" @pointerdown.stop @click.stop>
+        <!-- Navigation controls (Prev / Next) — buttons fixed, title centered between
+             them. Re-centers within the visible scene when the detail panel is open. -->
+        <div
+            v-if="settings.scrollToNextEnabled"
+            :class="[
+                'absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] -translate-x-1/2 z-30 w-[min(340px,calc(100vw-2rem))] transition-[left] duration-500',
+                selectedTitle && !isMobile ? 'left-[calc((100%-340px)/2)]' : 'left-1/2'
+            ]"
+            @pointerdown.stop @click.stop
+        >
             <div class="relative flex items-center justify-between">
                 <button
                     :disabled="focusedIndex <= 0"
@@ -287,6 +295,25 @@
                         </span>
                     </div>
 
+                    <!-- Previously On recap -->
+                    <button
+                        v-if="selectedTitle && !showRecap"
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium bg-purple-500/10 hover:bg-purple-500/15 text-purple-400/80 border border-purple-500/10 hover:border-purple-500/20 transition-all duration-200 mb-4"
+                        @click="showRecap = true"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Previously On...
+                    </button>
+                    <div v-if="showRecap && selectedTitle" class="mb-4">
+                        <TitlePreviouslyOn
+                            :current-title-id="selectedTitle.id"
+                            :current-title-slug="selectedTitle.slug"
+                            :watched-ids="watchedIds"
+                        />
+                    </div>
+
                     <div class="mt-auto flex flex-col gap-2">
                         <div class="flex items-center gap-2">
                             <button
@@ -367,11 +394,12 @@ import TheWatcher from '../easter-eggs/TheWatcher.vue'
 type Title = Database['public']['Tables']['titles']['Row']
 type ProgressStatus = 'queued' | 'watching' | 'watched' | 'skipped'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     titles: Title[]
     progressMap: Map<number, ProgressStatus>
     activePhase: number | null
-}>()
+    fullscreen?: boolean
+}>(), { fullscreen: false })
 
 defineEmits<{
     markWatched: [id: number]
@@ -469,8 +497,38 @@ onMounted(() => {
     }
 
     const onKeydown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && focusMode.value) {
-            toggleFocusMode()
+        if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+
+        switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+                e.preventDefault()
+                goNext()
+                break
+            case 'ArrowLeft':
+            case 'ArrowUp':
+                e.preventDefault()
+                goPrev()
+                break
+            case 'Enter': {
+                e.preventDefault()
+                const title = sortedTitles.value[focusedIndex.value]
+                if (!title) break
+                if (selectedId.value === title.id) {
+                    selectedId.value = null
+                } else {
+                    selectedId.value = title.id
+                    showDragHint.value = false
+                }
+                break
+            }
+            case 'Escape':
+                if (selectedId.value != null) {
+                    selectedId.value = null
+                } else if (focusMode.value) {
+                    toggleFocusMode()
+                }
+                break
         }
     }
     window.addEventListener('keydown', onKeydown)
@@ -480,6 +538,7 @@ onMounted(() => {
 const { height: viewportHeight, isMobile } = useViewport()
 
 const containerHeight = computed(() => {
+    if (props.fullscreen) return '100%'
     const bottomNavOffset = isMobile.value ? 80 : 0
     return `${Math.max(500, viewportHeight.value - 140 - bottomNavOffset)}px`
 })
@@ -502,6 +561,17 @@ const selectedStatus = computed(() => {
     if (!selectedId.value) return null
     return props.progressMap.get(selectedId.value) ?? null
 })
+
+const watchedIds = computed(() => {
+    const ids = new Set<number>()
+    for (const [id, status] of props.progressMap) {
+        if (status === 'watched') ids.add(id)
+    }
+    return ids
+})
+
+const showRecap = ref(false)
+watch(selectedId, () => { showRecap.value = false })
 
 function handleSelect(id: number | null) {
     selectedId.value = id
